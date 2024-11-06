@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827743837236",
+    "project_id": "likebox2024",
+    "storage_bucket": "likebox2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827743837236:android:93b510a7d9c98f0869be61",
+        "android_client_info": {
+          "package_name": "com.example.likebox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDexsS-Agl30nLjB6jJY0G-2iy9mfEzXZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

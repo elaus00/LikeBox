@@ -21,9 +21,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 // SyncState sealed class 추가
 sealed class SyncState {
-    object Idle : SyncState()
-    object Syncing : SyncState()
-    object Success : SyncState()
+    data object Idle : SyncState()
+    data object Syncing : SyncState()
+    data object Success : SyncState()
     data class Error(val message: String) : SyncState()
 }
 
