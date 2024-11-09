@@ -75,6 +75,9 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.functions.ktx)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

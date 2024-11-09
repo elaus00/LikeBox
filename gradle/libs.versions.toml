@@ -14,7 +14,6 @@ lifecycleRuntimeCompose = "2.8.7"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.10.00"
-mockitoKotlin = "4.1.0"
 navigationComposeVersion = "2.7.7"
 retrofit = "2.9.0"
 kotlinxCoroutines = "1.7.3"
@@ -23,6 +22,9 @@ navigationCompose = "2.8.3"
 media3Extractor = "1.4.1"
 google-services = "4.4.2"
 workRuntimeKtx = "2.10.0"
+firebaseAuthKtx = "23.1.0"
+firebaseFirestoreKtx = "25.1.1"
+firebaseFunctionsKtx = "21.0.0"
 
 [libraries]
 androidx-compose-bom-v20240100 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
@@ -62,9 +64,11 @@ androidx-media3-extractor = { group = "androidx.media3", name = "media3-extracto
 ui = { module = "androidx.compose.ui:ui" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version = "2.50" }
-google_services = { id = "com.google.gms.google-services", version.ref = "google-services" }
