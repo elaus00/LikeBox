@@ -1,4 +1,4 @@
-package com.example.likebox
+package com.example.likebox.ui.screens.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.likebox.navigation.Screen
+import com.example.likebox.R
+import com.example.likebox.ui.navigation.Screen
 import com.example.likebox.ui.theme.RegisterButton
 
 @Composable

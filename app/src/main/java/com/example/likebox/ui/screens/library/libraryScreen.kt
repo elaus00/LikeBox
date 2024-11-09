@@ -6,11 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.likebox.LibraryViewModel
 
 @Composable
 fun LibraryScreen(
-    viewModel: LibraryViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }

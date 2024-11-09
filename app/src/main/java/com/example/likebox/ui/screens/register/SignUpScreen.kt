@@ -1,4 +1,4 @@
-package com.example.likebox
+package com.example.likebox.ui.screens.register
 
 import androidx.compose.runtime.Composable
 

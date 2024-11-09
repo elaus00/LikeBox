@@ -1,4 +1,4 @@
-package com.example.likebox.navigation
+package com.example.likebox.ui.navigation
 
 sealed class Screen(val route: String) {
 

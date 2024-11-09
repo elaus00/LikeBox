@@ -1,4 +1,4 @@
-package com.example.likebox.navigation
+package com.example.likebox.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -6,10 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.likebox.MainScreen
-import com.example.likebox.OnBoarding
-import com.example.likebox.SignInScreen
-import com.example.likebox.SignUpScreen
+import com.example.likebox.ui.screens.MainScreen
+import com.example.likebox.ui.screens.register.OnBoarding
+import com.example.likebox.ui.screens.register.SignInScreen
+import com.example.likebox.ui.screens.register.SignUpScreen
 
 /*
 NavigationProvider를 통해 시작 주소와 navController를 전달.

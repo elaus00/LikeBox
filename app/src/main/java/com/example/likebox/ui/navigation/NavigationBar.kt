@@ -1,4 +1,4 @@
-package com.example.likebox.navigation
+package com.example.likebox.ui.navigation
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon

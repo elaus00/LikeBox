@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.example.likebox.navigation.NavigationProvider
+import com.example.likebox.ui.navigation.NavigationProvider
 import com.example.likebox.ui.theme.LikeBoxTheme
 
 class MainActivity : ComponentActivity() {
