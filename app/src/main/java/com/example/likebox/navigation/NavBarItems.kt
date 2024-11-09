@@ -6,7 +6,6 @@ import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.likebox.Screen
 
 sealed class NavBarItem(
     val route: String,

@@ -1,4 +1,4 @@
-package com.example.likebox
+package com.example.likebox.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote

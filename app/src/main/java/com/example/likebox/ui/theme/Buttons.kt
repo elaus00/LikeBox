@@ -26,7 +26,7 @@ fun RegisterButton(
         onClick = { navController.navigate(route) }, // 경로를 파라미터로 설정
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xfff93c58)
+            containerColor = Color(0xFFF93C58)
         ),
         modifier = modifier
             .fillMaxWidth()

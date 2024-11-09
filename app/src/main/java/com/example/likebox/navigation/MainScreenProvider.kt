@@ -8,7 +8,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.likebox.MainScreen
 import com.example.likebox.OnBoarding
-import com.example.likebox.Screen
 import com.example.likebox.SignInScreen
 import com.example.likebox.SignUpScreen
 
