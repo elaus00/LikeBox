@@ -43,25 +43,19 @@ fun NavigationHost(
     LaunchedEffect(Unit) {
         viewModel.navigationCommands.collect { command ->
             when (command) {
-                is NavigationCommand.NavigateTo -> {
-                    navController.navigate(command.screen.route)
-                }
+                is NavigationCommand.NavigateTo -> navController.navigate(command.screen.route)
                 is NavigationCommand.NavigateToAndClearStack -> {
                     navController.navigate(command.screen.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
-                is NavigationCommand.NavigateBack -> {
-                    navController.navigateUp()
-                }
+                is NavigationCommand.NavigateBack -> navController.navigateUp()
                 is NavigationCommand.NavigateToRoot -> {
                     navController.navigate(command.screen.route) {
                         popUpTo(command.screen.route) { inclusive = true }
                     }
                 }
-                is NavigationCommand.NavigateToWithArgs<*> -> {
-                    navController.navigate(command.screen.route)
-                }
+                is NavigationCommand.NavigateToWithArgs<*> -> navController.navigate(command.screen.route)
             }
             viewModel.onNavigationComplete()
         }
@@ -70,7 +64,7 @@ fun NavigationHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screens.Auth.OnBoarding.route
+        startDestination = Screens.Auth.Root.route
     ) {
         // Auth Flow
         navigation(
@@ -81,17 +75,13 @@ fun NavigationHost(
                 OnBoardingScreen(navController)
             }
             composable(Screens.Auth.SignIn.route) {
-                SignInScreen(
-                    navController = navController
-                )
+                SignInScreen(navController)
             }
             composable(Screens.Auth.SignUp.route) {
-                SignUpScreen(
-                    navController = navController
-                )
+                SignUpScreen(navController)
             }
 
-            // Platform Setup Flow
+            // Platform Setup - Auth의 하위 네비게이션
             navigation(
                 startDestination = Screens.Auth.PlatformSetup.Selection.route,
                 route = Screens.Auth.PlatformSetup.Root.route
@@ -105,11 +95,12 @@ fun NavigationHost(
                         navArgument("platformId") { type = NavType.StringType }
                     )
                 ) { entry ->
-                    entry.arguments?.getString("platformId")
-                        ?.let { PlatformConnectionScreen(platformId = it) }
+                    entry.arguments?.getString("platformId")?.let {
+                        PlatformConnectionScreen(platformId = it)
+                    }
                 }
                 composable(Screens.Auth.PlatformSetup.Confirmation.route) {
-                    Text("Platform Setup Confirmation") // TODO: Implement PlatformConfirmationScreen
+                    Text("Platform Setup Confirmation")
                 }
             }
         }
@@ -117,40 +108,51 @@ fun NavigationHost(
         // Home Flow
         navigation(
             startDestination = Screens.Home.Root.route,
-            route = "home"
+            route = "home_graph"  // 그래프 route는 화면 route와 구분
         ) {
             composable(Screens.Home.Root.route) {
                 HomeScreen()
+            }
+
+            // Platform-specific screens
+            Screens.Home.Platform::class.sealedSubclasses.forEach { platform ->
+                val route = (platform.objectInstance as? Screens.Home.Platform)?.route
+                route?.let {
+                    composable(it) {
+                        when(platform.objectInstance) {
+                            is Screens.Home.Platform.Spotify -> Text("Spotify Home")
+                            is Screens.Home.Platform.Youtube -> Text("Youtube Home")
+                            is Screens.Home.Platform.AppleMusic -> Text("Apple Music Home")
+                            null -> Unit
+                        }
+                    }
+                }
             }
         }
 
         // Search Flow
         navigation(
             startDestination = Screens.Search.Root.route,
-            route = "search"
+            route = "search_graph"  // 그래프 route는 화면 route와 구분
         ) {
             composable(Screens.Search.Root.route) {
                 SearchScreen()
             }
 
-            // Search Results by Category
-            composable(
-                route = Screens.Search.Results.Category.Tracks.route,
+            composable(Screens.Search.Results.Category.Tracks.route,
                 arguments = listOf(
                     navArgument("query") { type = NavType.StringType }
                 )
             ) { entry ->
                 Text("Tracks Search Results: ${entry.arguments?.getString("query")}")
-                // TODO: Implement TracksResultScreen
             }
-
-            // More search result categories...
+            // 다른 검색 결과 화면들...
         }
 
         // Library Flow
         navigation(
             startDestination = Screens.Library.Root.route,
-            route = "library"
+            route = "library_graph"  // 그래프 route는 화면 route와 구분
         ) {
             composable(Screens.Library.Root.route) {
                 LibraryScreen()
@@ -165,37 +167,37 @@ fun NavigationHost(
                 )
             ) { entry ->
                 Text("Playlist Detail: ${entry.arguments?.getString("playlistId")}")
-                // TODO: Implement PlaylistDetailScreen
             }
         }
 
         // Settings Flow
         navigation(
             startDestination = Screens.Settings.Root.route,
-            route = "settings"
+            route = "settings_graph"  // 그래프 route는 화면 route와 구분
         ) {
             composable(Screens.Settings.Root.route) {
                 SettingsScreen()
             }
             composable(Screens.Settings.Profile.route) {
-                Text("Profile Screen") // TODO: Implement ProfileScreen
-            }
-            composable(Screens.Settings.Account.LinkedPlatforms.route) {
-                Text("Linked Platforms") // TODO: Implement LinkedPlatformsScreen
+                Text("Profile Screen")
             }
 
+            // Account Settings Sub-graph
             navigation(
                 startDestination = Screens.Settings.Account.Root.route,
-                route = "account"
+                route = "settings_account_graph"  // 하위 그래프 route도 구분
             ) {
                 composable(Screens.Settings.Account.Root.route) {
-                    Text("Account Settings") // TODO: Implement AccountSettingsScreen
+                    Text("Account Settings")
                 }
                 composable(Screens.Settings.Account.Security.route) {
-                    Text("Security Settings") // TODO: Implement SecuritySettingsScreen
+                    Text("Security Settings")
                 }
                 composable(Screens.Settings.Account.Notifications.route) {
-                    Text("Notification Settings") // TODO: Implement NotificationSettingsScreen
+                    Text("Notification Settings")
+                }
+                composable(Screens.Settings.Account.LinkedPlatforms.route) {
+                    Text("Linked Platforms")
                 }
             }
         }

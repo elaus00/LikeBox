@@ -4,6 +4,8 @@ plugins {
     id("kotlin-kapt")
     id("com.google.relay") version "0.3.12"
     alias(libs.plugins.hilt)
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -111,4 +113,5 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(kotlin("reflect"))
 }

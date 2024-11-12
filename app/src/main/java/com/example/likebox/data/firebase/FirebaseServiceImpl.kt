@@ -35,7 +35,7 @@ class FirebaseServiceImpl @Inject constructor(
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("Not authenticated"))
 
-            trackDto.id = userId  // TrackDto에 userId 필드가 있다고 가정
+            trackDto.id = userId
 
             db.collection("tracks")
                 .add(trackDto)

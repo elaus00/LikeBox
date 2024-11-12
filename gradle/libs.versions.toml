@@ -1,7 +1,8 @@
 [versions]
 agp = "8.5.2"
-composeBomVersion = "2024.01.00"
+composeBomVersion = "2024.10.01"
 firebaseBom = "33.5.1"
+googleServices = "4.4.2"
 hiltAndroidGradlePlugin = "2.50"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
@@ -14,13 +15,12 @@ lifecycleRuntimeCompose = "2.8.7"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.10.00"
-navigationComposeVersion = "2.7.7"
+navigationComposeVersion = "2.8.3"
 retrofit = "2.9.0"
 kotlinxCoroutines = "1.7.3"
-junitJunit = "4.12"
+junitJunit = "4.13.2"
 navigationCompose = "2.8.3"
 media3Extractor = "1.4.1"
-google-services = "4.4.2"
 workRuntimeKtx = "2.10.0"
 firebaseAuthKtx = "23.1.0"
 firebaseFirestoreKtx = "25.1.1"
@@ -36,6 +36,7 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-navigation-compose-v277 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
