@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.view.screens.register
+package com.example.likebox.presentation.view.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.likebox.R
-import com.example.likebox.presentation.view.navigation.Screens
+import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.theme.LikeBoxTheme
 import com.example.likebox.presentation.view.theme.RegisterButton
 
@@ -33,7 +33,7 @@ object Variables {
 }
 
 @Composable
-fun OnBoarding(navController: NavController) {
+fun OnBoardingScreen(navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -155,15 +155,14 @@ fun LoginButton(
     RegisterButton(
         navController = navController,
         text = "Login",
-        route = Screens.Auth.SignIn.route
     )
 }
 
 @Composable
 fun CreateAccountLink(
+    modifier: Modifier = Modifier,
     onClick: @Composable () -> Unit = {}, // 클릭 시 호출할 이벤트를 받음
     navController: NavController,
-    modifier: Modifier = Modifier
 ) {
     Text(
         text = "Create an account",

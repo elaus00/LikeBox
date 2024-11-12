@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.likebox.R
-import com.example.likebox.presentation.view.screens.register.Variables
+import com.example.likebox.presentation.view.screens.auth.Variables
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

@@ -8,6 +8,5 @@ import dagger.hilt.android.HiltAndroidApp
 class LikeBox : Application() {
     override fun onCreate() {
         super.onCreate()
-        Log.d("AppLifecycle", "1. LikeBox onCreate")
     }
 }

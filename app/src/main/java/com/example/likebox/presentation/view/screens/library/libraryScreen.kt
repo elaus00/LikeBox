@@ -1,3 +1,5 @@
+package com.example.likebox.presentation.view.screens.library
+
 // 필요한 import문들
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Tab
@@ -53,3 +55,4 @@ fun AlbumsTab() {
 fun ArtistsTab() {
     // 아티스트 탭 내용 구현
 }
+

@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.view.screens.register
+package com.example.likebox.presentation.view.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,13 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.likebox.R
-import com.example.likebox.presentation.view.navigation.Screens
+import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.theme.RegisterButton
 
 @Composable
 fun SignInScreen(
-    onNavigateToSignUp: () -> Unit,
-    onSignInSuccess: () -> Unit,        
     navController: NavController
 ) {
     Column(
@@ -43,13 +41,13 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(40.dp))
         TitleSection(titleText = "Login")
         Spacer(modifier = Modifier.height(20.dp))
-        SignInOptions(onSignInSuccess, navController)
+        SignInOptions(navController)
         Spacer(modifier = Modifier.height(40.dp))
         DividerWithText("or continue with")
         Spacer(modifier = Modifier.height(20.dp))
         SocialLoginOptions()
         Spacer(modifier = Modifier.height(20.dp))
-        TextButton("Create an account", onNavigateToSignUp)
+        TextButton("Create an account")
     }
 }
 
@@ -66,7 +64,7 @@ fun BackArrow() {
 }
 
 @Composable
-fun SignInOptions(onSignInSuccess: () -> Unit, navController: NavController) {
+fun SignInOptions(navController: NavController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxWidth()
@@ -74,8 +72,8 @@ fun SignInOptions(onSignInSuccess: () -> Unit, navController: NavController) {
         InputGroup()
         InputField("Email Address", "likebox@example.com")
         InputField("Password", "Password")
-        RegisterButton(navController = navController, text = "Login", route = Screens.Main.Home.route)
-        TextButton("Forgot Password?", {} )
+        RegisterButton(navController = navController, text = "Login")
+        TextButton("Forgot Password?")
     }
 }
 
@@ -225,7 +223,7 @@ fun SocialLoginButton(text: String, iconRes: Int) {
 }
 
 @Composable
-fun TextButton(text: String, onClick: () -> Unit) {
+fun TextButton(text: String) {
     Text(
         text = text,
         color = Color(0xffff183a),
@@ -234,6 +232,6 @@ fun TextButton(text: String, onClick: () -> Unit) {
         textAlign = TextAlign.Center,
         modifier = Modifier
             .padding(8.dp)
-            .clickable(onClick = onClick)
+//            .clickable(onClick = onClick)
     )
 }

@@ -19,11 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 fun RegisterButton(
     navController: NavController,
     text: String,
-    route: String, // 이동할 경로를 매개변수로 추가
     modifier: Modifier = Modifier
 ) {
     Button(
-        onClick = { navController.navigate(route) }, // 경로를 파라미터로 설정
+        onClick = { }, // 이동할 경로 설정
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFFF93C58)

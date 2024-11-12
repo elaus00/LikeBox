@@ -7,4 +7,5 @@ interface PlatformAuthRepository {
     suspend fun getAuthInfo(platform: MusicPlatform): Result<PlatformAuth>
     suspend fun updateAuthInfo(auth: PlatformAuth): Result<Unit>
     suspend fun clearAuthInfo(platform: MusicPlatform): Result<Unit>
+    suspend fun hasAnyPlatformConnected(platform: MusicPlatform): Result<Unit>
 }

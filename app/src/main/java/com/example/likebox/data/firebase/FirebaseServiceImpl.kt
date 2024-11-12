@@ -8,9 +8,10 @@ import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseServiceImpl @Inject constructor() : FirebaseService {
-    private val db = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+class FirebaseServiceImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : FirebaseService {
 
     override suspend fun getLikedTracks(platform: MusicPlatform): Result<List<TrackDto>> {
         return try {
@@ -30,6 +31,23 @@ class FirebaseServiceImpl @Inject constructor() : FirebaseService {
     }
 
     override suspend fun saveLikedTrack(trackDto: TrackDto): Result<Unit> {
+        return try {
+            val userId = auth.currentUser?.uid
+                ?: return Result.failure(Exception("Not authenticated"))
+
+            trackDto.id = userId  // TrackDto에 userId 필드가 있다고 가정
+
+            db.collection("tracks")
+                .add(trackDto)
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getConnectedPlatforms(): List<MusicPlatform> {
         TODO("Not yet implemented")
     }
 }

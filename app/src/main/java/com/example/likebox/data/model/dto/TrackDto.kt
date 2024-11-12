@@ -5,7 +5,7 @@ import com.example.likebox.domain.model.Track
 
 // 1. Firebase에서 받는 DTO
 data class TrackDto(
-    val id: String = "",
+    var id: String = "",
     val name: String = "",
     val artists: List<String> = emptyList(),
     val addedAt: Long = 0L
