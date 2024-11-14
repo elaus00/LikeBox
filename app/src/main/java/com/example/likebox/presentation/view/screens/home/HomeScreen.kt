@@ -15,20 +15,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.likebox.R
-import com.example.likebox.presentation.view.navigation.AppNavigationBar
+import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.example.likebox.presentation.view.theme.SofiaSans
-import com.example.likebox.presentation.view.theme.TopBar
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavController
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -41,10 +43,9 @@ fun HomeScreen() {
                     tonalElevation = 4.dp,
                     color = Color.Transparent
                 ) {
-                    AppNavigationBar()
+                    LikeboxNavigationBar(navController)
                 }
             },
-            modifier = Modifier.systemBarsPadding(),
             containerColor = Color.White
         ) { paddingValues ->
             Box(
@@ -55,7 +56,7 @@ fun HomeScreen() {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(25.dp)
+                        .padding(horizontal = 25.dp)
                 ) {
                     HomeTopBar()
                     Spacer(modifier = Modifier.height(8.dp))
@@ -157,7 +158,7 @@ fun SyncStatusSection() {
         Spacer(modifier = Modifier.height(6.dp))
         MusicServiceItem(
             serviceName = "Apple Music",
-            logo = R.drawable.apple_music_logo,
+            logo = R.drawable.apple_music_logotype,
             syncStatus = SyncStatus.ERROR
         )
         Spacer(modifier = Modifier.height(6.dp))
@@ -275,14 +276,18 @@ fun SongCard(
 ) {
     Box(
         modifier = modifier
-            .aspectRatio(160f / 265f) // 원래 비율 유지
+            .aspectRatio(191f / 265f) // 원래 비율 유지
             .clip(RoundedCornerShape(23.dp))
             .border(
                 width = 0.5.dp,
                 color = Color.Black.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(23.dp)
             )
-            .shadow(elevation = 4.dp, spotColor = Color(0x59000000), ambientColor = Color(0x59000000))
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x59000000),
+                ambientColor = Color(0x59000000)
+            )
 
     ) {
         Image(
@@ -323,7 +328,7 @@ fun HomeScreenPreview() {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        HomeScreen()
+        HomeScreen(navController = rememberNavController())
     }
 }
 

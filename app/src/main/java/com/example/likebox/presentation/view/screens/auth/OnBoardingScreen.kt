@@ -43,6 +43,24 @@ fun OnBoardingScreen(navController: NavController) {
         ImageSection()
         TitleSection()
         StartOptionsSection(navController = navController)
+
+        // Test button for direct navigation to Home
+        Text(
+            text = "[TEST] Go to Home",
+            color = Color.Blue,
+            fontSize = 14.sp,
+            fontFamily = FontFamily(Font(R.font.pretendard)),
+            fontWeight = FontWeight(400),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .clickable {
+                    navController.navigate(Screens.Main.Home.Root.route) {
+                        // Clear the back stack so user can't navigate back to onboarding
+                        popUpTo(Screens.Auth.OnBoarding.route) { inclusive = true }
+                    }
+                }
+        )
     }
 }
 

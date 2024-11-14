@@ -62,7 +62,7 @@ fun NavigationHost(
             }
 
             composable(Screens.Auth.PlatformSetup.Selection.route) {
-                PlatformSelectionScreen()
+                PlatformSelectionScreen(navController)
             }
             composable(
                 route = Screens.Auth.PlatformSetup.Connection.route,
@@ -86,7 +86,7 @@ fun NavigationHost(
         ) {
             // Home Flow
             composable(Screens.Main.Home.Root.route) {
-                HomeScreen()
+                HomeScreen(navController)
             }
 
             Screens.Main.Home.Platform::class.sealedSubclasses.forEach { platform ->
