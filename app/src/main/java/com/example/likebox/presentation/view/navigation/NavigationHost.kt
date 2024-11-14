@@ -32,6 +32,7 @@ import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 import com.example.likebox.presentation.viewmodel.NavigationViewModel
 
 
+
 @Composable
 fun NavigationHost(
     modifier: Modifier = Modifier,
@@ -40,6 +41,122 @@ fun NavigationHost(
 ) {
     val currentScreen by viewModel.navigationState.collectAsState()
 
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Screens.Root.Auth.route
+    ) {
+        // Auth Graph
+        navigation(
+            startDestination = Screens.Auth.OnBoarding.route,
+            route = Screens.Root.Auth.route
+        ) {
+            composable(Screens.Auth.OnBoarding.route) {
+                OnBoardingScreen(navController)
+            }
+            composable(Screens.Auth.SignIn.route) {
+                SignInScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.route) {
+                SignUpScreen(navController)
+            }
+
+            composable(Screens.Auth.PlatformSetup.Selection.route) {
+                PlatformSelectionScreen()
+            }
+            composable(
+                route = Screens.Auth.PlatformSetup.Connection.route,
+                arguments = listOf(
+                    navArgument("platformId") { type = NavType.StringType }
+                )
+            ) { entry ->
+                entry.arguments?.getString("platformId")?.let {
+                    PlatformConnectionScreen(platformId = it)
+                }
+            }
+            composable(Screens.Auth.PlatformSetup.Confirmation.route) {
+                Text("Platform Setup Confirmation")
+            }
+        }
+
+        // Main Graph
+        navigation(
+            startDestination = Screens.Main.Home.Root.route,
+            route = Screens.Root.Main.route
+        ) {
+            // Home Flow
+            composable(Screens.Main.Home.Root.route) {
+                HomeScreen()
+            }
+
+            Screens.Main.Home.Platform::class.sealedSubclasses.forEach { platform ->
+                val route = (platform.objectInstance as? Screens.Main.Home.Platform)?.route
+                route?.let {
+                    composable(it) {
+                        when(platform.objectInstance) {
+                            is Screens.Main.Home.Platform.Spotify -> Text("Spotify Home")
+                            is Screens.Main.Home.Platform.Youtube -> Text("Youtube Home")
+                            is Screens.Main.Home.Platform.AppleMusic -> Text("Apple Music Home")
+                            null -> Unit
+                        }
+                    }
+                }
+            }
+
+            // Search Flow
+            composable(Screens.Main.Search.Root.route) {
+                SearchScreen()
+            }
+
+            composable(
+                Screens.Main.Search.Results.Category.Tracks.route,
+                arguments = listOf(
+                    navArgument("query") { type = NavType.StringType }
+                )
+            ) { entry ->
+                Text("Tracks Search Results: ${entry.arguments?.getString("query")}")
+            }
+
+            // Library Flow
+            composable(Screens.Main.Library.Root.route) {
+                LibraryScreen()
+            }
+            composable(Screens.Main.Library.Playlists.route) {
+                PlaylistsScreen()
+            }
+            composable(
+                route = Screens.Main.Library.Details.PlaylistDetail.route,
+                arguments = listOf(
+                    navArgument("playlistId") { type = NavType.StringType }
+                )
+            ) { entry ->
+                Text("Playlist Detail: ${entry.arguments?.getString("playlistId")}")
+            }
+
+            // Settings Flow
+            composable(Screens.Main.Settings.Root.route) {
+                SettingsScreen()
+            }
+            composable(Screens.Main.Settings.Profile.route) {
+                Text("Profile Settings")
+            }
+            composable(Screens.Main.Settings.Account.Root.route) {
+                Text("Account Settings")
+            }
+            composable(Screens.Main.Settings.Account.Security.route) {
+                Text("Security Settings")
+            }
+            composable(Screens.Main.Settings.Account.Notifications.route) {
+                Text("Notification Settings")
+            }
+            composable(Screens.Main.Settings.Account.LinkedPlatforms.route) {
+                Text("Linked Platforms")
+            }
+        }
+    }
+
+
+    // Handle navigation commands
     LaunchedEffect(Unit) {
         viewModel.navigationCommands.collect { command ->
             when (command) {
@@ -58,148 +175,6 @@ fun NavigationHost(
                 is NavigationCommand.NavigateToWithArgs<*> -> navController.navigate(command.screen.route)
             }
             viewModel.onNavigationComplete()
-        }
-    }
-
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = Screens.Auth.Root.route
-    ) {
-        // Auth Flow
-        navigation(
-            startDestination = Screens.Auth.OnBoarding.route,
-            route = Screens.Auth.Root.route
-        ) {
-            composable(Screens.Auth.OnBoarding.route) {
-                OnBoardingScreen(navController)
-            }
-            composable(Screens.Auth.SignIn.route) {
-                SignInScreen(navController)
-            }
-            composable(Screens.Auth.SignUp.route) {
-                SignUpScreen(navController)
-            }
-
-            // Platform Setup - Auth의 하위 네비게이션
-            navigation(
-                startDestination = Screens.Auth.PlatformSetup.Selection.route,
-                route = Screens.Auth.PlatformSetup.Root.route
-            ) {
-                composable(Screens.Auth.PlatformSetup.Selection.route) {
-                    PlatformSelectionScreen()
-                }
-                composable(
-                    route = Screens.Auth.PlatformSetup.Connection.route,
-                    arguments = listOf(
-                        navArgument("platformId") { type = NavType.StringType }
-                    )
-                ) { entry ->
-                    entry.arguments?.getString("platformId")?.let {
-                        PlatformConnectionScreen(platformId = it)
-                    }
-                }
-                composable(Screens.Auth.PlatformSetup.Confirmation.route) {
-                    Text("Platform Setup Confirmation")
-                }
-            }
-        }
-
-        // Home Flow
-        navigation(
-            startDestination = Screens.Home.Root.route,
-            route = "home_graph"  // 그래프 route는 화면 route와 구분
-        ) {
-            composable(Screens.Home.Root.route) {
-                HomeScreen()
-            }
-
-            // Platform-specific screens
-            Screens.Home.Platform::class.sealedSubclasses.forEach { platform ->
-                val route = (platform.objectInstance as? Screens.Home.Platform)?.route
-                route?.let {
-                    composable(it) {
-                        when(platform.objectInstance) {
-                            is Screens.Home.Platform.Spotify -> Text("Spotify Home")
-                            is Screens.Home.Platform.Youtube -> Text("Youtube Home")
-                            is Screens.Home.Platform.AppleMusic -> Text("Apple Music Home")
-                            null -> Unit
-                        }
-                    }
-                }
-            }
-        }
-
-        // Search Flow
-        navigation(
-            startDestination = Screens.Search.Root.route,
-            route = "search_graph"  // 그래프 route는 화면 route와 구분
-        ) {
-            composable(Screens.Search.Root.route) {
-                SearchScreen()
-            }
-
-            composable(Screens.Search.Results.Category.Tracks.route,
-                arguments = listOf(
-                    navArgument("query") { type = NavType.StringType }
-                )
-            ) { entry ->
-                Text("Tracks Search Results: ${entry.arguments?.getString("query")}")
-            }
-            // 다른 검색 결과 화면들...
-        }
-
-        // Library Flow
-        navigation(
-            startDestination = Screens.Library.Root.route,
-            route = "library_graph"  // 그래프 route는 화면 route와 구분
-        ) {
-            composable(Screens.Library.Root.route) {
-                LibraryScreen()
-            }
-            composable(Screens.Library.Playlists.route) {
-                PlaylistsScreen()
-            }
-            composable(
-                route = Screens.Library.Details.PlaylistDetail.route,
-                arguments = listOf(
-                    navArgument("playlistId") { type = NavType.StringType }
-                )
-            ) { entry ->
-                Text("Playlist Detail: ${entry.arguments?.getString("playlistId")}")
-            }
-        }
-
-        // Settings Flow
-        navigation(
-            startDestination = Screens.Settings.Root.route,
-            route = "settings_graph"  // 그래프 route는 화면 route와 구분
-        ) {
-            composable(Screens.Settings.Root.route) {
-                SettingsScreen()
-            }
-            composable(Screens.Settings.Profile.route) {
-                Text("Profile Screen")
-            }
-
-            // Account Settings Sub-graph
-            navigation(
-                startDestination = Screens.Settings.Account.Root.route,
-                route = "settings_account_graph"  // 하위 그래프 route도 구분
-            ) {
-                composable(Screens.Settings.Account.Root.route) {
-                    Text("Account Settings")
-                }
-                composable(Screens.Settings.Account.Security.route) {
-                    Text("Security Settings")
-                }
-                composable(Screens.Settings.Account.Notifications.route) {
-                    Text("Notification Settings")
-                }
-                composable(Screens.Settings.Account.LinkedPlatforms.route) {
-                    Text("Linked Platforms")
-                }
-            }
         }
     }
 }

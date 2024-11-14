@@ -114,4 +114,5 @@ dependencies {
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
     implementation(kotlin("reflect"))
+    implementation(libs.androidx.ui.text.google.fonts)
 }

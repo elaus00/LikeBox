@@ -45,17 +45,17 @@ class NavigationViewModel @Inject constructor(
 
     private fun checkAuthState() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoading.value = false
             try {
                 when (checkAuthStateUseCase()) {
                     AuthState.Authenticated -> {
-                        navigate(NavigationCommand.NavigateToAndClearStack(Screens.Home.Root))
+                        _navigationCommands.send(NavigationCommand.NavigateToAndClearStack(Screens.Root.Main))
                     }
                     AuthState.NotAuthenticated -> {
-                        navigate(NavigationCommand.NavigateToAndClearStack(Screens.Auth.OnBoarding))
+                        _navigationCommands.send(NavigationCommand.NavigateToAndClearStack(Screens.Root.Auth))
                     }
                     AuthState.NeedsPlatformSetup -> {
-                        navigate(NavigationCommand.NavigateToAndClearStack(Screens.Auth.PlatformSetup.Root))
+                        _navigationCommands.send(NavigationCommand.NavigateToAndClearStack(Screens.Auth.PlatformSetup.Selection))
                     }
                 }
             } catch (e: Exception) {
@@ -65,145 +65,64 @@ class NavigationViewModel @Inject constructor(
             }
         }
     }
-    /**
-     * 주어진 네비게이션 명령을 처리하는 함수
-     *
-     * @param command 실행할 네비게이션 명령
-     * - NavigateTo: 일반적인 화면 이동
-     * - NavigateToAndClearStack: 이전 화면들을 모두 제거하고 새로운 화면으로 이동
-     * - NavigateBack: 이전 화면으로 돌아가기
-     * - NavigateToRoot: 루트 화면으로 이동
-     * - NavigateToWithArgs: 인자와 함께 새로운 화면으로 이동
-     */
-    fun navigate(command: NavigationCommand) {
-        viewModelScope.launch {
-            when (command) {
-                is NavigationCommand.NavigateTo -> {
-                    _navigationState.update { currentState ->
-                        currentState.copy(
-                            previousScreens = currentState.previousScreens + currentState.currentScreen,
-                            currentScreen = command.screen,
-                            isNavigating = true
-                        )
-                    }
-                    _navigationCommands.send(command)
-                }
-
-                is NavigationCommand.NavigateToAndClearStack -> {
-                    _navigationState.update { currentState ->
-                        currentState.copy(
-                            previousScreens = emptyList(),
-                            currentScreen = command.screen,
-                            isNavigating = true
-                        )
-                    }
-                    _navigationCommands.send(command)
-                }
-
-                is NavigationCommand.NavigateBack -> {
-                    _navigationState.update { currentState ->
-                        if (currentState.previousScreens.isNotEmpty()) {
-                            currentState.copy(
-                                currentScreen = currentState.previousScreens.last(),
-                                previousScreens = currentState.previousScreens.dropLast(1),
-                                isNavigating = true
-                            )
-                        } else {
-                            currentState
-                        }
-                    }
-                    _navigationCommands.send(command)
-                }
-
-                is NavigationCommand.NavigateToRoot -> {
-                    _navigationState.update { currentState ->
-                        currentState.copy(
-                            previousScreens = emptyList(),
-                            currentScreen = command.screen,
-                            isNavigating = true
-                        )
-                    }
-                    _navigationCommands.send(command)
-                }
-
-                is NavigationCommand.NavigateToWithArgs<*> -> {
-                    _navigationState.update { currentState ->
-                        currentState.copy(
-                            previousScreens = currentState.previousScreens + currentState.currentScreen,
-                            currentScreen = command.screen,
-                            isNavigating = true
-                        )
-                    }
-                    _navigationCommands.send(command)
-                }
-            }
-        }
-    }
 
     // === 인증 관련 화면 이동 함수들 ===
-    fun navigateToSignIn() = navigate(NavigationCommand.NavigateTo(Screens.Auth.SignIn))
-    fun navigateToSignUp() = navigate(NavigationCommand.NavigateTo(Screens.Auth.SignUp))
-    fun navigateToOnboarding() = navigate(NavigationCommand.NavigateTo(Screens.Auth.OnBoarding))
-    fun navigateToPlatformSetup() = navigate(NavigationCommand.NavigateTo(Screens.Auth.PlatformSetup.Root))
+    fun navigateToSignIn() = NavigationCommand.NavigateTo(Screens.Auth.SignIn)
+    fun navigateToSignUp() = NavigationCommand.NavigateTo(Screens.Auth.SignUp)
+    fun navigateToOnboarding() = NavigationCommand.NavigateTo(Screens.Auth.OnBoarding)
+    fun navigateToPlatformSetup() = NavigationCommand.NavigateTo(Screens.Auth.PlatformSetup.Selection)
 
     // === 메인 화면 이동 함수들 ===
-    fun navigateToHome() = navigate(NavigationCommand.NavigateToAndClearStack(Screens.Home.Root))
-    fun navigateToSearch() = navigate(NavigationCommand.NavigateTo(Screens.Search.Root))
-    fun navigateToLibrary() = navigate(NavigationCommand.NavigateTo(Screens.Library.Root))
-    fun navigateToSettings() = navigate(NavigationCommand.NavigateTo(Screens.Settings.Root))
+    fun navigateToHome() = NavigationCommand.NavigateTo(Screens.Main.Home.Root)
+    fun navigateToSearch() = NavigationCommand.NavigateTo(Screens.Main.Search.Root)
+    fun navigateToLibrary() = NavigationCommand.NavigateTo(Screens.Main.Library.Root)
+    fun navigateToSettings() = NavigationCommand.NavigateTo(Screens.Main.Settings.Root)
 
     // === 라이브러리 관련 화면 이동 ===
-    /**
-     * 플레이리스트 상세 화면으로 이동
-     * @param playlistId 표시할 플레이리스트의 고유 ID
-     */
-    fun navigateToPlaylistDetail(playlistId: String) = navigate(
+    fun navigateToPlaylistDetail(playlistId: String) =
         NavigationCommand.NavigateToWithArgs(
-            Screens.Library.Details.PlaylistDetail(playlistId),
+            Screens.Main.Library.Details.PlaylistDetail(playlistId),
             playlistId
         )
-    )
 
     // === 검색 관련 화면 이동 ===
-    /**
-     * 검색 결과 화면으로 이동
-     * @param query 검색어
-     * @param category 검색 카테고리 (tracks, artists, albums, playlists)
-     */
-    fun navigateToSearchResults(query: String, category: String) {
+    fun navigateToSearchResults(query: String, category: String): NavigationCommand? {
         val screen = when (category) {
-            "tracks" -> Screens.Search.Results.Category.Tracks(query)
-            "artists" -> Screens.Search.Results.Category.Artists(query)
-            "albums" -> Screens.Search.Results.Category.Albums(query)
-            "playlists" -> Screens.Search.Results.Category.Playlists(query)
+            "tracks" -> Screens.Main.Search.Results.Category.Tracks(query)
+            "artists" -> Screens.Main.Search.Results.Category.Artists(query)
+            "albums" -> Screens.Main.Search.Results.Category.Albums(query)
+            "playlists" -> Screens.Main.Search.Results.Category.Playlists(query)
             else -> null
         }
-        screen?.let { navigate(NavigationCommand.NavigateToWithArgs(it, query)) }
+        return screen?.let { NavigationCommand.NavigateToWithArgs(it, query) }
     }
 
     // === 플랫폼별 화면 이동 ===
-    /**
-     * 특정 음악 플랫폼의 콘텐츠 화면으로 이동
-     * @param platform 플랫폼 이름 (spotify, youtube, apple-music)
-     */
-    fun navigateToPlatformContent(platform: String) {
+    fun navigateToPlatformContent(platform: String): NavigationCommand? {
         val screen = when (platform) {
-            "spotify" -> Screens.Home.Platform.Spotify
-            "youtube" -> Screens.Home.Platform.Youtube
-            "apple-music" -> Screens.Home.Platform.AppleMusic
+            "spotify" -> Screens.Main.Home.Platform.Spotify
+            "youtube" -> Screens.Main.Home.Platform.Youtube
+            "apple-music" -> Screens.Main.Home.Platform.AppleMusic
             else -> null
         }
-        screen?.let { navigate(NavigationCommand.NavigateTo(it)) }
+        return screen?.let { NavigationCommand.NavigateTo(it) }
     }
 
-    // 이전 화면으로 돌아가기
-    fun navigateBack() = navigate(NavigationCommand.NavigateBack)
+    // === 설정 관련 화면 이동 ===
+    fun navigateToAccountSettings() = NavigationCommand.NavigateTo(Screens.Main.Settings.Account.Root)
+    fun navigateToSecuritySettings() = NavigationCommand.NavigateTo(Screens.Main.Settings.Account.Security)
+    fun navigateToNotificationSettings() = NavigationCommand.NavigateTo(Screens.Main.Settings.Account.Notifications)
+    fun navigateToLinkedPlatforms() = NavigationCommand.NavigateTo(Screens.Main.Settings.Account.LinkedPlatforms)
 
-    /**
-     * 화면 이동이 완료되었음을 표시
-     * 애니메이션이나 전환 효과가 끝난 후 호출됨
-     */
+    fun navigateBack() = NavigationCommand.NavigateBack
+
     fun onNavigationComplete() {
         _navigationState.update { it.copy(isNavigating = false) }
+    }
+
+    fun sendNavigationCommand(command: NavigationCommand) {
+        viewModelScope.launch {
+            _navigationCommands.send(command)
+        }
     }
 }

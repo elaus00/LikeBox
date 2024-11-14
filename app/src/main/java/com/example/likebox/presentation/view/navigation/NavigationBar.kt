@@ -32,12 +32,12 @@ import com.example.likebox.presentation.viewmodel.NavigationViewModel
  *
  * @param screen 연결된 화면 정보
  * @param icon 표시될 아이콘
- * @param onClick 해당 항목 클릭 시 실행될 함수
+ * @param navigationCommand 해당 항목 클릭 시 생성될 네비게이션 커맨드
  */
 data class NavigationItem(
     val screen: Screens,
     val icon: ImageVector,
-    val onClick: NavigationViewModel.() -> Unit
+    val navigationCommand: NavigationCommand
 )
 
 /**
@@ -56,24 +56,24 @@ fun AppNavigationBar(
     val navigationItems = remember {
         listOf(
             NavigationItem(
-                screen = Screens.Home.Root,
+                screen = Screens.Main.Home.Root,
                 icon = Icons.Default.Home,
-                onClick = NavigationViewModel::navigateToHome
+                navigationCommand = NavigationCommand.NavigateTo(Screens.Main.Home.Root)
             ),
             NavigationItem(
-                screen = Screens.Search.Root,
+                screen = Screens.Main.Search.Root,
                 icon = Icons.Default.Search,
-                onClick = NavigationViewModel::navigateToSearch
+                navigationCommand = NavigationCommand.NavigateTo(Screens.Main.Search.Root)
             ),
             NavigationItem(
-                screen = Screens.Library.Root,
+                screen = Screens.Main.Library.Root,
                 icon = Icons.Default.LibraryMusic,
-                onClick = NavigationViewModel::navigateToLibrary
+                navigationCommand = NavigationCommand.NavigateTo(Screens.Main.Library.Root)
             ),
             NavigationItem(
-                screen = Screens.Settings.Root,
+                screen = Screens.Main.Settings.Root,
                 icon = Icons.Default.Settings,
-                onClick = NavigationViewModel::navigateToSettings
+                navigationCommand = NavigationCommand.NavigateTo(Screens.Main.Settings.Root)
             )
         )
     }
@@ -102,7 +102,7 @@ fun AppNavigationBar(
                     }
                 },
                 selected = isSelected,
-                onClick = { item.onClick(viewModel) },
+                onClick = { viewModel.sendNavigationCommand(item.navigationCommand) },
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = Color.Transparent
                 )

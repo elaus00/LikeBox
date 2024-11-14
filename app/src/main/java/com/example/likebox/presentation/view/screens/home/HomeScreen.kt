@@ -6,42 +6,81 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.likebox.R
+import com.example.likebox.presentation.view.navigation.AppNavigationBar
+import com.example.likebox.presentation.view.theme.PretendardFontFamily
+import com.example.likebox.presentation.view.theme.SofiaSans
+import com.example.likebox.presentation.view.theme.TopBar
 
 @Composable
 fun HomeScreen() {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        TopBar()
-        SyncStatusSection()
-        RecentlySyncedSongs()
-        BottomNavigationBar()
+        Scaffold(
+            bottomBar = {
+                Surface(
+                    shadowElevation = 4.dp,
+                    tonalElevation = 4.dp,
+                    color = Color.Transparent
+                ) {
+                    AppNavigationBar()
+                }
+            },
+            modifier = Modifier.systemBarsPadding(),
+            containerColor = Color.White
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(25.dp)
+                ) {
+                    HomeTopBar()
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SyncStatusSection()
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        RecentlySyncedSongs()
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun TopBar() {
+fun HomeTopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 25.dp, vertical = 16.dp),
+            .padding(horizontal = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -55,165 +94,199 @@ private fun TopBar() {
                 Text(
                     text = "L",
                     color = Color.White,
-                    fontSize = 23.sp,
+                    fontSize = 20.sp,
+                    fontFamily = SofiaSans,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = "LIKEBOX",
-                fontSize = 23.sp,
+                fontSize = 20.sp,
+                fontFamily = SofiaSans,
                 fontWeight = FontWeight.ExtraBold
             )
         }
-        // To-do : 아이콘 수정해야함. 지금은 임포트 문제로 잠깐 임시처리
         Icon(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            tint = Color(0xCC1D1B20)
+            painter = painterResource(id = R.drawable.notification_icon),
+            contentDescription = "Notifications",
+            modifier = Modifier.size(24.dp),
+            tint = Color.Black.copy(alpha = 0.8f)
         )
     }
 }
 
 @Composable
-private fun SyncStatusSection() {
+fun SyncStatusSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 32.dp)
+            .padding(vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Sync Status",
-                fontSize = 16.5.sp,
+                fontSize = 16.sp,
+                fontFamily = PretendardFontFamily,
                 fontWeight = FontWeight.Medium
             )
             Text(
                 text = "Synced 15 minutes ago",
                 fontSize = 10.sp,
+                fontFamily = PretendardFontFamily,
                 color = Color.Black.copy(alpha = 0.5f)
             )
         }
-
-        ServiceSyncItem(
+        Spacer(modifier = Modifier.height(12.dp))
+        MusicServiceItem(
             serviceName = "Spotify",
-            backgroundColor = Color(0x4CF7F7F7),
-            logoBackground = Color(0xFF1ED760)
+            logo = R.drawable.spotif_logotype,
+            syncStatus = SyncStatus.SYNCED
         )
         Spacer(modifier = Modifier.height(6.dp))
-        ServiceSyncItem(
-            serviceName = "Apple Music",
-            backgroundColor = Color(0x4CF7F7F7),
-            logoBackground = Color(0xFF0096FF)
+        MusicServiceItem(
+            serviceName = "genie",
+            logo = R.drawable.genie_logo,
+            syncStatus = SyncStatus.SYNCING
         )
-        // Add other service items similarly
+        Spacer(modifier = Modifier.height(6.dp))
+        MusicServiceItem(
+            serviceName = "Apple Music",
+            logo = R.drawable.apple_music_logo,
+            syncStatus = SyncStatus.ERROR
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        MusicServiceItem(
+            serviceName = "TIDAL",
+            logo = R.drawable.tidal_logotype,
+            syncStatus = SyncStatus.WAITING
+        )
     }
 }
 
+enum class SyncStatus {
+    SYNCED, SYNCING, ERROR, WAITING
+}
+
 @Composable
-private fun ServiceSyncItem(
+fun MusicServiceItem(
     serviceName: String,
-    backgroundColor: Color,
-    logoBackground: Color
+    logo: Int,
+    syncStatus: SyncStatus
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(backgroundColor, RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .background(color = Color(0x4DF8F8F8))
             .border(
                 width = 0.5.dp,
-                color = Color.Black.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(18.dp)
+                color = Color(0x33767676),
+                shape = RoundedCornerShape(size = 18.dp)
             )
-            .padding(horizontal = 15.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .width(70.dp)
-                .height(21.dp)
-                .background(logoBackground)
+        Image(
+            painter = painterResource(id = logo),
+            contentDescription = serviceName,
+            modifier = Modifier.width(70.dp)
         )
-        Icon(
-            painter = painterResource(id = R.drawable.sync),
-            contentDescription = null,
-            tint = logoBackground,
-            modifier = Modifier.size(20.dp)
-        )
+
+        when (syncStatus) {
+            SyncStatus.SYNCED -> Icon(
+                painter = painterResource(id = R.drawable.complete),
+                contentDescription = "Synced",
+                modifier = Modifier.size(20.dp)
+            )
+            SyncStatus.SYNCING -> CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp
+            )
+            SyncStatus.ERROR -> Icon(
+                painter = painterResource(id = R.drawable.fail),
+                contentDescription = "Error",
+                modifier = Modifier.size(20.dp)
+            )
+            SyncStatus.WAITING -> Icon(
+                painter = painterResource(id = R.drawable.pause),
+                contentDescription = "Waiting",
+                modifier = Modifier.size(20.dp)
+            )
+        }
     }
 }
 
 @Composable
-private fun RecentlySyncedSongs() {
+fun RecentlySyncedSongs() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 25.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Recently Synced Songs",
-                fontSize = 16.5.sp,
+                fontSize = 16.sp,
+                fontFamily = PretendardFontFamily,
                 fontWeight = FontWeight.Medium
             )
             Text(
                 text = "view more",
                 fontSize = 10.sp,
+                fontFamily = PretendardFontFamily,
                 color = Color.Black.copy(alpha = 0.5f)
             )
         }
-
         Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            SongCard(
-                songTitle = "WHY, WHY, WHY",
-                artist = "SUMIN, Slom",
-                cover = R.drawable.album_cover_sample_1
-            )
-            SongCard(
-                songTitle = "ENGLAND",
-                artist = "YANG HONG WON",
-                cover = R.drawable.album_cover_sample_2
-            )
+            repeat(5) { // 테스트를 위해 여러 카드 추가
+                SongCard(
+                    songTitle = if (it % 2 == 0) "WHY, WHY, WHY" else "ENGLAND",
+                    artist = if (it % 2 == 0) "SUMIN, Slom" else "YANG HONG WON",
+                    coverArt = if (it % 2 == 0) R.drawable.album_cover_sample_1 else R.drawable.album_cover_sample_2
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun SongCard(
+fun SongCard(
     songTitle: String,
     artist: String,
-    cover: Int
+    coverArt: Int,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
-            .width(191.dp)
-            .height(265.dp)
+        modifier = modifier
+            .aspectRatio(160f / 265f) // 원래 비율 유지
             .clip(RoundedCornerShape(23.dp))
             .border(
-                width = 0.77.dp,
-                color = Color.Black,
+                width = 0.5.dp,
+                color = Color.Black.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(23.dp)
             )
+            .shadow(elevation = 4.dp, spotColor = Color(0x59000000), ambientColor = Color(0x59000000))
+
     ) {
         Image(
-            painter = painterResource(id = cover),
+            painter = painterResource(id = coverArt),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -242,60 +315,40 @@ private fun SongCard(
     }
 }
 
+@Preview(showBackground = true, device = "spec:width=411dp,height=891dp")
 @Composable
-private fun BottomNavigationBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        BottomNavItem(
-            icon = R.drawable.house,
-            isSelected = true
-        )
-        BottomNavItem(
-            icon = R.drawable.search_icon,
-            isSelected = false
-        )
-        BottomNavItem(
-            icon = R.drawable.inbox,
-            isSelected = false
-        )
-        BottomNavItem(
-            icon = R.drawable.settings,
-            isSelected = false
-        )
-    }
-}
-
-@Composable
-private fun BottomNavItem(
-    icon: Int,
-    isSelected: Boolean
-) {
+fun HomeScreenPreview() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            tint = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.4f),
-            modifier = Modifier.size(24.dp)
-        )
-        if (isSelected) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Box(
-                modifier = Modifier
-                    .size(7.dp)
-                    .background(Color(0xFFF93C58), CircleShape)
-            )
-        }
+        HomeScreen()
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun PreviewHomeScreen(){
-    HomeScreen()
+fun SongCardPreview() {
+    SongCard(
+        songTitle = "WHY, WHY, WHY",
+        artist = "SUMIN, Slom",
+        coverArt = R.drawable.album_cover_sample_1
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MusicServiceItemPreview() {
+    MusicServiceItem(
+        serviceName = "Spotify",
+        logo = R.drawable.spotif_logotype,
+        syncStatus = SyncStatus.SYNCED
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SyncStatusSectionPreview() {
+    SyncStatusSection()
 }
