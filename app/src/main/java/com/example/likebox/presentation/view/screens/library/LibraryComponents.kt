@@ -1,23 +1,20 @@
-// LibraryComponents.kt
 package com.example.likebox.presentation.view.screens.library
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,392 +28,283 @@ import com.example.likebox.R
 import com.example.likebox.domain.model.*
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 
-object LibraryComponents {
-    @Composable
-    fun ContentListItem(
-        content: MusicContent,
-        onItemClick: (String) -> Unit,
-        showChevron: Boolean = true
+@Composable
+fun ContentTypeSelector(
+    selectedType: ContentType,
+    onTypeSelected: (ContentType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 1.dp)
-                .padding(horizontal = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    model = content.thumbnailUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(52.dp)
-                        .clip(RoundedCornerShape(7.5.dp))
-                )
-
-                Column(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .weight(1f)
-                ) {
+        ContentType.entries.forEach { type ->
+            FilterChip(
+                selected = selectedType == type,
+                onClick = { onTypeSelected(type) },
+                label = {
                     Text(
-                        text = content.name,
-                        fontSize = 16.sp,
-                        fontFamily = PretendardFontFamily,
-                        fontWeight = FontWeight.Medium
+                        text = type.name.lowercase().capitalize(),
+                        fontFamily = PretendardFontFamily
                     )
-
-                    ContentMetadata(content = content)
-                }
-            }
-
-            if (showChevron) {
-                IconButton(onClick = { onItemClick(content.id) }) {
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = "Navigate",
-                        modifier = Modifier.size(15.dp),
-                        tint = Color.Black.copy(alpha = 0.8f)
-                    )
-                }
-            }
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Color(0xFFF93C58),
+                    selectedLabelColor = Color.White,
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = selectedType == type,
+                    borderColor = Color(0xFFE8E8E8)  // 비활성화 상태의 border 색상
+                )
+            )
         }
     }
+}
 
-    @Composable
-    private fun MetadataDot() {
-        Box(
-            modifier = Modifier
-                .size(2.27.dp)
-                .background(
-                    Color.Black.copy(alpha = 0.8f),
-                    CircleShape
-                )
+@Composable
+fun SortButton(
+    selectedSort: String,
+    onSortClick: () -> Unit
+) {
+    TextButton(
+        onClick = onSortClick,
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(
+            text = "Sort by: $selectedSort",
+            color = Color(0xFFF93C58),
+            fontSize = 14.sp,
+            fontFamily = PretendardFontFamily,
+            fontWeight = FontWeight.Medium
+        )
+        Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = null,
+            tint = Color(0xFFF93C58)
         )
     }
+}
 
-    private fun getContentTypeLabel(content: MusicContent): String = when(content) {
-        is Track -> "Song"
-        is Album -> "Album"
-        is Playlist -> "Playlist"
-        else -> ""
-    }
-
-    private fun getContentCreator(content: MusicContent): String = when(content) {
-        is Track -> content.artists.firstOrNull() ?: ""
-        is Album -> content.artists.firstOrNull() ?: ""
-        is Playlist -> content.owner
-        else -> ""
-    }
-
-    @Composable
-    fun PlatformSection(platform: MusicPlatform) {
-        Row(
+@Composable
+fun PlatformIcon(
+    platform: MusicPlatform,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = CircleShape,
+        color = when(platform) {
+            MusicPlatform.SPOTIFY -> Color(0xFF1DB954)
+            MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)
+        },
+        modifier = modifier.size(14.dp)
+    ) {
+        Icon(
+            painter = painterResource(
+                id = when(platform) {
+                    MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
+                    MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
+                }
+            ),
+            contentDescription = null,
+            tint = Color.White,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .padding(horizontal = 1.dp)
-                .border(
-                    width = 0.7.dp,
-                    color = Color.Black.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(4.dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .background(
-                        color = getPlatformColor(platform),
-                        shape = RoundedCornerShape(4.dp)
-                    )
+                .padding(2.dp)
+                .size(10.dp)
+        )
+    }
+}
+
+@Composable
+fun ContentItemMenu(
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onMenuClick: () -> Unit
+) {
+    Box {
+        IconButton(onClick = onMenuClick) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More options",
+                tint = Color.Gray,
+                modifier = Modifier.size(16.dp)
             )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = platform.name,
-                fontSize = 13.sp,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium,
-                color = Color.Black.copy(alpha = 0.7f)
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = onDismiss
+        ) {
+            DropdownMenuItem(
+                text = { Text("Add to playlist") },
+                onClick = onDismiss
+            )
+            DropdownMenuItem(
+                text = { Text("Share") },
+                onClick = onDismiss
             )
         }
     }
+}
 
-    private fun getPlatformColor(platform: MusicPlatform): Color = when (platform) {
-        MusicPlatform.SPOTIFY -> Color(0xFF1ED760)
-        MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)
-        else -> Color.Gray
-    }
+@Composable
+fun MusicContentListItem(
+    content: MusicContent,
+    onItemClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showMenu by remember { mutableStateOf(false) }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun DetailTopBar(
-        title: String,
-        onNavigateBack: () -> Unit,
-        showShare: Boolean = true,
-        onShare: (() -> Unit)? = null,
-        showMoreOptions: Boolean = true,
-        additionalActions: @Composable (RowScope.() -> Unit) = {}
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        onClick = { onItemClick(content.id) }
     ) {
-        var showMenu by remember { mutableStateOf(false) }
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = content.thumbnailUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
 
-        TopAppBar(
-            title = {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 12.dp)
+            ) {
                 Text(
-                    text = title,
-                    fontSize = 20.sp,
+                    text = content.name,
+                    fontSize = 15.sp,
                     fontFamily = PretendardFontFamily,
                     fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
                     maxLines = 1
                 )
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = onNavigateBack,
-                    modifier = Modifier.padding(start = 4.dp)
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "Back"
-                    )
+                    PlatformIcon(content.platform)
+                    ContentSubtitle(content)
                 }
-            },
-            actions = {
-                // Custom actions passed from parent
-                additionalActions()
+            }
 
-                // Share action if enabled
-                if (showShare) {
-                    IconButton(onClick = { onShare?.invoke() }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "Share"
-                        )
-                    }
-                }
-
-                // More options menu if enabled
-                if (showMoreOptions) {
-                    IconButton(onClick = { showMenu = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More options"
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Add to playlist") },
-                            onClick = {
-                                // Handle add to playlist
-                                showMenu = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Download") },
-                            onClick = {
-                                // Handle download
-                                showMenu = false
-                            }
-                        )
-                    }
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface
+            ContentItemMenu(
+                expanded = showMenu,
+                onDismiss = { showMenu = false },
+                onMenuClick = { showMenu = true }
             )
+        }
+    }
+}
+
+@Composable
+private fun ContentSubtitle(content: MusicContent) {
+    Text(
+        text = with(content) {
+            when {
+                this is Track -> artists.firstOrNull() ?: ""
+                this is Album -> "${artists.firstOrNull()} • $trackCount tracks"
+                this is Playlist -> "$owner • $trackCount tracks"
+                else -> ""
+            }
+        },
+        fontSize = 12.sp,
+        color = Color.Gray,
+        maxLines = 1
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterBottomSheetContent(
+    selectedPlatforms: Set<MusicPlatform>,
+    onPlatformSelectionChanged: (Set<MusicPlatform>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(24.dp)
+    ) {
+        Text(
+            "Filter",
+            fontSize = 20.sp,
+            fontFamily = PretendardFontFamily,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        FilterSection(
+            title = "Platforms",
+            content = {
+                PlatformFilterChips(
+                    selectedPlatforms = selectedPlatforms,
+                    onPlatformSelectionChanged = onPlatformSelectionChanged
+                )
+            }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        FilterSection(
+            title = "Sort by",
+            content = {
+                SortOptions()
+            }
         )
     }
+}
 
-    @Composable
-    fun ContentListItem(
-        content: MusicContent,
-        onItemClick: (String) -> Unit,
-        showChevron: Boolean = true,
-        modifier: Modifier = Modifier
+@Composable
+private fun FilterSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Text(
+        title,
+        fontSize = 16.sp,
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Medium
+    )
+    Spacer(modifier = Modifier.height(12.dp))
+    content()
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PlatformFilterChips(
+    selectedPlatforms: Set<MusicPlatform>,
+    onPlatformSelectionChanged: (Set<MusicPlatform>) -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(12.dp),
-            onClick = { onItemClick(content.id) }
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Thumbnail with platform indicator
-                Box {
-                    AsyncImage(
-                        model = content.thumbnailUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                    // Platform indicator
-                    Surface(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .align(Alignment.BottomEnd)
-                            .offset(x = 4.dp, y = 4.dp),
-                        shape = CircleShape,
-                        color = getPlatformColor(content.platform)
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                id = when(content.platform) {
-                                    MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
-                                    MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
-                                }
-                            ),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(8.dp)
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = content.name,
-                        fontSize = 16.sp,
-                        fontFamily = PretendardFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    ContentMetadata(content = content)
-                }
-
-                if (showChevron) {
-                    IconButton(
-                        onClick = { onItemClick(content.id) },
-                        modifier = Modifier.offset(x = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ChevronRight,
-                            contentDescription = "Navigate",
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun ContentMetadata(content: MusicContent) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ContentTypeChip(content)
-            MetadataDot()
-            Text(
-                text = getContentCreator(content),
-                fontSize = 12.sp,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-
-    @Composable
-    private fun ContentTypeChip(content: MusicContent) {
-        Surface(
-            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            Text(
-                text = getContentTypeLabel(content),
-                fontSize = 10.sp,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-            )
-        }
-    }
-
-    @Composable
-    fun PlatformTabRow(
-        selectedPlatform: MusicPlatform,
-        onPlatformSelected: (MusicPlatform) -> Unit,
-        modifier: Modifier = Modifier
-    ) {
-        Surface(
-            modifier = modifier,
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 1.dp
-        ) {
-            TabRow(
-                selectedTabIndex = MusicPlatform.entries.indexOf(selectedPlatform),
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary,
-                indicator = { tabPositions ->
-                    SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(
-                            tabPositions[MusicPlatform.entries.indexOf(selectedPlatform)]
-                        ),
-                        height = 2.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            ) {
-                MusicPlatform.entries.forEach { platform ->
-                    PlatformTab(
-                        platform = platform,
-                        selected = platform == selectedPlatform,
-                        onClick = { onPlatformSelected(platform) }
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun PlatformTab(
-        platform: MusicPlatform,
-        selected: Boolean,
-        onClick: () -> Unit
-    ) {
-        Tab(
-            selected = selected,
-            onClick = onClick,
-            text = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Surface(
-                        shape = CircleShape,
-                        color = if (selected) {
-                            getPlatformColor(platform)
+        MusicPlatform.entries.forEach { platform ->
+            FilterChip(
+                selected = platform in selectedPlatforms,
+                onClick = {
+                    onPlatformSelectionChanged(
+                        if (platform in selectedPlatforms) {
+                            selectedPlatforms - platform
                         } else {
-                            getPlatformColor(platform).copy(alpha = 0.6f)
+                            selectedPlatforms + platform
                         }
+                    )
+                },
+                label = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(
@@ -426,20 +314,105 @@ object LibraryComponents {
                                 }
                             ),
                             contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(16.dp)
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(platform.name)
+                    }
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Color(0xFFF93C58),
+                    selectedLabelColor = Color.White
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun SortOptions() {
+    Column {
+        listOf("Latest", "Name", "Creator", "Date Added").forEach { option ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { /* Handle sort selection */ }
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = option,
+                    fontSize = 14.sp,
+                    fontFamily = PretendardFontFamily
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SortDropdownMenu(
+    expanded: Boolean,
+    selectedSort: String,
+    onSortSelected: (String) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismiss,
+        modifier = modifier
+    ) {
+        listOf("Latest", "Name", "Creator", "Date Added").forEach { option ->
+            DropdownMenuItem(
+                text = { Text(option) },
+                onClick = { onSortSelected(option) },
+                trailingIcon = if (selectedSort == option) {
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = Color(0xFFF93C58)
                         )
                     }
-                    Text(
-                        text = platform.name,
-                        fontFamily = PretendardFontFamily,
-                        fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal
-                    )
-                }
-            }
+                } else null
+            )
+        }
+    }
+}
+
+@Composable
+fun WaveTitle(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val offset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 12f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        Text(
+            text = "My Library",
+            fontSize = 26.sp,
+            fontFamily = PretendardFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.offset(y = offset.dp)
+        )
+        Icon(
+            imageVector = Icons.Default.MusicNote,
+            contentDescription = null,
+            tint = Color(0xFFF93C58),
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .offset(y = -offset.dp)
         )
     }
-
 }

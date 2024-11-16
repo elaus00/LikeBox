@@ -1,6 +1,5 @@
 package com.example.likebox.presentation.view.navigation
 
-import LibraryScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,12 +26,12 @@ import com.example.likebox.presentation.view.screens.search.SearchScreen
 import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.screens.library.AlbumDetailScreen
 import com.example.likebox.presentation.view.screens.library.ArtistDetailScreen
+import com.example.likebox.presentation.view.screens.library.LibraryScreen
 import com.example.likebox.presentation.view.screens.library.PlaylistDetailScreen
 import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 
 // ViewModel과 Navigation 관련
 import com.example.likebox.presentation.viewmodel.NavigationViewModel
-
 
 
 @Composable
