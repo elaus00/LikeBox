@@ -1,4 +1,4 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
 data class Album(
     override val id: String,

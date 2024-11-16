@@ -1,6 +1,6 @@
 package com.example.likebox.domain.usecase.search
 
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.repository.AuthRepository
 import com.example.likebox.domain.repository.SearchRepository
 import kotlinx.coroutines.CoroutineScope

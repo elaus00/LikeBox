@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.likebox.domain.model.Playlist
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.example.likebox.presentation.viewmodel.detail.PlaylistDetailViewModel
 

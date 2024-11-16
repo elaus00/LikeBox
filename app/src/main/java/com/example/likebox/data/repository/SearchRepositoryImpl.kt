@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import com.google.firebase.auth.FirebaseAuth
 import com.example.likebox.data.firebase.SearchFirebaseService
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(

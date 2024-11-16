@@ -2,8 +2,8 @@ package com.example.likebox.presentation.viewmodel.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.presentation.state.library.DetailUiState
 import com.example.likebox.presentation.state.library.TrackDetailState

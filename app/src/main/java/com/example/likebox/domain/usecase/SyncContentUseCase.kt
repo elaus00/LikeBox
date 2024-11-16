@@ -1,9 +1,8 @@
 package com.example.likebox.domain.usecase
 
-import com.example.likebox.domain.model.ContentType
-import com.example.likebox.domain.model.MusicPlatform
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
-import com.example.likebox.domain.repository.PlatformRepository
 import javax.inject.Inject
 
 class SyncContentUseCase @Inject constructor(

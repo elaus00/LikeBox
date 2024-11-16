@@ -1,8 +1,7 @@
 package com.example.likebox.domain.repository
 
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.PlatformAuth
-import java.time.LocalDateTime
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformAuth
 
 /**
  * 음악 플랫폼 연결 및 인증 관리를 담당하는 Repository interface

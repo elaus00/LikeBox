@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.likebox.R
-import com.example.likebox.domain.model.*
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import java.time.Instant
 

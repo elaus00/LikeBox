@@ -203,7 +203,7 @@ fun NavigationHost(
 
             // Settings Flow
             composable(Screens.Main.Settings.Root.route) {
-                SettingsScreen()
+                SettingsScreen(navController)
             }
             composable(Screens.Main.Settings.Profile.route) {
                 Text("Profile Settings")

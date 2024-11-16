@@ -1,6 +1,6 @@
 package com.example.likebox.data.firebase
 
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 
 interface SearchFirebaseService {
     suspend fun searchContent(query: String): List<MusicContent>

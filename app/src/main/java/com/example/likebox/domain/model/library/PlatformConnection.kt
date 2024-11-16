@@ -1,4 +1,4 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
 data class PlatformAuth(
     val platformId: String,

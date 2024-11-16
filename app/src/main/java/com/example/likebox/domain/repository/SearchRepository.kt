@@ -1,7 +1,6 @@
 package com.example.likebox.domain.repository
 
-import android.app.appsearch.SearchResult
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {

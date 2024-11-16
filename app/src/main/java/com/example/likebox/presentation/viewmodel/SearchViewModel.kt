@@ -7,7 +7,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.example.likebox.domain.model.MusicPlatform
+import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.usecase.search.SearchUseCase
 import com.example.likebox.presentation.state.SearchUiState
 

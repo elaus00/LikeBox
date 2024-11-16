@@ -1,4 +1,4 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
 enum class ContentType {
     TRACK,

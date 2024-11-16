@@ -1,6 +1,6 @@
 package com.example.likebox.presentation.state
 
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 
 sealed class SearchUiState {
     object Initial : SearchUiState()

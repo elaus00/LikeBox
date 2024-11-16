@@ -1,4 +1,4 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
 /**
  * 아티스트 정보를 나타내는 도메인 모델

@@ -1,12 +1,12 @@
 package com.example.likebox.domain.repository
 
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.Artist
-import com.example.likebox.domain.model.ContentType
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.Playlist
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.Artist
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 
 /**
  * 음악 콘텐츠 관리를 담당하는 Repository interface

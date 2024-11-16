@@ -1,8 +1,8 @@
 package com.example.likebox.data.repository
 
 import com.example.likebox.data.firebase.FirebaseService
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.PlatformAuth
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformAuth
 import com.example.likebox.domain.repository.PlatformRepository
 import javax.inject.Inject
 

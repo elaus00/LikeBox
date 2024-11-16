@@ -26,10 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.Track
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.Playlist
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.Track
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.Playlist
 
 @Composable
 fun SearchResultItem(content: MusicContent) {

@@ -1,6 +1,7 @@
 package com.example.likebox.presentation.state.library
 
-import com.example.likebox.domain.model.*
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.Track
 
 /**
  * 앨범 상세 화면의 UI 상태
