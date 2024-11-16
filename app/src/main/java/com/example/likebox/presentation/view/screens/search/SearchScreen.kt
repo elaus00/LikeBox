@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
@@ -29,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -48,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.likebox.R
 import com.example.likebox.presentation.viewmodel.SearchViewModel
-import com.example.likebox.presentation.state.SearchUIState
+import com.example.likebox.presentation.state.SearchUiState
 import com.example.likebox.domain.model.MusicPlatform
 import com.example.likebox.domain.model.Track
 import com.example.likebox.domain.model.Album
@@ -108,8 +106,8 @@ fun SearchScreen(
 
         // Content
         when (val state = searchState) {
-            SearchUIState.Initial,
-            is SearchUIState.RecentSearches -> RecentSearchesSection(
+            SearchUiState.Initial,
+            is SearchUiState.RecentSearches -> RecentSearchesSection(
                 searches = listOf(
                     "BTS Dynamite",
                     "Taylor Swift Shake it off",
@@ -122,9 +120,9 @@ fun SearchScreen(
                 onSearchRemoved = viewModel::removeRecentSearch,
                 onClearSearches = viewModel::clearRecentSearches
             )
-            SearchUIState.Loading -> LoadingIndicator()
-            is SearchUIState.Results -> SearchResultsSection(results = state.results)
-            is SearchUIState.Error -> ErrorMessage(message = state.message)
+            SearchUiState.Loading -> LoadingIndicator()
+            is SearchUiState.Results -> SearchResultsSection(results = state.results)
+            is SearchUiState.Error -> ErrorMessage(message = state.message)
             }
         }
     }

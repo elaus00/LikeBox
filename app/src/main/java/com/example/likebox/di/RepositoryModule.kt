@@ -1,9 +1,11 @@
 package com.example.likebox.di
 
 import com.example.likebox.data.repository.AuthRepositoryImpl
+import com.example.likebox.data.repository.MusicRepositoryImpl
 import com.example.likebox.data.repository.PlatformRepositoryImpl
 import com.example.likebox.data.repository.SearchRepositoryImpl
 import com.example.likebox.domain.repository.AuthRepository
+import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.domain.repository.PlatformRepository
 import com.example.likebox.domain.repository.SearchRepository
 import dagger.Binds
@@ -33,4 +35,12 @@ abstract class RepositoryModule {
     abstract fun bindSearchRepository(
         searchRepositoryImpl: SearchRepositoryImpl
     ): SearchRepository
+
+
+    @Binds
+    @Singleton
+    abstract fun bindMusicRepository(
+        musicRepositoryImpl: MusicRepositoryImpl
+    ): MusicRepository
+
 }

@@ -1,5 +1,6 @@
 package com.example.likebox.presentation.view.navigation
 
+import LibraryScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +24,10 @@ import com.example.likebox.presentation.view.screens.auth.platform.PlatformSelec
 import com.example.likebox.presentation.view.screens.auth.platform.PlatformConnectionScreen
 import com.example.likebox.presentation.view.screens.home.HomeScreen
 import com.example.likebox.presentation.view.screens.search.SearchScreen
-import com.example.likebox.presentation.view.screens.library.PlaylistsScreen
 import com.example.likebox.presentation.view.screens.Screens
-import com.example.likebox.presentation.view.screens.library.LibraryScreen
+import com.example.likebox.presentation.view.screens.library.AlbumDetailScreen
+import com.example.likebox.presentation.view.screens.library.ArtistDetailScreen
+import com.example.likebox.presentation.view.screens.library.PlaylistDetailScreen
 import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 
 // ViewModel과 Navigation 관련
@@ -119,11 +121,58 @@ fun NavigationHost(
 
             // Library Flow
             composable(Screens.Main.Library.Root.route) {
-                LibraryScreen()
+                LibraryScreen(
+                    onNavigateToPlaylist = { playlistId ->
+                        navController.navigate(
+                            Screens.Main.Library.Details.PlaylistDetail(playlistId).route
+                        )
+                    },
+                    onNavigateToAlbum = { albumId ->
+                        navController.navigate(
+                            Screens.Main.Library.Details.AlbumDetail(albumId).route
+                        )
+                    },
+                    onNavigateToArtist = { artistId ->
+                        navController.navigate(
+                            Screens.Main.Library.Details.ArtistDetail(artistId).route
+                        )
+                    },
+                    navController = navController
+                )
             }
-            composable(Screens.Main.Library.Playlists.route) {
-                PlaylistsScreen()
+            composable(
+                route = Screens.Main.Library.Details.PlaylistDetail.route,
+                arguments = listOf(
+                    navArgument("playlistId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val playlistId = backStackEntry.arguments?.getString("playlistId")
+                PlaylistDetailScreen(
+                    playlistId = playlistId,
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
+
+            composable(
+                route = Screens.Main.Library.Details.AlbumDetail.route,
+                arguments = listOf(
+                    navArgument("albumId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val albumId = backStackEntry.arguments?.getString("albumId")
+                AlbumDetailScreen(albumId = albumId)
+            }
+
+            composable(
+                route = Screens.Main.Library.Details.ArtistDetail.route,
+                arguments = listOf(
+                    navArgument("artistId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val artistId = backStackEntry.arguments?.getString("artistId")
+                ArtistDetailScreen(artistId = artistId)
+            }
+
             composable(
                 route = Screens.Main.Library.Details.PlaylistDetail.route,
                 arguments = listOf(
@@ -178,3 +227,6 @@ fun NavigationHost(
         }
     }
 }
+
+
+

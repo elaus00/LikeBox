@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.likebox.domain.model.MusicPlatform
 import com.example.likebox.domain.usecase.search.SearchUseCase
-import com.example.likebox.presentation.state.SearchUIState
+import com.example.likebox.presentation.state.SearchUiState
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase
 ) : ViewModel() {
-    private val _searchState = MutableStateFlow<SearchUIState>(SearchUIState.Initial)
+    private val _searchState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)
     val searchState = _searchState.asStateFlow()
 
     private val _selectedPlatforms = MutableStateFlow<Set<MusicPlatform>>(emptySet())
@@ -39,24 +39,24 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             searchUseCase.getRecentSearches()
                 .collect { searches ->
-                    _searchState.value = SearchUIState.RecentSearches(searches)
+                    _searchState.value = SearchUiState.RecentSearches(searches)
                 }
         }
     }
 
     private fun performSearch(query: String) {
         viewModelScope.launch {
-            _searchState.value = SearchUIState.Loading
+            _searchState.value = SearchUiState.Loading
             try {
                 searchUseCase.search(query)
                     .collect { results ->
-                        _searchState.value = SearchUIState.Results(
+                        _searchState.value = SearchUiState.Results(
                             query = query,
                             results = results  // 이미 MusicContent 리스트임
                         )
                     }
             } catch (e: Exception) {
-                _searchState.value = SearchUIState.Error(e.message ?: "Unknown error occurred")
+                _searchState.value = SearchUiState.Error(e.message ?: "Unknown error occurred")
             }
         }
     }
