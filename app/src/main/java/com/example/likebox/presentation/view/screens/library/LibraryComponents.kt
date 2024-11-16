@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,28 +84,6 @@ object LibraryComponents {
                     )
                 }
             }
-        }
-    }
-
-    @Composable
-    private fun ContentMetadata(content: MusicContent) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(9.08.dp)
-        ) {
-            Text(
-                text = getContentTypeLabel(content),
-                fontSize = 10.sp,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium
-            )
-            MetadataDot()
-            Text(
-                text = getContentCreator(content),
-                fontSize = 10.sp,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium
-            )
         }
     }
 
@@ -255,6 +235,210 @@ object LibraryComponents {
                 navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 actionIconContentColor = MaterialTheme.colorScheme.onSurface
             )
+        )
+    }
+
+    @Composable
+    fun ContentListItem(
+        content: MusicContent,
+        onItemClick: (String) -> Unit,
+        showChevron: Boolean = true,
+        modifier: Modifier = Modifier
+    ) {
+        Surface(
+            modifier = modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(12.dp),
+            onClick = { onItemClick(content.id) }
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Thumbnail with platform indicator
+                Box {
+                    AsyncImage(
+                        model = content.thumbnailUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                    // Platform indicator
+                    Surface(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 4.dp, y = 4.dp),
+                        shape = CircleShape,
+                        color = getPlatformColor(content.platform)
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = when(content.platform) {
+                                    MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
+                                    MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
+                                }
+                            ),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(8.dp)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = content.name,
+                        fontSize = 16.sp,
+                        fontFamily = PretendardFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    ContentMetadata(content = content)
+                }
+
+                if (showChevron) {
+                    IconButton(
+                        onClick = { onItemClick(content.id) },
+                        modifier = Modifier.offset(x = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = "Navigate",
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun ContentMetadata(content: MusicContent) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ContentTypeChip(content)
+            MetadataDot()
+            Text(
+                text = getContentCreator(content),
+                fontSize = 12.sp,
+                fontFamily = PretendardFontFamily,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+
+    @Composable
+    private fun ContentTypeChip(content: MusicContent) {
+        Surface(
+            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            shape = RoundedCornerShape(4.dp)
+        ) {
+            Text(
+                text = getContentTypeLabel(content),
+                fontSize = 10.sp,
+                fontFamily = PretendardFontFamily,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+            )
+        }
+    }
+
+    @Composable
+    fun PlatformTabRow(
+        selectedPlatform: MusicPlatform,
+        onPlatformSelected: (MusicPlatform) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        Surface(
+            modifier = modifier,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 1.dp
+        ) {
+            TabRow(
+                selectedTabIndex = MusicPlatform.entries.indexOf(selectedPlatform),
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.primary,
+                indicator = { tabPositions ->
+                    SecondaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(
+                            tabPositions[MusicPlatform.entries.indexOf(selectedPlatform)]
+                        ),
+                        height = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            ) {
+                MusicPlatform.entries.forEach { platform ->
+                    PlatformTab(
+                        platform = platform,
+                        selected = platform == selectedPlatform,
+                        onClick = { onPlatformSelected(platform) }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PlatformTab(
+        platform: MusicPlatform,
+        selected: Boolean,
+        onClick: () -> Unit
+    ) {
+        Tab(
+            selected = selected,
+            onClick = onClick,
+            text = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        color = if (selected) {
+                            getPlatformColor(platform)
+                        } else {
+                            getPlatformColor(platform).copy(alpha = 0.6f)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = when(platform) {
+                                    MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
+                                    MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
+                                }
+                            ),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(16.dp)
+                        )
+                    }
+                    Text(
+                        text = platform.name,
+                        fontFamily = PretendardFontFamily,
+                        fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal
+                    )
+                }
+            }
         )
     }
 
