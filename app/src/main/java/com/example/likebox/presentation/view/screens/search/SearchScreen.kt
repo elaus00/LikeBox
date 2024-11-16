@@ -1,5 +1,5 @@
 package com.example.likebox.presentation.view.screens.search
 
-class SearchScreen {
+class SearchScreen(onNavigateBack: () -> Boolean) {
 
 }
