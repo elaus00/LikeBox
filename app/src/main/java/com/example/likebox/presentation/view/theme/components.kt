@@ -60,26 +60,6 @@ fun TrackItem(
 }
 
 @Composable
-fun TopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 25.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Logo()
-        IconButton(onClick = { /* TODO: Implement settings */ }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Settings",
-                tint = Color(0xCC1D1B20)
-            )
-        }
-    }
-}
-
-@Composable
 private fun Logo() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(

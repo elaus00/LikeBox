@@ -26,7 +26,8 @@ import com.example.likebox.presentation.view.screens.search.SearchScreen
 import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.screens.library.ArtistDetailScreen
 import com.example.likebox.presentation.view.screens.library.LibraryScreen
-import com.example.likebox.presentation.view.screens.library.detail.AlbumDetailScreen
+import com.example.likebox.presentation.view.screens.library.AlbumDetailScreen
+import com.example.likebox.presentation.view.screens.library.TrackDetailScreen
 import com.example.likebox.presentation.view.screens.library.detail.PlaylistDetailScreen
 import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 
@@ -141,6 +142,20 @@ fun NavigationHost(
                     }
                 )
             }
+
+            composable(
+                route = Screens.Main.Library.Details.TrackDetail.route,
+                arguments = listOf(
+                    navArgument("trackId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val trackId = backStackEntry.arguments?.getString("playlistId")
+                TrackDetailScreen(
+                    trackId = trackId!!,
+                    navController = navController
+                )
+            }
+
             composable(
                 route = Screens.Main.Library.Details.PlaylistDetail.route,
                 arguments = listOf(
@@ -163,7 +178,8 @@ fun NavigationHost(
                 val albumId = backStackEntry.arguments?.getString("albumId")
                 AlbumDetailScreen(
                     navController = navController,
-                    albumId = albumId)
+                    albumId = albumId
+                )
             }
 
             composable(
