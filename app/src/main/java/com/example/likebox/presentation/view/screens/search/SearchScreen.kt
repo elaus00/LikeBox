@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,12 +22,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -43,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.likebox.R
 import com.example.likebox.presentation.viewmodel.SearchViewModel
@@ -52,51 +57,69 @@ import com.example.likebox.domain.model.Track
 import com.example.likebox.domain.model.Album
 import com.example.likebox.domain.model.MusicContent
 import com.example.likebox.domain.model.Playlist
+import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
+import com.example.likebox.presentation.view.theme.PretendardFontFamily
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    navController : NavController
 ) {
     val searchState by viewModel.searchState.collectAsState()
     val selectedPlatforms by viewModel.selectedPlatforms.collectAsState()
 
-    Column (
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize()
-    ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 20.dp, horizontal = 24.dp)
-            .background(Color.White)
-    ) {
-        // Top Bar with Back Button and Search
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = onNavigateBack,
-                modifier = Modifier.size(48.dp)
+    Scaffold (
+        modifier = Modifier.background(Color.White),
+        containerColor = Color.White,
+        bottomBar = {
+            Surface(
+                shadowElevation = 4.dp,
+                tonalElevation = 4.dp,
+                color = Color.Transparent
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "Back",
-                    tint = Color(0xFF171A1F).copy(0.8f)
-                )
+                LikeboxNavigationBar(navController)
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            SearchBar(
-                modifier = Modifier.weight(1f),
-                onNavigateBack = onNavigateBack,
-                onSearchQueryChanged = viewModel::onSearchQueryChanged
-            )
         }
+    )
+    { paddingValues ->
+        Column (
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxSize()
+                .offset(y=(-40).dp)
+                .padding(paddingValues)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp, horizontal = 24.dp)
+                    .background(Color.White)
+            ) {
+                // Top Bar with Back Button and Search
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.back_arrow),
+                            contentDescription = "Back",
+                            tint = Color(0xFF171A1F).copy(0.8f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    SearchBar(
+                        modifier = Modifier.weight(1f),
+                        onSearchQueryChanged = viewModel::onSearchQueryChanged
+                    )
+                }
 
 //        // Platform Filter
 //        PlatformFilter(
@@ -104,25 +127,26 @@ fun SearchScreen(
 //            onPlatformToggled = viewModel::togglePlatform
 //        )
 
-        // Content
-        when (val state = searchState) {
-            SearchUiState.Initial,
-            is SearchUiState.RecentSearches -> RecentSearchesSection(
-                searches = listOf(
-                    "BTS Dynamite",
-                    "Taylor Swift Shake it off",
-                    "Ed Sheeran Perfect",
-                    "BlackPink How You Like That",
-                    "IU Eight",
-                    "Justin Bieber Peaches",
-                    "TWICE Fancy"
-                ),
-                onSearchRemoved = viewModel::removeRecentSearch,
-                onClearSearches = viewModel::clearRecentSearches
-            )
-            SearchUiState.Loading -> LoadingIndicator()
-            is SearchUiState.Results -> SearchResultsSection(results = state.results)
-            is SearchUiState.Error -> ErrorMessage(message = state.message)
+                // Content
+                when (val state = searchState) {
+                    SearchUiState.Initial,
+                    is SearchUiState.RecentSearches -> RecentSearchesSection(
+                        searches = listOf(
+                            "BTS Dynamite",
+                            "Taylor Swift Shake it off",
+                            "Ed Sheeran Perfect",
+                            "BlackPink How You Like That",
+                            "IU Eight",
+                            "Justin Bieber Peaches",
+                            "TWICE Fancy"
+                        ),
+                        onSearchRemoved = viewModel::removeRecentSearch,
+                        onClearSearches = viewModel::clearRecentSearches
+                    )
+                    SearchUiState.Loading -> LoadingIndicator()
+                    is SearchUiState.Results -> SearchResultsSection(results = state.results)
+                    is SearchUiState.Error -> ErrorMessage(message = state.message)
+                }
             }
         }
     }
@@ -141,14 +165,12 @@ private fun LoadingIndicator() {
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
     onSearchQueryChanged: (String) -> Unit
 ) {
     TextField(
         value = "",
         onValueChange = onSearchQueryChanged,
         modifier = modifier
-            .height(52.dp)  // 높이 증가
             .background(Color(0xFFF8F9FA), RoundedCornerShape(18.dp))
             .wrapContentHeight(),
         placeholder = {
@@ -262,8 +284,8 @@ private fun RecentSearchesSection(
                 .align(Alignment.CenterHorizontally)
                 .padding(10.53.dp)
                 .border(
-                    0.73.dp,
-                    Color.Black.copy(alpha = 0.5f),
+                    0.5.dp,
+                    Color.Black.copy(alpha = 0.3f),
                     RoundedCornerShape(36.43.dp)
                 ),
             colors = ButtonDefaults.buttonColors(

@@ -20,13 +20,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.likebox.domain.model.*
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
-import com.example.likebox.presentation.view.screens.components.getDummyContent
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
-    modifier: Modifier = Modifier,
     navController: NavController,
     onNavigateToPlaylist: (String) -> Unit,
     onNavigateToAlbum: (String) -> Unit,
@@ -45,13 +43,13 @@ fun LibraryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "My Library",
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontFamily = PretendardFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -95,33 +93,33 @@ fun LibraryScreen(
                     )
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, top = 8.dp)
-                ) {
-                    SortButton(
-                        selectedSort = selectedSort,
-                        onSortClick = { showSortDropdown = true }
-                    )
-
-                    SortDropdownMenu(
-                        expanded = showSortDropdown,
-                        selectedSort = selectedSort,
-                        onSortSelected = {
-                            selectedSort = it
-                            showSortDropdown = false
-                        },
-                        onDismiss = { showSortDropdown = false }
-                    )
-                }
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 24.dp, top = 8.dp)
+//                ) {
+//                    SortButton(
+//                        selectedSort = selectedSort,
+//                        onSortClick = { showSortDropdown = true }
+//                    )
+//
+//                    SortDropdownMenu(
+//                        expanded = showSortDropdown,
+//                        selectedSort = selectedSort,
+//                        onSortSelected = {
+//                            selectedSort = it
+//                            showSortDropdown = false
+//                        },
+//                        onDismiss = { showSortDropdown = false }
+//                    )
+//                }
             }
 
             // Content List
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(
                     getDummyContent(selectedContentType)

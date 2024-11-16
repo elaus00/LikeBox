@@ -1,6 +1,5 @@
 package com.example.likebox.data.repository
 
-import android.app.appsearch.SearchResult
 import com.example.likebox.domain.repository.SearchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -27,6 +28,7 @@ import coil.compose.AsyncImage
 import com.example.likebox.R
 import com.example.likebox.domain.model.*
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
+import java.time.Instant
 
 @Composable
 fun ContentTypeSelector(
@@ -165,13 +167,20 @@ fun MusicContentListItem(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = content.thumbnailUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
+            // AsyncImage 커버용 Box
+            Box(modifier = Modifier
+                .size(52.dp)
+                .border(width = 0.5.dp, color = Color(0xFF919191).copy(0.4f), shape = RoundedCornerShape(12.dp))
+            ){
+                AsyncImage(
+                    model = content.thumbnailUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            }
+
 
             Column(
                 modifier = Modifier
@@ -193,7 +202,7 @@ fun MusicContentListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    PlatformIcon(content.platform)
+//                    PlatformIcon(content.platform)
                     ContentSubtitle(content)
                 }
             }
@@ -314,7 +323,11 @@ private fun PlatformFilterChips(
                                 }
                             ),
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(20.dp),
+                            tint = when(platform) {
+                                MusicPlatform.SPOTIFY -> Color(0xFF1DB954)
+                                MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)
+                            }
                         )
                         Text(platform.name)
                     }
@@ -322,6 +335,11 @@ private fun PlatformFilterChips(
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Color(0xFFF93C58),
                     selectedLabelColor = Color.White
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = platform in selectedPlatforms,
+                    borderWidth = 0.5.dp
                 )
             )
         }
@@ -413,6 +431,105 @@ fun WaveTitle(
             modifier = Modifier
                 .padding(start = 8.dp)
                 .offset(y = -offset.dp)
+        )
+    }
+}
+
+fun getDummyContent(contentType: ContentType): List<MusicContent> {
+    return when (contentType) {
+        ContentType.TRACK -> listOf(
+            Track(
+                id = "1",
+                platformId = "spotify_1",
+                platform = MusicPlatform.SPOTIFY,
+                name = "Dynamite",
+                thumbnailUrl = "https://example.com/dynamite.jpg",
+                artists = listOf("BTS"),
+                album = "BE",
+                durationMs = 199054,
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond
+            ),
+            Track(
+                id = "2",
+                platformId = "apple_1",
+                platform = MusicPlatform.APPLE_MUSIC,
+                name = "Butter",
+                thumbnailUrl = "https://example.com/butter.jpg",
+                artists = listOf("BTS"),
+                album = "Butter",
+                durationMs = 164000,
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond
+            ),
+            Track(
+                id = "3",
+                platformId = "spotify_2",
+                platform = MusicPlatform.SPOTIFY,
+                name = "Spring Day",
+                thumbnailUrl = "https://example.com/springday.jpg",
+                artists = listOf("BTS"),
+                album = "You Never Walk Alone",
+                durationMs = 285000,
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond
+            )
+        )
+        ContentType.ALBUM -> listOf(
+            Album(
+                id = "1",
+                platformId = "spotify_album_1",
+                platform = MusicPlatform.SPOTIFY,
+                name = "BE",
+                thumbnailUrl = "https://example.com/be_album.jpg",
+                artists = listOf("BTS"),
+                releaseDate = Instant.now().epochSecond,
+                trackCount = 8,
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond,
+                tracks = listOf()
+            ),
+            Album(
+                id = "2",
+                platformId = "apple_album_1",
+                platform = MusicPlatform.APPLE_MUSIC,
+                name = "Map of the Soul: 7",
+                thumbnailUrl = "https://example.com/mots7_album.jpg",
+                artists = listOf("BTS"),
+                releaseDate = Instant.now().epochSecond,
+                trackCount = 20,
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond,
+                tracks = listOf()
+            )
+        )
+        ContentType.PLAYLIST -> listOf(
+            Playlist(
+                id = "1",
+                platformId = "spotify_playlist_1",
+                platform = MusicPlatform.SPOTIFY,
+                name = "BTS Hits",
+                thumbnailUrl = "https://example.com/playlist1.jpg",
+                description = "Best BTS songs",
+                trackCount = 50,
+                owner = "User123",
+                tracks = emptyList(),
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond
+            ),
+            Playlist(
+                id = "2",
+                platformId = "apple_playlist_1",
+                platform = MusicPlatform.APPLE_MUSIC,
+                name = "K-pop Favorites",
+                thumbnailUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fm.youtube.com%2Fwatch%3Fv%3DXtT0RiON5Q4%26pp%3DygUJI2J0c2FyYnRz&psig=AOvVaw0CJvgXecW3u4LC45ulh1ED&ust=1731863389164000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOiWjYOs4YkDFQAAAAAdAAAAABAEhttps://www.google.com/url?sa=i&url=https%3A%2F%2Fm.youtube.com%2Fwatch%3Fv%3DXtT0RiON5Q4%26pp%3DygUJI2J0c2FyYnRz&psig=AOvVaw0CJvgXecW3u4LC45ulh1ED&ust=1731863389164000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOiWjYOs4YkDFQAAAAAdAAAAABAE",
+                description = "Popular K-pop songs",
+                trackCount = 100,
+                owner = "User456",
+                tracks = emptyList(),
+                createdAt = Instant.now().epochSecond,
+                updatedAt = Instant.now().epochSecond
+            )
         )
     }
 }

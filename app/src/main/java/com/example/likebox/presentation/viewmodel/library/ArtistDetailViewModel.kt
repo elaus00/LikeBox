@@ -2,7 +2,7 @@ package com.example.likebox.presentation.viewmodel.library
 
 import androidx.lifecycle.viewModelScope
 import com.example.likebox.domain.repository.MusicRepository
-import com.example.likebox.presentation.state.library.ArtistDetailUiState
+import com.example.likebox.presentation.state.library.ArtistDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 class ArtistDetailViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) : BaseDetailViewModel() {
-    private val _uiState = MutableStateFlow(ArtistDetailUiState())
-    val uiState: StateFlow<ArtistDetailUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ArtistDetailState())
+    val uiState: StateFlow<ArtistDetailState> = _uiState.asStateFlow()
 
     fun loadArtist(artistId: String) {
         viewModelScope.launch {

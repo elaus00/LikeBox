@@ -1,8 +1,5 @@
 package com.example.likebox.domain.model
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-
 data class Album(
     override val id: String,
     override val platformId: String,
@@ -12,6 +9,7 @@ data class Album(
     override val updatedAt: Long,
     override val createdAt: Long,
     val artists: List<String>,
+    val tracks: List<Track>,
     val releaseDate: Long,
     val trackCount: Int
 ) : MusicContent
