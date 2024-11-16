@@ -130,4 +130,7 @@ interface MusicRepository {
         contentType: ContentType,
         platforms: Set<MusicPlatform>
     ): Result<List<MusicContent>>
+
+    // Todo : 임시로 Any 반환 타입으로 설정. 수정해야 함
+    suspend fun getPlaylist(playlistId: String): Any
 }

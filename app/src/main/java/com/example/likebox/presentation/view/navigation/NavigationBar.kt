@@ -3,7 +3,6 @@ package com.example.likebox.presentation.view.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -44,7 +43,7 @@ fun LikeboxNavigationBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 8.dp, horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -92,17 +91,17 @@ private fun NavigationItem(
     Column(
         modifier = Modifier
             .wrapContentSize()
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onItemClick)
+            .padding(horizontal = 20.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         // 아이콘 컨테이너
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(14.dp))
                 .background(Color.White)
-                .clickable(onClick = onItemClick)
-                .padding(horizontal = 28.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
         ) {
             Icon(
                 painter = painterResource(id = item.icon),
@@ -118,7 +117,8 @@ private fun NavigationItem(
         Icon(
             painter = painterResource(id = R.drawable.navigation_indicator),
             contentDescription = null,
-            modifier = Modifier.size(6.4.dp),
+            modifier = Modifier
+                .size(6.4.dp),
             tint = if (selected) Color(0xFFF93C58) else Color.Transparent
         )
     }
@@ -164,7 +164,7 @@ private val navigationItems = listOf(
     ),
     NavigationBarItem(
         screen = Screens.Main.Search.Root,
-        icon = R.drawable.search_icon
+        icon = R.drawable.ic_search
     ),
     NavigationBarItem(
         screen = Screens.Main.Library.Root,
