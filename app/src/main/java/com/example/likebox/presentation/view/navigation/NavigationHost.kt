@@ -105,7 +105,7 @@ fun NavigationHost(
 
             // Search Flow
             composable(Screens.Main.Search.Root.route) {
-                SearchScreen()
+                SearchScreen(onNavigateBack = { navController.navigateUp() })
             }
 
             composable(

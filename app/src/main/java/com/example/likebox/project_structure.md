@@ -13,8 +13,11 @@ app/
 │       │   │   └── TrackDto.kt
 │       │   └── repository/
 │       │       └── MusicRepositoryImpl
+└──                 AuthRepositoryImpl
+PlatformRepositoryImpl
 │       ├── di/
 │       │   └── FirebaseModule
+RepositoryModule
 │       ├── domain/
 │       │   ├── model/
 │       │   │   ├── Album
@@ -28,42 +31,45 @@ app/
 │       │   │   └── User
 │       │   ├── repository/
 │       │   │   ├── MusicRepository
+│       │   │   ├── AuthRepository
+│       │   │   ├── PlatformRepository
 │       │   │   └── PlatformAuthRepository
 │       │   └── usecase/
+│       │       └── Auth
+│       │           └── CheckAuthStatusUseCase
 │       │       ├── GetMusicListUseCase
 │       │       └── SyncContentUseCase
 │       └── presentation/
 │           ├── state/
-│           │   └── ContentViewState.kt
 │           ├── view/
-│           │   ├── components/
-│           │   │   └── components.kt
-│           │   └── navigation/
-│           │       ├── NavBarItems.kt
-│           │       ├── Navigation.kt
-│           │       ├── NavigationBar.kt
-│           │       ├── NavigationProvider.kt
-│           │       └── Screen.kt
-│           ├── screens/
-│           │   ├── home/
-│           │   │   └── HomeScreen.kt
-│           │   ├── library/
-│           │   │   └── libraryScreen.kt
-│           │   ├── notification/
-│           │   ├── register/
-│           │   │   ├── OnBoarding.kt
-│           │   │   ├── SignInScreen.kt
-│           │   │   └── SignUpScreen.kt
-│           │   ├── search/
-│           │   └── settings/
-│           │       └── MainScreen.kt
+│           │   ├── navigation/
+│           │   │   ├── NavigationBar.kt
+│           │   │   ├── NavigationHost.kt
+│           │   │   └── NavigationState.kt
+│           │   └── screens/
+│           │       ├── auth/
+│           │       │   ├── platform/
+│           │       │   │   ├── OnBoardingScreen.kt
+│           │       │   │   ├── SignInScreen.kt
+│           │       │   │   └── SignUpScreen.kt
+│           │       ├── home/
+│           │       │   └── HomeScreen.kt
+│           │       ├── library/
+│           │       │   ├── libraryScreen.kt
+│           │       │   └── PlaylistsScreen
+│           │       ├── search/
+│           │       │   └── SearchScreen
+│           │       └── settings/
+│           │           ├── SettingsScreen
+│           │           └── Screens
 │           ├── theme/
 │           │   ├── Buttons.kt
 │           │   ├── Color.kt
+│           │   ├── components.kt
+│           │   ├── Font.kt
 │           │   ├── Theme.kt
 │           │   └── Type.kt
-│           ├── viewmodel/
+│           ├── viewModel/
 │           │   ├── ContentViewModel.kt
 │           │   └── NavigationViewModel.kt
-│           ├── MainActivity
-│           └── LikeBox
+│           └── MainActivity

@@ -31,16 +31,27 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            LikeBoxTheme {
-                // 시스템 바 설정
+            LikeBoxTheme (
+                dynamicColor = true
+            ){
                 val systemUiController = rememberSystemUiController()
                 val darkTheme = isSystemInDarkTheme()
+                val backgroundColor = MaterialTheme.colorScheme.background
 
                 DisposableEffect(systemUiController, darkTheme) {
-                    systemUiController.setSystemBarsColor(
+                    // 상태 바 설정
+                    systemUiController.setStatusBarColor(
                         color = Color.Transparent,
                         darkIcons = !darkTheme
                     )
+
+                    // 네비게이션 바 설정
+                    systemUiController.setNavigationBarColor(
+                        color = backgroundColor,
+                        darkIcons = !darkTheme,
+                        navigationBarContrastEnforced = false
+                    )
+
                     onDispose {}
                 }
 

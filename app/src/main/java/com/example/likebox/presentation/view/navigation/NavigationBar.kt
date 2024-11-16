@@ -37,13 +37,14 @@ fun LikeboxNavigationBar(
 ) {
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentSize(),
         color = Color.White,
         tonalElevation = 8.dp
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -90,8 +91,8 @@ private fun NavigationItem(
 ) {
     Column(
         modifier = Modifier
-            .width(88.dp)
-            .padding(horizontal = 4.dp, vertical = 8.dp),
+            .wrapContentSize()
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

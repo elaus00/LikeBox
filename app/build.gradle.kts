@@ -5,7 +5,10 @@ plugins {
     id("com.google.relay") version "0.3.12"
     alias(libs.plugins.hilt)
     id("com.google.gms.google-services")
+}
 
+configurations.all {
+    exclude(group = "xpp3", module = "xpp3")
 }
 
 android {
@@ -50,6 +53,15 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/ASL2.0"
+            excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
 }
@@ -58,12 +70,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.firebase.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+//    implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
 
     // Retrofit
@@ -80,6 +91,9 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
+    implementation(libs.play.services.appsearch)
+    implementation(libs.androidx.navigation.safe.args.generator)
+//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -95,6 +109,8 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.coil.compose)
+
 
     // Navigation
     implementation(libs.androidx.navigation.compose.v277)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -37,30 +38,42 @@ fun OnBoardingScreen(navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .wrapContentHeight()
             .background(Color(0xfff7f7f7))
-            .padding(30.dp)
+            .padding(horizontal = 28.dp)
+            .verticalScroll(rememberScrollState())  // 스크롤 가능하도록 추가
     ) {
         ImageSection()
         TitleSection()
-        StartOptionsSection(navController = navController)
 
-        // Test button for direct navigation to Home
-        Text(
-            text = "[TEST] Go to Home",
-            color = Color.Blue,
-            fontSize = 14.sp,
-            fontFamily = FontFamily(Font(R.font.pretendard)),
-            fontWeight = FontWeight(400),
-            textAlign = TextAlign.Center,
+        // 테스트 버튼 스타일 개선
+        Box(
             modifier = Modifier
-                .padding(top = 20.dp)
+                .fillMaxWidth()
+                .background(Color(0xFFE8E8E8), RoundedCornerShape(8.dp))
                 .clickable {
                     navController.navigate(Screens.Main.Home.Root.route) {
-                        // Clear the back stack so user can't navigate back to onboarding
                         popUpTo(Screens.Auth.OnBoarding.route) { inclusive = true }
                     }
                 }
-        )
+                .padding(12.dp),
+        ) {
+            Text(
+                text = "[TEST] Go to Home",
+                color = Color(0xFF0066CC),
+                fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.pretendard)),
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))  // 간격 추가
+
+        StartOptionsSection(navController = navController)
+
+
+
     }
 }
 
@@ -122,6 +135,7 @@ fun TitleSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .wrapContentHeight()
             .padding(0.dp, 20.dp, 0.dp, 40.dp)
     ) {
         Text(
