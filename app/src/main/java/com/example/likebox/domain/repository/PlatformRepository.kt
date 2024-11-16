@@ -73,15 +73,6 @@ interface PlatformRepository {
      */
     suspend fun connectPlatform(platform: MusicPlatform, authCode: String): Result<PlatformAuth>
 
-    /**
-     * 플랫폼 설정 업데이트
-     * @param platform 대상 플랫폼
-     * @param settings 업데이트할 설정
-     */
-    suspend fun updatePlatformSettings(
-        platform: MusicPlatform,
-        settings: Map<String, Any>
-    ): Result<Unit>
 
     /**
      * 플랫폼 에러 로그 저장

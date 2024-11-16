@@ -8,7 +8,6 @@ data class TrackDto(
     var id: String = "",
     val name: String = "",
     val artists: List<String> = emptyList(),
-    val addedAt: Long = 0L
 )
 
 // 2. 매핑을 담당하는 Mapper 클래스

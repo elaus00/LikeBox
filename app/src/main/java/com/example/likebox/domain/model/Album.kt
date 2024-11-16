@@ -13,5 +13,6 @@ data class Album(
     override val createdAt: Long,
     val artists: List<String>,
     val releaseDate: Long,
-    val trackCount: Int
+    val trackCount: Int,
+    val tracks: List<String> // Feat: track.id(String) list
 ) : MusicContent

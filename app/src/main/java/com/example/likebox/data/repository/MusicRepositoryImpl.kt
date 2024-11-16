@@ -9,6 +9,9 @@ import com.example.likebox.domain.model.ContentType
 import com.example.likebox.domain.model.MusicContent
 import com.example.likebox.domain.model.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
+
+import com.google.firebase.Firebase
+import com.google.firebase.functions.functions
 import javax.inject.Inject
 
 
