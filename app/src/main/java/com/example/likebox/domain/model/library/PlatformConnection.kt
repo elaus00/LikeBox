@@ -1,9 +1,7 @@
 package com.example.likebox.domain.model.library
 
+// Fix: 토큰 정보, expiredAt 없앰
 data class PlatformAuth(
-    val platformId: String,
-    val accessToken: String,
-    val refreshToken: String,
-    val expiresAt: Long, // 토큰 만료 시간 (Unix 타임스탬프)
+    val platform: MusicPlatform,
     val isValid: Boolean
 )

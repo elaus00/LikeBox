@@ -1,6 +1,6 @@
 package com.example.likebox.data.model.dto
 
-class PlaylistDto<Track> {
+class PlaylistDto {
     fun toDomain() {
 
     }

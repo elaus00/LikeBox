@@ -29,8 +29,8 @@ class SearchFirebaseServiceImpl @Inject constructor(
                 val results = snapshot.documents.mapNotNull { doc ->
                     when (doc.getString("type")) {
                         "track" -> doc.toObject<TrackDto>()?.toDomain()
-                        "album" -> doc.toObject<AlbumDto<Any?>>()?.toDomain()
-                        "playlist" -> doc.toObject<PlaylistDto<Any?>>()?.toDomain()
+                        "album" -> doc.toObject<AlbumDto>()?.toDomain()
+                        "playlist" -> doc.toObject<PlaylistDto>()?.toDomain()
                         else -> null
                     }
                 }
