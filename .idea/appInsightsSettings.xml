@@ -10,9 +10,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.likebox" />
-                  <option name="mobileSdkAppId" value="1:827743837236:android:93b510a7d9c98f0869be61" />
-                  <option name="projectId" value="likebox2024" />
-                  <option name="projectNumber" value="827743837236" />
+                  <option name="mobileSdkAppId" value="1:999460632188:android:39d8963e610c72d1623bf9" />
+                  <option name="projectId" value="likebox-2024-test" />
+                  <option name="projectNumber" value="999460632188" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
