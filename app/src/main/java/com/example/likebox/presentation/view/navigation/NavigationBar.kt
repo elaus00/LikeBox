@@ -106,7 +106,9 @@ private fun NavigationItem(
             Icon(
                 painter = painterResource(id = item.icon),
                 contentDescription = null,
-                modifier = Modifier.size(21.dp),
+                modifier = Modifier
+                    .size(21.dp)
+                    .fillMaxSize(),
                 tint = if (selected) {
                     Color(0xFF2F2F2F)  // 선택된 경우 진한 색상
                 } else {

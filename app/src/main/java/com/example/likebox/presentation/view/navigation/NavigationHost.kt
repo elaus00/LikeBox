@@ -14,6 +14,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.likebox.domain.model.Settings
+import com.example.likebox.domain.model.settings.NotificationSettings
+import com.example.likebox.domain.model.settings.SyncSettings
+import com.example.likebox.domain.model.settings.ThemeSettings
 
 // 화면들
 import com.example.likebox.presentation.view.screens.auth.OnBoardingScreen
@@ -203,22 +207,25 @@ fun NavigationHost(
 
             // Settings Flow
             composable(Screens.Main.Settings.Root.route) {
-                SettingsScreen(navController)
-            }
-            composable(Screens.Main.Settings.Profile.route) {
-                Text("Profile Settings")
-            }
-            composable(Screens.Main.Settings.Account.Root.route) {
-                Text("Account Settings")
-            }
-            composable(Screens.Main.Settings.Account.Security.route) {
-                Text("Security Settings")
-            }
-            composable(Screens.Main.Settings.Account.Notifications.route) {
-                Text("Notification Settings")
-            }
-            composable(Screens.Main.Settings.Account.LinkedPlatforms.route) {
-                Text("Linked Platforms")
+                SettingsScreen(
+                    settings = Settings(
+                        userId = "",  // 실제로는 사용자 ID가 필요합니다
+                        theme = ThemeSettings(),
+                        sync = SyncSettings(),
+                        notification = NotificationSettings(),
+                        language = "en",
+                        lastUpdated = System.currentTimeMillis()
+                    ),
+                    user = null,  // null or provide mock user
+                    onSettingsChanged = { },
+                    onProfileEdit = {
+                        navController.navigate(Screens.Main.Settings.Profile.route)
+                    },
+                    onProfileImageEdit = { },
+                    onExportData = { },
+                    onImportData = { },
+                    onResetSettings = { }
+                )
             }
         }
     }

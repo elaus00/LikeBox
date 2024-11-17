@@ -1,6 +1,5 @@
 package com.example.likebox.presentation.view.screens.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,135 +16,98 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.likebox.domain.model.*
-import com.example.likebox.presentation.state.SettingsUiState
-import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
+import com.example.likebox.domain.model.auth.User
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
-import com.example.likebox.presentation.viewmodel.SettingsViewModel
-import kotlinx.coroutines.launch
 
+
+/**
+ * 설정 화면의 메인 컴포저블
+ * 모든 설정 관련 UI 컴포넌트들을 조합하여 완성된 설정 화면을 구성
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    navController: NavController,
-    viewModel: SettingsViewModel = hiltViewModel()
+    settings: Settings,
+    user: User?,
+    onSettingsChanged: (Settings) -> Unit,
+    onProfileEdit: () -> Unit,
+    onProfileImageEdit: () -> Unit,
+    onExportData: () -> Unit,
+    onImportData: () -> Unit,
+    onResetSettings: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
-    var showImportDialog by remember { mutableStateOf(false) }
-    var showExportDialog by remember { mutableStateOf(false) }
-    var showResetDialog by remember { mutableStateOf(false) }
-
     Scaffold(
-        topBar = { SettingsTopBar() },
-        bottomBar = { LikeboxNavigationBar(navController) },
-        containerColor = Color.White
-    ) { padding ->
-        when (val state = uiState) {
-            is SettingsUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            is SettingsUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(horizontal = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    item {
-                        ThemeSection(
-                            themeSettings = state.settings.theme,
-                            onThemeSettingsChanged = { newThemeSettings ->
-                                viewModel.updateSettings(state.settings.copy(theme = newThemeSettings))
-                            }
-                        )
-                    }
-
-                    item {
-                        PlatformSection(
-                            syncSettings = state.settings.sync,
-                            onSyncSettingsChanged = { newSyncSettings ->
-                                viewModel.updateSettings(state.settings.copy(sync = newSyncSettings))
-                            }
-                        )
-                    }
-
-                    item {
-                        SyncSection(
-                            syncSettings = state.settings.sync,
-                            onSyncSettingsChanged = { newSyncSettings ->
-                                viewModel.updateSettings(state.settings.copy(sync = newSyncSettings))
-                            }
-                        )
-                    }
-
-                    item {
-                        DataManagementSection(
-                            onExportClick = { showExportDialog = true },
-                            onImportClick = { showImportDialog = true },
-                            onResetClick = { showResetDialog = true }
-                        )
-                    }
-
-                    item { Spacer(modifier = Modifier.height(24.dp)) }
-                }
-
-                // Dialogs
-                if (showImportDialog) {
-                    ImportDialog(
-                        onDismiss = { showImportDialog = false },
-                        onImport = { jsonData ->
-                            scope.launch {
-                                viewModel.importData(jsonData)
-                                showImportDialog = false
-                            }
-                        }
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Settings",
+                        fontSize = 20.sp,
+                        fontFamily = PretendardFontFamily,
+                        fontWeight = FontWeight.SemiBold
                     )
-                }
-
-                if (showExportDialog) {
-                    ExportDialog(
-                        onDismiss = { showExportDialog = false },
-                        onExport = {
-                            scope.launch {
-                                viewModel.exportData()
-                                showExportDialog = false
-                            }
-                        }
-                    )
-                }
-
-                if (showResetDialog) {
-                    ResetSettingsDialog(
-                        onConfirm = {
-                            scope.launch {
-                                viewModel.resetSettings()
-                                showResetDialog = false
-                            }
-                        },
-                        onDismiss = { showResetDialog = false }
-                    )
-                }
-            }
-            is SettingsUiState.Error -> {
-                ErrorContent(
-                    message = state.message,
-                    onRetry = { viewModel.loadSettings() }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black
+                )
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(paddingValues),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // 프로필 섹션
+            item(key = "profile") {
+                ProfileSection(
+                    user = user,
+                    onEditClick = onProfileEdit,
+                    onImageClick = onProfileImageEdit
                 )
             }
-            is SettingsUiState.ExportSuccess -> {
-                // Handle export success (e.g., share the JSON data)
-                LaunchedEffect(state.jsonData) {
-                    // Implementation for sharing or saving the exported data
-                }
+
+            // 테마 설정 섹션
+            item(key = "theme") {
+                ThemeSection(
+                    themeSettings = settings.theme,
+                    onThemeSettingsChanged = { theme ->
+                        onSettingsChanged(settings.copy(theme = theme))
+                    }
+                )
+            }
+
+            // 플랫폼 연결 섹션
+            item(key = "platforms") {
+                PlatformSection(
+                    syncSettings = settings.sync,
+                    onSyncSettingsChanged = { sync ->
+                        onSettingsChanged(settings.copy(sync = sync))
+                    }
+                )
+            }
+
+            // 동기화 설정 섹션
+            item(key = "sync") {
+                SyncSection(
+                    syncSettings = settings.sync,
+                    onSyncSettingsChanged = { sync ->
+                        onSettingsChanged(settings.copy(sync = sync))
+                    }
+                )
+            }
+
+            // 데이터 관리 섹션
+            item(key = "data") {
+                DataManagementSection(
+                    onExportClick = onExportData,
+                    onImportClick = onImportData,
+                    onResetClick = onResetSettings
+                )
             }
         }
     }
 }
-
-// TODO : 프로필 설정 기능 들어가야 함.

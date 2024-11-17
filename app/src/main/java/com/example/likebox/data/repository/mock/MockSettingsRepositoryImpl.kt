@@ -1,4 +1,4 @@
-package com.example.likebox.data.repository
+package com.example.likebox.data.repository.mock
 
 import com.example.likebox.domain.model.*
 import com.example.likebox.domain.model.library.ContentType

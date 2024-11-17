@@ -103,7 +103,6 @@ class PlatformRepositoryImpl @Inject constructor(
                 .getHttpsCallable("removeAllTokens")
                 .call()
                 .await()
-
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
