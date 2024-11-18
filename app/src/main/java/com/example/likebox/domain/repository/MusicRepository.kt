@@ -1,7 +1,7 @@
 package com.example.likebox.domain.repository
 
 import com.example.likebox.domain.model.Album
-// import com.example.likebox.domain.model.Artist
+import com.example.likebox.domain.model.Artist
 import com.example.likebox.domain.model.ContentType
 import com.example.likebox.domain.model.MusicContent
 import com.example.likebox.domain.model.MusicPlatform
@@ -86,21 +86,21 @@ interface MusicRepository {
      * @param artistId 아티스트 ID
      * @return 아티스트 정보
      */
-//    suspend fun getArtistById(artistId: String): Result<Artist>
-//
-//    /**
-//     * 아티스트의 트랙 목록 조회
-//     * @param artistId 아티스트 ID
-//     * @return 트랙 목록
-//     */
-//    suspend fun getArtistTracks(artistId: String): Result<List<Track>>
-//
-//    /**
-//     * 아티스트의 앨범 목록 조회
-//     * @param artistId 아티스트 ID
-//     * @return 앨범 목록
-//     */
-//    suspend fun getArtistAlbums(artistId: String): Result<List<Album>>
+    suspend fun getArtistById(artistId: String): Result<Artist>
+
+    /**
+     * 아티스트의 트랙 목록 조회
+     * @param artistId 아티스트 ID
+     * @return 트랙 목록
+     */
+    suspend fun getArtistTracks(artistId: String): Result<List<Track>>
+
+    /**
+     * 아티스트의 앨범 목록 조회
+     * @param artistId 아티스트 ID
+     * @return 앨범 목록
+     */
+    suspend fun getArtistAlbums(artistId: String): Result<List<Album>>
 
     /**
      * 콘텐츠 타입별 개수 조회

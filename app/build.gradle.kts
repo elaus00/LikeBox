@@ -88,6 +88,7 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -102,6 +103,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
     // Compose (버전을 명시적으로 지정된 BOM으로 통일)
     implementation(platform(libs.androidx.compose.bom.v20240100))
@@ -133,4 +135,14 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.systemuicontroller)
+
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase Testing
+    androidTestImplementation(platform(libs.firebase.bom))
+    androidTestImplementation(libs.firebase.functions.ktx)
 }

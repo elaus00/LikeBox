@@ -4,7 +4,7 @@ import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.Track
 import com.example.likebox.domain.model.Playlist
 import com.example.likebox.domain.model.Album
-// import com.example.likebox.domain.model.Artist
+import com.example.likebox.domain.model.Artist
 import com.example.likebox.domain.model.ContentType
 import com.example.likebox.domain.model.MusicContent
 import com.example.likebox.domain.model.MusicPlatform
@@ -310,17 +310,17 @@ class MusicRepositoryImpl @Inject constructor(
         }
     }
 
-//    override suspend fun getArtistById(artistId: String): Result<Artist> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun getArtistTracks(artistId: String): Result<List<Track>> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun getArtistAlbums(artistId: String): Result<List<Album>> {
-//        TODO("Not yet implemented")
-//    }
+    override suspend fun getArtistById(artistId: String): Result<Artist> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getArtistTracks(artistId: String): Result<List<Track>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getArtistAlbums(artistId: String): Result<List<Album>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getContentCount(
         platform: MusicPlatform,
