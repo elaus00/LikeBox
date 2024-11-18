@@ -12,7 +12,7 @@ class FirebaseFunctionTest1 {
 
     @Before
     fun setup() {
-        functions = FirebaseFunctions.getInstance()
+        functions = FirebaseFunctions.getInstance("asia-northeast3")
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.example.likebox.data.model.dto
 
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.Playlist
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 
 data class PlaylistDto(
     override val id: String,

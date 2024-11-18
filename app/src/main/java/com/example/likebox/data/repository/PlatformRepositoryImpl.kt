@@ -127,7 +127,7 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Failed to fetch liked content"))
             }
 
-            else Result.success(PlatformAuth(platform.name, true))
+            else Result.success(PlatformAuth(platform, true))
 
 
         } catch (e: Exception) {
@@ -189,7 +189,7 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Failed to fetch liked content"))
             }
 
-            else Result.success(PlatformAuth(platform.name, true))
+            else Result.success(PlatformAuth(platform, true))
         } catch (e: Exception) {
             Result.failure(e)
         }

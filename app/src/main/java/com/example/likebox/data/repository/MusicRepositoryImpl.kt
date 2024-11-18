@@ -73,6 +73,7 @@ class MusicRepositoryImpl @Inject constructor(
                             updatedAt = System.currentTimeMillis()
                         )
                 }
+                ContentType.ARTIST -> emptyList()
             }
 
             Result.success(contents)

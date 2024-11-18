@@ -1,6 +1,6 @@
 package com.example.likebox.data.model.dto
 
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.Track
 
 
 // 1. Firebase에서 받는 DTO
