@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.likebox"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -126,6 +126,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)

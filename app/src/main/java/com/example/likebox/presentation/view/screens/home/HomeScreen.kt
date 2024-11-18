@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -43,7 +42,7 @@ private object HomeScreenConstants {
 
     val MusicServices = listOf(
         MusicServiceInfo("Spotify", R.drawable.spotif_logotype, SyncStatus.SYNCED),
-        MusicServiceInfo("genie", R.drawable.genie_logo, SyncStatus.SYNCING),
+        MusicServiceInfo("genie", R.drawable.genie_logotype, SyncStatus.SYNCING),
         MusicServiceInfo("Apple Music", R.drawable.apple_music_logotype, SyncStatus.ERROR),
         MusicServiceInfo("TIDAL", R.drawable.tidal_logotype, SyncStatus.WAITING)
     )
