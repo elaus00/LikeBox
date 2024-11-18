@@ -1,8 +1,6 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
-import java.time.LocalDateTime
-
-data class Playlist(
+data class Album(
     override val id: String,
     override val platformId: String,
     override val platform: MusicPlatform,
@@ -10,8 +8,8 @@ data class Playlist(
     override val thumbnailUrl: String,
     override val updatedAt: Long,
     override val createdAt: Long,
-    val description: String?,
+    val artists: List<String>,
+    val releaseDate: Long,
     val trackCount: Int,
-    val owner: String,
-    val tracks: List<Track> // Fix: track 인스턴스 list -> track.id(String) list
+    val tracks: List<Track>
 ) : MusicContent

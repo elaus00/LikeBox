@@ -38,19 +38,20 @@ class ArtistDetailViewModel @Inject constructor(
                     }
             }
 
-            launch {
-                musicRepository.getArtistTracks(artistId)
-                    .onSuccess { tracks ->
-                        _uiState.update { it.copy(topTracks = tracks) }
-                    }
-            }
-
-            launch {
-                musicRepository.getArtistAlbums(artistId)
-                    .onSuccess { albums ->
-                        _uiState.update { it.copy(albums = albums) }
-                    }
-            }
+// 아티스트 정보를 얻어오는 부분은 추후 구현
+//            launch {
+//                musicRepository.getArtistTracks(artistId)
+//                    .onSuccess { tracks ->
+//                        _uiState.update { it.copy(topTracks = tracks) }
+//                    }
+//            }
+//
+//            launch {
+//                musicRepository.getArtistAlbums(artistId)
+//                    .onSuccess { albums ->
+//                        _uiState.update { it.copy(albums = albums) }
+//                    }
+//            }
 
             _uiState.update { it.copy(isLoading = false) }
         }

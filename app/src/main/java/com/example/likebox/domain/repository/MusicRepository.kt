@@ -1,12 +1,12 @@
 package com.example.likebox.domain.repository
 
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.Artist
-import com.example.likebox.domain.model.ContentType
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.Playlist
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.Artist
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 
 /**
  * 음악 콘텐츠 관리를 담당하는 Repository interface
@@ -68,6 +68,13 @@ interface MusicRepository {
     suspend fun getPlaylists(platforms: Set<MusicPlatform>): Result<List<Playlist>>
 
     /**
+     * 플레이리스트 목록 조회
+     * @param platforms 대상 플랫폼 목록
+     * @return 플레이리스트 목록
+     */
+    suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>>
+
+    /**
      * 앨범 상세 정보 조회
      * @param albumId 앨범 ID
      * @return 앨범 정보
@@ -87,20 +94,6 @@ interface MusicRepository {
      * @return 아티스트 정보
      */
     suspend fun getArtistById(artistId: String): Result<Artist>
-
-    /**
-     * 아티스트의 트랙 목록 조회
-     * @param artistId 아티스트 ID
-     * @return 트랙 목록
-     */
-    suspend fun getArtistTracks(artistId: String): Result<List<Track>>
-
-    /**
-     * 아티스트의 앨범 목록 조회
-     * @param artistId 아티스트 ID
-     * @return 앨범 목록
-     */
-    suspend fun getArtistAlbums(artistId: String): Result<List<Album>>
 
     /**
      * 콘텐츠 타입별 개수 조회
@@ -133,4 +126,9 @@ interface MusicRepository {
 
     // Todo : 임시로 Any 반환 타입으로 설정. 수정해야 함
     suspend fun getPlaylist(playlistId: String): Any
+
+    suspend fun getRecentContents(): List<MusicContent>
+
+    suspend fun getAlbumTracks(albumId: String): Result<List<Track>>
+
 }

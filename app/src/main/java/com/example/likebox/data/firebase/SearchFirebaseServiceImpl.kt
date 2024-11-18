@@ -4,7 +4,7 @@ import com.example.likebox.data.model.dto.AlbumDto
 import com.example.likebox.data.model.dto.PlaylistDto
 import com.example.likebox.data.model.dto.TrackDto
 import com.example.likebox.data.model.dto.TrackMapper.toDomain
-import com.example.likebox.domain.model.MusicContent
+import com.example.likebox.domain.model.library.MusicContent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore

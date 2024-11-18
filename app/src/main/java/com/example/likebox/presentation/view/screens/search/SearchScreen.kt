@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
@@ -52,13 +50,12 @@ import coil.compose.AsyncImage
 import com.example.likebox.R
 import com.example.likebox.presentation.viewmodel.SearchViewModel
 import com.example.likebox.presentation.state.SearchUiState
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.Track
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.Playlist
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.Track
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.Playlist
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
-import com.example.likebox.presentation.view.theme.PretendardFontFamily
 
 @Composable
 fun SearchScreen(

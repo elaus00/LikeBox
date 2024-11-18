@@ -2,7 +2,9 @@ package com.example.likebox.presentation.viewmodel.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.likebox.domain.model.*
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.presentation.state.library.DetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

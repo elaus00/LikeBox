@@ -1,6 +1,6 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.library
 
-data class Album(
+data class Playlist(
     override val id: String,
     override val platformId: String,
     override val platform: MusicPlatform,
@@ -8,8 +8,8 @@ data class Album(
     override val thumbnailUrl: String,
     override val updatedAt: Long,
     override val createdAt: Long,
-    val artists: List<String>,
-    val releaseDate: Long,
+    val description: String?,
     val trackCount: Int,
+    val owner: String,
     val tracks: List<Track>
 ) : MusicContent

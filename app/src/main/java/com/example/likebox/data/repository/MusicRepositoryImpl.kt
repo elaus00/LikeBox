@@ -1,13 +1,13 @@
 package com.example.likebox.data.repository
 
 import com.example.likebox.data.firebase.FirebaseService
-import com.example.likebox.domain.model.Track
-import com.example.likebox.domain.model.Playlist
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.Artist
-import com.example.likebox.domain.model.ContentType
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.MusicPlatform
+import com.example.likebox.domain.model.library.Track
+import com.example.likebox.domain.model.library.Playlist
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.Artist
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
 
 import com.example.likebox.data.model.dto.AlbumDto
@@ -238,6 +238,10 @@ class MusicRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getAlbumById(albumId: String): Result<Album> {
         return try{
 
@@ -314,14 +318,6 @@ class MusicRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArtistTracks(artistId: String): Result<List<Track>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getArtistAlbums(artistId: String): Result<List<Album>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getContentCount(
         platform: MusicPlatform,
         contentType: ContentType
@@ -342,6 +338,14 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPlaylist(playlistId: String): Any {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRecentContents(): List<MusicContent> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAlbumTracks(albumId: String): Result<List<Track>> {
         TODO("Not yet implemented")
     }
 }

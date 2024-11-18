@@ -1,4 +1,4 @@
-package com.example.likebox.domain.model
+package com.example.likebox.domain.model.search
 
 data class RecentSearch(
     val query: String,

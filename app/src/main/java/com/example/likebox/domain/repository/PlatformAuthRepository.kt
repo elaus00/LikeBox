@@ -1,7 +1,7 @@
 package com.example.likebox.domain.repository
 
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.PlatformAuth
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformAuth
 
 interface PlatformAuthRepository {
     suspend fun getAuthInfo(platform: MusicPlatform): Result<PlatformAuth>

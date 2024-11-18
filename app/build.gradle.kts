@@ -94,6 +94,8 @@ dependencies {
     implementation(libs.firebase.functions.ktx)
     implementation(libs.play.services.appsearch)
     implementation(libs.androidx.navigation.safe.args.generator)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.volley)
 //    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)

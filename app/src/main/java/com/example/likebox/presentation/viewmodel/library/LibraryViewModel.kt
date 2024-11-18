@@ -2,7 +2,8 @@ package com.example.likebox.presentation.viewmodel.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.likebox.domain.model.*
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.presentation.state.library.LibraryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -83,6 +84,7 @@ class LibraryViewModel @Inject constructor(
                 ContentType.TRACK -> musicRepository.getTracks(_uiState.value.selectedPlatforms)
                 ContentType.ALBUM -> musicRepository.getAlbums(_uiState.value.selectedPlatforms)
                 ContentType.PLAYLIST -> musicRepository.getPlaylists(_uiState.value.selectedPlatforms)
+                ContentType.ARTIST -> musicRepository.getArtists(_uiState.value.selectedPlatforms)
             }
 
             result.fold(

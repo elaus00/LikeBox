@@ -2,11 +2,10 @@ package com.example.likebox.presentation.viewmodel.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.likebox.domain.model.Album
-import com.example.likebox.domain.model.MusicContent
-import com.example.likebox.domain.model.Track
+import com.example.likebox.domain.model.library.Album
+import com.example.likebox.domain.model.library.MusicContent
+import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.repository.MusicRepository
-import com.example.likebox.presentation.state.library.AlbumDetailUiState
 import com.example.likebox.presentation.state.library.DetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,6 @@ class AlbumDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AlbumDetailState())
     val uiState: StateFlow<AlbumDetailState> = _uiState.asStateFlow()
 
-
     fun loadAlbum(albumId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -36,7 +34,7 @@ class AlbumDetailViewModel @Inject constructor(
                 musicRepository.getAlbumById(albumId).fold(
                     onSuccess = { album ->
                         // 앨범의 트랙 정보 로드
-                        musicRepository.getArtistTracks(album.artists.first()).fold(
+                        musicRepository.getAlbumTracks(albumId).fold(
                             onSuccess = { tracks ->
                                 _uiState.update {
                                     it.copy(

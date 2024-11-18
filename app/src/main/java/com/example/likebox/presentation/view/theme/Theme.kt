@@ -60,6 +60,13 @@ object TextStyle {
         lineHeight = 32.sp
     )
 
+    val heading2 = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Medium,
+        lineHeight = 24.sp
+    )
+
     val body1 = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,

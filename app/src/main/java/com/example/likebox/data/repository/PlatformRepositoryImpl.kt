@@ -1,12 +1,14 @@
 package com.example.likebox.data.repository
 
 import com.example.likebox.data.firebase.FirebaseService
-import com.example.likebox.domain.model.MusicPlatform
-import com.example.likebox.domain.model.PlatformAuth
+import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformAuth
 import com.example.likebox.domain.repository.PlatformRepository
+import com.example.likebox.presentation.state.SyncStatus
 import com.google.firebase.Firebase
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.functions
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
@@ -144,6 +146,10 @@ class PlatformRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun getLastSyncTime(): Result<Long> {
+        TODO("Not yet implemented")
+    }
+
     //Feat: disconnectAllPlatforms
     override suspend fun disconnectAllPlatforms(): Result<Unit> {
         return try {
@@ -151,7 +157,6 @@ class PlatformRepositoryImpl @Inject constructor(
                 .getHttpsCallable("removeAllTokens")
                 .call()
                 .await()
-
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -191,6 +196,33 @@ class PlatformRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logPlatformError(platform: MusicPlatform, error: String): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun syncAllPlatforms(): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun syncPlatform(platform: MusicPlatform): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeSyncStatus(platform: MusicPlatform): Flow<SyncStatus> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelSync(): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateSyncStatus(
+        platform: MusicPlatform,
+        status: SyncStatus
+    ): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPlatformSyncStatuses(): Result<Map<MusicPlatform, SyncStatus>> {
         TODO("Not yet implemented")
     }
 }

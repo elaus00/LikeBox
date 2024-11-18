@@ -1,6 +1,4 @@
-package com.example.likebox.domain.model
-
-import java.time.LocalDateTime
+package com.example.likebox.domain.model.library
 
 interface MusicContent {
     val id: String
