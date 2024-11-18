@@ -39,7 +39,7 @@ fun SignInScreen(
     ) {
         BackArrow()
         Spacer(modifier = Modifier.height(40.dp))
-        TitleSection(titleText = "Login")
+//        TitleSection(titleText = "Login")
         Spacer(modifier = Modifier.height(20.dp))
         SignInOptions(navController)
         Spacer(modifier = Modifier.height(40.dp))

@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -17,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.likebox.R
-import com.example.likebox.presentation.view.screens.auth.Variables
 import com.example.likebox.presentation.view.theme.TextStyle.TitleTextStyle
 
 private val DarkColorScheme = darkColorScheme(
@@ -32,6 +32,9 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40
 )
 
+val TextPrimary: Color = Color(0xFF202020)
+
+
 val PretendardFontFamily = FontFamily(
     Font(R.font.pretendard_thin, FontWeight.Thin),
     Font(R.font.pretendard_light, FontWeight.Light),
@@ -43,13 +46,15 @@ val PretendardFontFamily = FontFamily(
     Font(R.font.pretendard_black, FontWeight.Black)
 )
 
+
+
 object TextStyle {
     val TitleTextStyle = TextStyle(
         fontSize = 36.sp,
         lineHeight = 40.sp,
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.W500,
-        color = Variables.TextPrimary, // Assuming Variables.TextPrimary is defined elsewhere in your theme
+        color = TextPrimary, // Assuming Variables.TextPrimary is defined elsewhere in your theme
         textAlign = TextAlign.Center
     )
 
@@ -96,13 +101,13 @@ fun LikeBoxTheme(
 
 
     // App Typography
-    val AppTypography = Typography(
-        displayLarge = TitleTextStyle // Custom Typography for displayLarge
+    val appTypography = Typography(
+        displayLarge = TitleTextStyle, // Custom Typography for displayLarge
     )
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = AppTypography,
+        typography = appTypography,
         content = content
     )
 }

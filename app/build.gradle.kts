@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
-    id("com.google.relay") version "0.3.12"
     alias(libs.plugins.hilt)
     id("com.google.gms.google-services")
 }
@@ -95,7 +94,6 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
-//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -112,6 +110,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
 
 
     // Navigation

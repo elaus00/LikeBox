@@ -36,17 +36,13 @@ import com.example.likebox.presentation.view.screens.library.detail.PlaylistDeta
 import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 
 // ViewModel과 Navigation 관련
-import com.example.likebox.presentation.viewmodel.NavigationViewModel
 
 
 @Composable
 fun NavigationHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    viewModel: NavigationViewModel = hiltViewModel()
 ) {
-    val currentScreen by viewModel.navigationState.collectAsState()
-
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -66,7 +62,6 @@ fun NavigationHost(
             composable(Screens.Auth.SignUp.route) {
                 SignUpScreen(navController)
             }
-
             composable(Screens.Auth.PlatformSetup.Selection.route) {
                 PlatformSelectionScreen(navController)
             }
@@ -227,29 +222,6 @@ fun NavigationHost(
                     onResetSettings = { }
                 )
             }
-        }
-    }
-
-
-    // Handle navigation commands
-    LaunchedEffect(Unit) {
-        viewModel.navigationCommands.collect { command ->
-            when (command) {
-                is NavigationCommand.NavigateTo -> navController.navigate(command.screen.route)
-                is NavigationCommand.NavigateToAndClearStack -> {
-                    navController.navigate(command.screen.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-                is NavigationCommand.NavigateBack -> navController.navigateUp()
-                is NavigationCommand.NavigateToRoot -> {
-                    navController.navigate(command.screen.route) {
-                        popUpTo(command.screen.route) { inclusive = true }
-                    }
-                }
-                is NavigationCommand.NavigateToWithArgs<*> -> navController.navigate(command.screen.route)
-            }
-            viewModel.onNavigationComplete()
         }
     }
 }

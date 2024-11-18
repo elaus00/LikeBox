@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.LikeBox.Starting" parent="Theme.SplashScreen">
+        <!-- 배경색 설정 -->
+        <item name="windowSplashScreenBackground">@color/gray_f7</item>
+
+        <!-- 스플래시 아이콘 표시하지 않기 -->
+        <item name="windowSplashScreenAnimatedIcon">@null</item>
+
+        <!-- 나머지 속성 동일 -->
+        <item name="splashScreenIconSize">156dp</item>
+        <item name="windowSplashScreenAnimationDuration">5000</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.LikeBox</item>
+    </style>
+
+    <style name="Theme.LikeBox" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

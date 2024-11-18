@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.LikeBox" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.LikeBox.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/gray_f7</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.LikeBox</item>
+    </style>
 </resources>
