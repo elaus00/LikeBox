@@ -92,7 +92,7 @@ fun NavigationHost(
         ) {
             // Home Flow
             composable(Screens.Main.Home.Root.route) {
-                HomeScreen(navController)
+                HomeScreen(navController = navController)
             }
 
             Screens.Main.Home.Platform::class.sealedSubclasses.forEach { platform ->

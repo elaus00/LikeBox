@@ -52,6 +52,10 @@ class MusicRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getAlbumById(albumId: String): Result<Album> {
         TODO("Not yet implemented")
     }
@@ -61,14 +65,6 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getArtistById(artistId: String): Result<Artist> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getArtistTracks(artistId: String): Result<List<Track>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getArtistAlbums(artistId: String): Result<List<Album>> {
         TODO("Not yet implemented")
     }
 
@@ -92,6 +88,14 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPlaylist(playlistId: String): Any {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRecentContents(): List<MusicContent> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAlbumTracks(albumId: String): Result<List<Track>> {
         TODO("Not yet implemented")
     }
 }

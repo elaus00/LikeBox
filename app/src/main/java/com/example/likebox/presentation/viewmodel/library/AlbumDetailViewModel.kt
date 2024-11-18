@@ -26,7 +26,6 @@ class AlbumDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AlbumDetailState())
     val uiState: StateFlow<AlbumDetailState> = _uiState.asStateFlow()
 
-
     fun loadAlbum(albumId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -35,7 +34,7 @@ class AlbumDetailViewModel @Inject constructor(
                 musicRepository.getAlbumById(albumId).fold(
                     onSuccess = { album ->
                         // 앨범의 트랙 정보 로드
-                        musicRepository.getArtistTracks(album.artists.first()).fold(
+                        musicRepository.getAlbumTracks(albumId).fold(
                             onSuccess = { tracks ->
                                 _uiState.update {
                                     it.copy(

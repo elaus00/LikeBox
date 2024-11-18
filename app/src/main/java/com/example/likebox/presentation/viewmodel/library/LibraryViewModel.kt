@@ -84,6 +84,7 @@ class LibraryViewModel @Inject constructor(
                 ContentType.TRACK -> musicRepository.getTracks(_uiState.value.selectedPlatforms)
                 ContentType.ALBUM -> musicRepository.getAlbums(_uiState.value.selectedPlatforms)
                 ContentType.PLAYLIST -> musicRepository.getPlaylists(_uiState.value.selectedPlatforms)
+                ContentType.ARTIST -> musicRepository.getArtists(_uiState.value.selectedPlatforms)
             }
 
             result.fold(

@@ -535,5 +535,6 @@ fun getDummyContent(contentType: ContentType): List<MusicContent> {
                 updatedAt = Instant.now().epochSecond
             )
         )
+        ContentType.ARTIST -> listOf()
     }
 }
