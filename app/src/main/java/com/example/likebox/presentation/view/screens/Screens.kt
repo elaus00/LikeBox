@@ -105,6 +105,11 @@ sealed class Screens(val route: String) {
                         const val route = "main/library/album/{albumId}"
                     }
                 }
+                data class TrackDetail(val trackId: String) : Details("main/library/track/$trackId") {
+                    companion object {
+                        const val route = "main/library/track/{trackId}"
+                    }
+                }
             }
 
             sealed class Platform(route: String) : Library(route) {
