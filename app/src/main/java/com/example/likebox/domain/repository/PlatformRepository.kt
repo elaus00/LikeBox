@@ -2,7 +2,7 @@ package com.example.likebox.domain.repository
 
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformAuth
-import com.example.likebox.presentation.state.auth.SyncStatus
+import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import kotlinx.coroutines.flow.Flow
 
 /**
