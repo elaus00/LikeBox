@@ -2,9 +2,6 @@ package com.example.likebox.presentation.view.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.likebox.domain.model.Settings
 import com.example.likebox.domain.model.settings.NotificationSettings
 import com.example.likebox.domain.model.settings.SyncSettings
@@ -22,12 +18,15 @@ import com.example.likebox.domain.model.settings.ThemeSettings
 // 화면들
 import com.example.likebox.presentation.view.screens.auth.OnBoardingScreen
 import com.example.likebox.presentation.view.screens.auth.SignInScreen
-import com.example.likebox.presentation.view.screens.auth.SignUpScreen
+import com.example.likebox.presentation.view.screens.auth.signup.SignUpScreen
 import com.example.likebox.presentation.view.screens.auth.platform.PlatformSelectionScreen
 import com.example.likebox.presentation.view.screens.auth.platform.PlatformConnectionScreen
 import com.example.likebox.presentation.view.screens.home.HomeScreen
 import com.example.likebox.presentation.view.screens.search.SearchScreen
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.signup.SetPasswordScreen
+import com.example.likebox.presentation.view.screens.auth.signup.SetUsernameScreen
+import com.example.likebox.presentation.view.screens.auth.signup.VerificationScreen
 import com.example.likebox.presentation.view.screens.library.ArtistDetailScreen
 import com.example.likebox.presentation.view.screens.library.LibraryScreen
 import com.example.likebox.presentation.view.screens.library.AlbumDetailScreen
@@ -59,8 +58,23 @@ fun NavigationHost(
             composable(Screens.Auth.SignIn.route) {
                 SignInScreen(navController)
             }
-            composable(Screens.Auth.SignUp.route) {
+            composable(Screens.Auth.OnBoarding.route) {
+                OnBoardingScreen(navController)
+            }
+            composable(Screens.Auth.SignIn.route) {
+                SignInScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.Root.route) {
                 SignUpScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.Verification.route) {
+                VerificationScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.SetPassword.route) {
+                SetPasswordScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.SetUsername.route) {
+                SetUsernameScreen(navController)
             }
             composable(Screens.Auth.PlatformSetup.Selection.route) {
                 PlatformSelectionScreen(navController)

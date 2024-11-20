@@ -39,7 +39,7 @@ import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.Playlist
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.presentation.state.HomeUiState
-import com.example.likebox.presentation.state.SyncStatus
+import com.example.likebox.presentation.state.auth.SyncStatus
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.theme.SofiaSans

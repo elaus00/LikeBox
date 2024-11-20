@@ -6,8 +6,8 @@ import com.example.likebox.di.Mock
 import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.domain.repository.PlatformRepository
 import com.example.likebox.presentation.state.HomeUiState
-import com.example.likebox.presentation.state.PlatformSyncStatus
-import com.example.likebox.presentation.state.SyncStatus
+import com.example.likebox.presentation.state.auth.PlatformSyncStatus
+import com.example.likebox.presentation.state.auth.SyncStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

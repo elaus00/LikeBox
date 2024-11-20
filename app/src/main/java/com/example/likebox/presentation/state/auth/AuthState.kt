@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state
+package com.example.likebox.presentation.state.auth
 
 sealed class AuthState {
     // 인증된 상태: 로그인 되어있고, 플랫폼 연동도 완료됨

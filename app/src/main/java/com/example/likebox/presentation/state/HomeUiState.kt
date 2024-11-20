@@ -2,6 +2,7 @@ package com.example.likebox.presentation.state
 
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.presentation.state.auth.PlatformSyncStatus
 import java.time.LocalDateTime
 
 data class HomeUiState(

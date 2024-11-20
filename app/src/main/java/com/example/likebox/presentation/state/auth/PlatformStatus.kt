@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state
+package com.example.likebox.presentation.state.auth
 
 data class PlatformSyncStatus(
     val isConnected: Boolean,

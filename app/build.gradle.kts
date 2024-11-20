@@ -76,6 +76,12 @@ dependencies {
 //    implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
 
+    // Google Auth
+//    implementation(libs.play.services.auth)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth.v2070)
+
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson.converter)
@@ -112,7 +118,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.splashscreen)
 
-
     // Navigation
     implementation(libs.androidx.navigation.compose.v277)
 
@@ -134,4 +139,10 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.firebase.ui.auth)
+
+    implementation(libs.play.services.safetynet)
+
+
 }

@@ -1,17 +1,34 @@
 package com.example.likebox.presentation.viewmodel
 
+import android.app.Activity
+import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.likebox.domain.repository.AuthRepository
+import com.example.likebox.domain.usecase.auth.SignInWithEmailUseCase
+import com.example.likebox.domain.usecase.auth.SignInWithPhoneNumberUseCase
+import com.example.likebox.domain.usecase.auth.SignUpWithEmailUseCase
+import com.example.likebox.domain.usecase.auth.SignUpWithPhoneNumberUseCase
+import com.example.likebox.presentation.state.auth.PhoneAuthState
+import com.example.likebox.presentation.state.auth.SignInMethod
+import com.example.likebox.presentation.state.auth.SignInState
+import com.example.likebox.presentation.state.auth.SignUpMethod
+import com.example.likebox.presentation.state.auth.SignUpState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val signInWithEmailUseCase: SignInWithEmailUseCase,
+    private val signInWithPhoneNumberUseCase: SignInWithPhoneNumberUseCase,
+    private val signUpWithEmailUseCase: SignUpWithEmailUseCase,
+    private val signUpWithPhoneNumberUseCase: SignUpWithPhoneNumberUseCase,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -21,21 +38,134 @@ class AuthViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<AuthUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    fun signIn(email: String, password: String) {
+    private val _signUpState = MutableStateFlow(SignUpState())
+    val signUpState = _signUpState.asStateFlow()
+
+    private val _signInState = MutableStateFlow(SignInState())
+    val signInState = _signInState.asStateFlow()
+
+    private val _phoneAuthState = MutableStateFlow(PhoneAuthState())
+    val phoneAuthState = _phoneAuthState.asStateFlow()
+
+    private lateinit var _activity: Activity
+
+    fun setActivity(activity: Activity) {
+        _activity = activity
+    }
+
+    fun updateSignInMethod(method: SignInMethod) {
+        _signInState.update {
+            SignInState(signInMethod = method)  // Reset all fields when changing method
+        }
+    }
+
+    fun updateEmail(email: String) {
+        _signInState.update { currentState ->
+            currentState.copy(
+                email = email,
+                emailError = if (!isValidEmail(email) && email.isNotEmpty())
+                    "Invalid email format" else null
+            )
+        }
+    }
+
+    fun updatePhoneNumber(phoneNumber: String) {
+        _signInState.update { currentState ->
+            currentState.copy(
+                phoneNumber = phoneNumber,
+                phoneNumberError = if (!isValidPhoneNumber(phoneNumber) && phoneNumber.isNotEmpty())
+                    "Invalid phone number format" else null
+            )
+        }
+    }
+
+    fun updatePassword(password: String) {
+        _signInState.update { currentState ->
+            currentState.copy(
+                password = password,
+                passwordError = if (!isValidPassword(password) && password.isNotEmpty())
+                    "Password must be at least 6 characters" else null
+            )
+        }
+    }
+
+    fun togglePasswordVisibility() {
+        _signInState.update { currentState ->
+            currentState.copy(showPassword = !currentState.showPassword)
+        }
+    }
+
+    fun signIn() {
         viewModelScope.launch {
-            authRepository.signIn(email, password)
-                .onSuccess {
+            val currentState = _signInState.value
+
+            // Validate input based on sign in method
+            when (currentState.signInMethod) {
+                SignInMethod.EMAIL -> {
+                    if (!isValidEmail(currentState.email)) {
+                        _uiEvent.emit(AuthUiEvent.ShowError("Invalid email format"))
+                        return@launch
+                    }
+                }
+                SignInMethod.PHONE -> {
+                    if (!isValidPhoneNumber(currentState.phoneNumber)) {
+                        _uiEvent.emit(AuthUiEvent.ShowError("Invalid phone number format"))
+                        return@launch
+                    }
+                }
+            }
+
+            if (!isValidPassword(currentState.password)) {
+                _uiEvent.emit(AuthUiEvent.ShowError("Password must be at least 6 characters"))
+                return@launch
+            }
+
+            _signInState.update { it.copy(isLoading = true) }
+
+            try {
+                val result = when (currentState.signInMethod) {
+                    SignInMethod.EMAIL ->
+                        signInWithEmailUseCase(currentState.email, currentState.password)
+                    SignInMethod.PHONE ->
+                        signInWithPhoneNumberUseCase(currentState.phoneNumber, _activity, currentState.password)
+                }
+
+                result.onSuccess {
                     _uiEvent.emit(AuthUiEvent.SignInSuccess)
+                }.onFailure { e ->
+                    _uiEvent.emit(AuthUiEvent.ShowError(e.message ?: "Sign in failed"))
+                }
+            } finally {
+                _signInState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun validateEmailError(email: String): String? =
+        if (!isValidEmail(email) && email.isNotEmpty()) "Invalid email format" else null
+
+    private fun validatePhoneNumberError(phoneNumber: String): String? =
+        if (!isValidPhoneNumber(phoneNumber) && phoneNumber.isNotEmpty()) "Invalid phone number format" else null
+
+    private fun validatePasswordError(password: String): String? =
+        if (!isValidPassword(password) && password.isNotEmpty()) "Password must be at least 6 characters" else null
+
+
+    fun signUpWithEmail(email: String, password: String, nickname: String) {
+        viewModelScope.launch {
+            signUpWithEmailUseCase(email, password, nickname)
+                .onSuccess {
+                    _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)
                 }
                 .onFailure { e ->
-                    _uiEvent.emit(AuthUiEvent.ShowError(e.message ?: "Sign in failed"))
+                    _uiEvent.emit(AuthUiEvent.ShowError(e.message ?: "Sign up failed"))
                 }
         }
     }
 
-    fun signUp(email: String, password: String, nickname: String) {
+    fun signUpWithPhoneNumber(phoneNumber: String, activity: Activity, password: String) {
         viewModelScope.launch {
-            authRepository.signUp(email, password, nickname)
+            signUpWithPhoneNumberUseCase(phoneNumber, activity, password)
                 .onSuccess {
                     _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)
                 }
@@ -55,6 +185,37 @@ class AuthViewModel @Inject constructor(
                     _uiEvent.emit(AuthUiEvent.ShowError(e.message ?: "Sign out failed"))
                 }
         }
+    }
+
+    private fun isValidEmail(email: String): Boolean =
+        android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+    private fun isValidPhoneNumber(phoneNumber: String): Boolean =
+        PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber)
+
+    private fun isValidPassword(password: String): Boolean =
+        password.length >= 6
+
+
+    // SignUp 상태 관리
+    fun updateSignUpMethod(method: SignUpMethod) {
+        _signUpState.update { it.copy(signUpMethod = method) }
+    }
+
+    fun updateEmailOrPhone(value: String) {
+        _signUpState.update { it.copy(emailOrPhone = value) }
+    }
+
+    fun setPassword(password: String) {
+        _signUpState.update { it.copy(password = password) }
+    }
+
+    fun setUsername(username: String) {
+        _signUpState.update { it.copy(username = username) }
+    }
+
+    fun verifyPhoneCode(verificationCode: String) {
+
     }
 }
 
