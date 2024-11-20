@@ -18,15 +18,12 @@ import com.example.likebox.domain.model.settings.ThemeSettings
 // 화면들
 import com.example.likebox.presentation.view.screens.auth.OnBoardingScreen
 import com.example.likebox.presentation.view.screens.auth.SignInScreen
-import com.example.likebox.presentation.view.screens.auth.signup.SignUpScreen
+import com.example.likebox.presentation.view.screens.auth.SignUpScreen
 import com.example.likebox.presentation.view.screens.auth.platform.PlatformSelectionScreen
 import com.example.likebox.presentation.view.screens.auth.platform.PlatformConnectionScreen
 import com.example.likebox.presentation.view.screens.home.HomeScreen
 import com.example.likebox.presentation.view.screens.search.SearchScreen
 import com.example.likebox.presentation.view.screens.Screens
-import com.example.likebox.presentation.view.screens.auth.signup.SetPasswordScreen
-import com.example.likebox.presentation.view.screens.auth.signup.SetUsernameScreen
-import com.example.likebox.presentation.view.screens.auth.signup.VerificationScreen
 import com.example.likebox.presentation.view.screens.library.ArtistDetailScreen
 import com.example.likebox.presentation.view.screens.library.LibraryScreen
 import com.example.likebox.presentation.view.screens.library.AlbumDetailScreen
@@ -66,15 +63,6 @@ fun NavigationHost(
             }
             composable(Screens.Auth.SignUp.Root.route) {
                 SignUpScreen(navController)
-            }
-            composable(Screens.Auth.SignUp.Verification.route) {
-                VerificationScreen(navController)
-            }
-            composable(Screens.Auth.SignUp.SetPassword.route) {
-                SetPasswordScreen(navController)
-            }
-            composable(Screens.Auth.SignUp.SetUsername.route) {
-                SetUsernameScreen(navController)
             }
             composable(Screens.Auth.PlatformSetup.Selection.route) {
                 PlatformSelectionScreen(navController)

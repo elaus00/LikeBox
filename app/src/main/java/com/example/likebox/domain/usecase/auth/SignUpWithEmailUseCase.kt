@@ -17,7 +17,7 @@ class SignUpWithEmailUseCase @Inject constructor(
             return Result.failure(IllegalArgumentException("Nickname must be between 2 and 20 characters"))
         }
 
-        return authRepository.signUp(email, password, nickname)
+        return authRepository.signUpWithEmail(email, password, nickname)
     }
 
     private fun isValidEmail(email: String): Boolean {

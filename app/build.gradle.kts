@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.hilt)
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 configurations.all {
@@ -27,15 +28,27 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            // 릴리즈 키스토어 정보
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("debug") {
+            // debug.keystore가 없는 경우를 위해 주석 처리
+            // signingConfig = signingConfigs.getByName("debug")
+        }
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -63,6 +76,7 @@ android {
             excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
+
 }
 
 dependencies {
@@ -100,6 +114,7 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
+    implementation(libs.firebase.crashlytics.ktx)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -143,6 +158,6 @@ dependencies {
     implementation(libs.firebase.ui.auth)
 
     implementation(libs.play.services.safetynet)
-
-
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 }

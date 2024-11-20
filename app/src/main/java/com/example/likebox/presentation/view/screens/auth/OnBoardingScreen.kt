@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.likebox.R
-import com.example.likebox.presentation.state.auth.AuthState
+import com.example.likebox.presentation.view.screens.auth.state.AuthState
 import com.example.likebox.presentation.view.screens.Screens
-import com.example.likebox.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun OnBoardingScreen(
@@ -106,7 +106,8 @@ fun OnBoardingScreen(
 
             AuthTextButton(
                 text = "Create an account",
-                onClick = { navController.navigate(Screens.Auth.SignUp.Root.route) }
+                onClick = { navController.navigate(Screens.Auth.SignUp.Root.route) },
+                lineHeight = 40.sp
             )
         }
     }

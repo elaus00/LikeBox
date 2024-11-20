@@ -1,6 +1,5 @@
 package com.example.likebox.presentation.view.screens.auth
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -42,20 +42,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import com.example.likebox.R
-import com.example.likebox.presentation.state.auth.SignInState
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.example.likebox.presentation.view.theme.mainColor
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 
 @Composable
 fun AuthTitle(
     modifier: Modifier = Modifier,
     title: String,
+    textAlign: TextAlign = TextAlign.Center,
     titleFontWeight: FontWeight = FontWeight(500), // 기본값 500
     subtitleFontWeight: FontWeight = FontWeight.Normal, // 기본값 Normal
     subtitle: String? = null,
@@ -74,7 +70,8 @@ fun AuthTitle(
             fontFamily = FontFamily(Font(R.font.pretendard)),
             fontWeight = titleFontWeight,
             fontSize = 36.sp,
-            textAlign = TextAlign.Center,
+            lineHeight = 50.sp,
+            textAlign = textAlign,
         )
 
         subtitle?.let {
@@ -84,7 +81,7 @@ fun AuthTitle(
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.pretendard)),
                 fontWeight = subtitleFontWeight,
-                textAlign = TextAlign.Center,
+                textAlign = textAlign,
                 lineHeight = 30.sp,
                 overflow = TextOverflow.Ellipsis
             )
@@ -133,21 +130,23 @@ fun AuthTextButton(
     modifier: Modifier = Modifier,
     text: String,
     fontSize: TextUnit = 16.sp,
+    fontWeight: FontWeight = FontWeight.Normal,
     onClick: () -> Unit,
     textColor: Color = mainColor,
+    lineHeight: TextUnit,
 ) {
     Text(
         text = text,
         color = textColor,
         fontSize = fontSize,
-        lineHeight = 21.sp,
+        lineHeight = lineHeight,
         fontFamily = FontFamily(Font(R.font.pretendard)),
-        fontWeight = FontWeight.Normal,
+        fontWeight = fontWeight,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(start = 4.dp)
+            .padding(horizontal = 8.dp)
     )
 }
 
@@ -158,19 +157,37 @@ fun AuthTextField(
     label: String,
     placeholder: String,
     modifier: Modifier = Modifier,
+    fontWeight: FontWeight = FontWeight.Bold,
     isPassword: Boolean = false,
     error: String? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-    Column {
-        Text(
-            text = label,
-            color = Color(0xFF313131).copy(alpha = 0.86f),
-            fontSize = 12.sp,
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 40.sp
-        )
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                color = Color(0xFF313131).copy(alpha = 0.86f),
+                fontSize = 12.sp,
+                fontFamily = PretendardFontFamily,
+                fontWeight = fontWeight,
+                lineHeight = 40.sp
+            )
+            if (trailingContent != null) {
+                Box(
+                    contentAlignment = Alignment.CenterEnd,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
+                ){
+                    trailingContent()
+                }
+            }
+        }
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -180,7 +197,7 @@ fun AuthTextField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color(0xFF8885AC),
+                    color = Color.Black.copy(0.4f),
                     fontSize = 14.sp,
                     fontFamily = PretendardFontFamily
                 )
@@ -194,7 +211,8 @@ fun AuthTextField(
             isError = error != null,
             trailingIcon = trailingIcon,
             singleLine = true,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            keyboardOptions = keyboardOptions
         )
         if (error != null) {
             Text(
@@ -548,5 +566,54 @@ fun PlatformSetupDialog(
             },
             modifier = modifier
         )
+    }
+}
+
+@Composable
+fun VerificationTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = { if (it.length <= 6 && it.all { char -> char.isDigit() }) onValueChange(it) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = mainColor,
+            unfocusedBorderColor = Color(0xFFDCDBEA)
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        shape = RoundedCornerShape(8.dp)
+    )
+}
+@Composable
+fun VerificationResendButton(
+    onClick: () -> Unit,
+    remainingTime: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.clickable(enabled = remainingTime == 0) { onClick() },
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Resend code",
+            color = if (remainingTime == 0) mainColor else Color.Gray,
+            fontSize = 14.sp,
+            fontFamily = PretendardFontFamily
+        )
+        if (remainingTime > 0) {
+            Text(
+                text = "($remainingTime)",
+                color = Color.Gray,
+                fontSize = 14.sp,
+                fontFamily = PretendardFontFamily
+            )
+        }
     }
 }

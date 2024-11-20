@@ -19,7 +19,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,11 +33,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.likebox.R
-import com.example.likebox.presentation.state.auth.SignInMethod
+import com.example.likebox.presentation.view.screens.auth.state.SignInMethod
 import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
-import com.example.likebox.presentation.viewmodel.AuthUiEvent
-import com.example.likebox.presentation.viewmodel.AuthViewModel
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import kotlinx.coroutines.launch
@@ -170,7 +167,7 @@ fun SignInScreen(
                 isPassword = !signInState.showPassword,
                 error = signInState.passwordError,
                 trailingIcon = {
-                    IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
+                    IconButton(onClick = { viewModel.toggleSignInPasswordVisibility() }) {
                         Icon(
                             imageVector = if (signInState.showPassword) {
                                 Icons.Default.VisibilityOff

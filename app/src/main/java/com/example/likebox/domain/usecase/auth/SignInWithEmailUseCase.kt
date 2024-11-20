@@ -14,7 +14,7 @@ class SignInWithEmailUseCase @Inject constructor(
             return Result.failure(IllegalArgumentException("Password must be at least 6 characters"))
         }
 
-        return authRepository.signIn(email, password)
+        return authRepository.signInWithEmail(email, password)
     }
 
     private fun isValidEmail(email: String): Boolean {
