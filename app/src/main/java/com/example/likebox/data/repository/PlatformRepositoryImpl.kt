@@ -80,7 +80,33 @@ class PlatformRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshPlatformToken(platform: MusicPlatform): Result<PlatformAuth> {
-        TODO("Not yet implemented")
+        return try {
+            val data = mapOf(
+                "platform" to platform.name
+            )
+
+            val response = functions
+                .getHttpsCallable("verifyToken")
+                .call(data)
+                .await()
+
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            val success = result["success"] as? Boolean ?: false
+
+            if (!success) {
+                return Result.failure(Exception("Failed to fetch liked content"))
+            }
+
+            else Result.success(PlatformAuth(platform, true))
+
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateLastSyncTime(

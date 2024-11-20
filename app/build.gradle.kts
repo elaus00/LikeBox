@@ -48,7 +48,6 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -76,7 +75,6 @@ android {
             excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
-
 }
 
 dependencies {
@@ -87,14 +85,12 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-//    implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
 
     // Google Auth
 //    implementation(libs.play.services.auth)
     implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
-    implementation(libs.play.services.auth)
+
 
     // Retrofit
     implementation(libs.retrofit)
@@ -107,6 +103,7 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -114,7 +111,8 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
-    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.google.firebase.appcheck.debug)
+//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -155,12 +153,11 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.systemuicontroller)
 
-    implementation(libs.firebase.ui.auth)
-
-    implementation(libs.play.services.safetynet)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
-
     // Credentials API
     implementation(libs.androidx.credentials)
+
+    // Firebase Testing
+    androidTestImplementation(platform(libs.firebase.bom))
+    androidTestImplementation(libs.firebase.functions.ktx)
+
 }
