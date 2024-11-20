@@ -107,6 +107,7 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -115,6 +116,7 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
     implementation(libs.firebase.crashlytics.ktx)
+//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -123,6 +125,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
     // Compose (버전을 명시적으로 지정된 BOM으로 통일)
     implementation(platform(libs.androidx.compose.bom.v20240100))
@@ -160,4 +163,18 @@ dependencies {
     implementation(libs.play.services.safetynet)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase Testing
+    androidTestImplementation(platform(libs.firebase.bom))
+    androidTestImplementation(libs.firebase.functions.ktx)
+
+    // Firebase AppCheck
+    implementation(libs.firebase.appcheck)
+    implementation(libs.firebase.appcheck.playintegrity)
 }

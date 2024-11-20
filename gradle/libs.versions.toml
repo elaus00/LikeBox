@@ -45,6 +45,7 @@ firebaseStorageKtx = "21.0.1"
 volley = "1.2.1"
 uiDesktop = "1.7.0"
 firebaseCrashlyticsKtx = "19.2.1"
+firebaseAppcheckDebug = "18.0.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -109,6 +110,16 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 androidx-ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "uiDesktop" }
 firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
+# test
+androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version = "1.5.0" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.7.1" }
+
+# 추가 필요한 App Check 라이브러리들
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug"}
+firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck"}
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
