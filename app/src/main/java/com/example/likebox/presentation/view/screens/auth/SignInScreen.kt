@@ -1,13 +1,11 @@
 package com.example.likebox.presentation.view.screens.auth
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,20 +19,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.credentials.CredentialManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -55,28 +50,32 @@ fun SignInScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
-    val signInState by viewModel.signInState.collectAsStateWithLifecycle()
-    val uiEvent by viewModel.uiEvent.collectAsStateWithLifecycle(initialValue = null)
     val scope = rememberCoroutineScope()
+    val signInState by viewModel.signInState.collectAsStateWithLifecycle()
+    val uiEvent = viewModel.uiEvent
 
-    LaunchedEffect(uiEvent) {
-        when (uiEvent) {
-            is AuthUiEvent.SignInSuccess -> {
-                navController.navigate(Screens.Main.Home.Root.route) {
-                    popUpTo(Screens.Auth.SignIn.route) { inclusive = true }
+    LaunchedEffect(Unit) {
+        uiEvent.collect { event ->
+            when (event) {
+                is AuthUiEvent.SignInSuccess -> {
+                    navController.navigate(Screens.Main.Home.Root.route) {
+                        popUpTo(Screens.Auth.SignIn.route) { inclusive = true }
+                    }
                 }
+                is AuthUiEvent.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true,
+                        actionLabel = "Dismiss"
+                    )
+                }
+                else -> {}
             }
-            is AuthUiEvent.ShowError -> {
-                snackbarHostState.showSnackbar(
-                    message = (uiEvent as AuthUiEvent.ShowError).message,
-                    duration = SnackbarDuration.Short,
-                    withDismissAction = true,
-                    actionLabel = "Dismiss"
-                )
-            }
-            else -> Unit
         }
     }
+
+
 
     val launcher = rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract()
@@ -187,18 +186,21 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             AuthTextButton(
+                modifier = Modifier.align(Alignment.End),
                 text = "Forgot Password?",
+                fontSize = 12.sp,
                 onClick = {
                     scope.launch {
                         snackbarHostState.showSnackbar(
                             message = "This feature is coming soon",
-                            duration = SnackbarDuration.Short
+                            duration = SnackbarDuration.Short,
+                            withDismissAction = true,
+                            actionLabel = "Dismiss"
                         )
                     }
                 },
-                textColor = Color.Black.copy(0.6f),
-                fontSize = 12.sp,
-                modifier = Modifier.align(Alignment.End)
+                textColor = Color.Black.copy(0.8f),
+                lineHeight = 40.sp
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -255,7 +257,8 @@ fun SignInScreen(
 
             AuthTextButton(
                 text = "Create an account",
-                onClick = { navController.navigate(Screens.Auth.SignUp.Root.route) }
+                onClick = { navController.navigate(Screens.Auth.SignUp.Root.route) },
+                lineHeight = 40.sp
             )
         }
     }
