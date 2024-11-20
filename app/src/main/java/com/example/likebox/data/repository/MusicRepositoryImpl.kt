@@ -1,6 +1,5 @@
 package com.example.likebox.data.repository
 
-import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.model.library.Playlist
 import com.example.likebox.domain.model.library.Album
@@ -9,14 +8,10 @@ import com.example.likebox.domain.model.library.ContentType
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
-
-import com.google.firebase.Firebase
-import com.google.firebase.functions.functions
 import javax.inject.Inject
 
 
 class MusicRepositoryImpl @Inject constructor(
-    private val firebaseService: FirebaseService
 ) : MusicRepository {
     override suspend fun getLikedContent(
         platform: MusicPlatform,

@@ -1,9 +1,6 @@
 package com.example.likebox.di
 
-import com.example.likebox.data.firebase.FirebaseService
-import com.example.likebox.data.firebase.FirebaseServiceImpl
-import com.example.likebox.data.firebase.SearchFirebaseService
-import com.example.likebox.data.firebase.SearchFirebaseServiceImpl
+
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,21 +34,4 @@ class FirebaseModule {
         return FirebaseFirestore.getInstance()
     }
 
-    @Provides
-    @Singleton
-    fun provideFirebaseService(
-        auth: FirebaseAuth,
-        firestore: FirebaseFirestore
-    ): FirebaseService {
-        return FirebaseServiceImpl(auth, firestore)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSearchFirebaseService(
-        firestore: FirebaseFirestore,
-        auth: FirebaseAuth
-    ): SearchFirebaseService {
-        return SearchFirebaseServiceImpl(firestore, auth)
-    }
 }
