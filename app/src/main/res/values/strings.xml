@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LikeBox</string>
+    <color name="red_f9">#FFF93C58</color>
 </resources>

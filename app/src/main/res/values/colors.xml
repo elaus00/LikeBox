@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="LikeBox_main">#FFF93C58</color>
     <color name="sub_title_text">#F0000080</color>
+    <color name="gray_f7">#FFF7F7F7</color>
 </resources>

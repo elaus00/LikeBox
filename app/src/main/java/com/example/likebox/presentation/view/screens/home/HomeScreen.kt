@@ -38,14 +38,12 @@ import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.Playlist
 import com.example.likebox.domain.model.library.Track
-import com.example.likebox.presentation.state.HomeUiState
-import com.example.likebox.presentation.state.SyncStatus
+import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.theme.SofiaSans
 import com.example.likebox.presentation.view.theme.TextStyle
 import com.example.likebox.presentation.view.theme.TextStyle.heading2
-import com.example.likebox.presentation.viewmodel.HomeViewModel
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 

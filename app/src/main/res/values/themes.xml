@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- themes.xml -->
+    <style name="Theme.LikeBox.Starting" parent="Theme.SplashScreen">
+        <!-- 배경색 설정 -->
+        <item name="windowSplashScreenBackground">@color/gray_f7</item>
+
+        <!-- 애니메이션 시간 0으로 설정 -->
+        <item name="windowSplashScreenAnimationDuration">0</item>
+
+        <!-- 시스템 UI 투명하게 설정 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- 스플래시 이후 메인 테마 -->
+        <item name="postSplashScreenTheme">@style/Theme.LikeBox</item>
+    </style>
+
     <style name="Theme.LikeBox" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

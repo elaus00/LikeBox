@@ -1,237 +1,262 @@
 package com.example.likebox.presentation.view.screens.auth
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import android.app.Activity.RESULT_OK
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.likebox.R
+import com.example.likebox.presentation.view.screens.auth.state.SignInMethod
 import com.example.likebox.presentation.view.screens.Screens
-import com.example.likebox.presentation.view.theme.RegisterButton
+import com.example.likebox.presentation.view.theme.PretendardFontFamily
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xfff7f7f7))
-            .padding(horizontal = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        BackArrow()
-        Spacer(modifier = Modifier.height(40.dp))
-        TitleSection(titleText = "Login")
-        Spacer(modifier = Modifier.height(20.dp))
-        SignInOptions(navController)
-        Spacer(modifier = Modifier.height(40.dp))
-        DividerWithText("or continue with")
-        Spacer(modifier = Modifier.height(20.dp))
-        SocialLoginOptions()
-        Spacer(modifier = Modifier.height(20.dp))
-        TextButton("Create an account")
-    }
-}
+    val scope = rememberCoroutineScope()
+    val signInState by viewModel.signInState.collectAsStateWithLifecycle()
+    val uiEvent = viewModel.uiEvent
 
-@Composable
-fun BackArrow() {
-    Image(
-        painter = painterResource(id = R.drawable.back_arrow),
-        contentDescription = null,
-        contentScale = ContentScale.Fit,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
-    )
-}
-
-@Composable
-fun SignInOptions(navController: NavController) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        InputGroup()
-        InputField("Email Address", "likebox@example.com")
-        InputField("Password", "Password")
-        RegisterButton(navController = navController, text = "Login")
-        TextButton("Forgot Password?")
-    }
-}
-
-@Composable
-fun InputGroup() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterHorizontally),
-        modifier = Modifier
-            .width(325.dp)
-            .height(54.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .border(width = 1.5.dp, color = Color(0xFF888888))
-                .width(162.5.dp)
-                .height(54.dp)
-                .padding(start = 0.dp, top = 15.dp, end = 0.dp, bottom = 15.dp)
-        ) {
-            Text(
-                text = "Email",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    lineHeight = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard)),
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF888888),
-                ),
-                modifier = Modifier
-                    .width(44.dp)
-                    .height(24.dp)
-            )
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .border(width = 1.5.dp, color = Color(0xFF888888))
-                .width(162.5.dp)
-                .height(54.dp)
-                .padding(start = 0.dp, top = 15.dp, end = 0.dp, bottom = 15.dp)
-        ) {
-            Text(
-                text = "Phone Number",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    lineHeight = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard)),
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFFF93C58),
-                ),
-                modifier = Modifier
-                    .width(123.dp)
-                    .height(24.dp)
-            )
+    LaunchedEffect(Unit) {
+        uiEvent.collect { event ->
+            when (event) {
+                is AuthUiEvent.SignInSuccess -> {
+                    navController.navigate(Screens.Main.Home.Root.route) {
+                        popUpTo(Screens.Auth.SignIn.route) { inclusive = true }
+                    }
+                }
+                is AuthUiEvent.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true,
+                        actionLabel = "Dismiss"
+                    )
+                }
+                else -> {}
+            }
         }
     }
-}
 
-@Composable
-fun InputField(label: String, placeholder: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(1.dp, Color(0xffdcdbea), RoundedCornerShape(8.dp))
-            .padding(15.dp)
-    ) {
-        Text(
-            text = label,
-            color = Color(0xff8784ac),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
-        )
-        Text(
-            text = placeholder,
-            color = Color(0xff8784ac),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
-        )
+
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = FirebaseAuthUIActivityResultContract()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            viewModel.authState
+        }
     }
-}
 
-@Composable
-fun DividerWithText(text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        DividerLine()
-        Text(
-            text = text,
-            color = Color(0xa57d7d7d),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        DividerLine()
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                CustomSnackbar(snackbarData = snackbarData)
+            }
+        },
+        topBar = {
+            TopAppBar(
+                title = { },
+                modifier = Modifier.padding(start = 12.dp),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.back_arrow),
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    PaddingValues(
+                        start = 30.dp,
+                        end = 30.dp,
+                        top = padding.calculateTopPadding().minus(20.dp),
+                        bottom = padding.calculateBottomPadding(),
+                    )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AuthTitle(
+                title = "Login",
+                titleFontWeight = FontWeight(500)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            AuthToggleButton(
+                options = listOf("Email", "Phone Number"),
+                selectedOption = if (signInState.signInMethod == SignInMethod.EMAIL) "Email" else "Phone Number",
+                onOptionSelected = {
+                    viewModel.updateSignInMethod(
+                        if (it == "Email") SignInMethod.EMAIL else SignInMethod.PHONE
+                    )
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when (signInState.signInMethod) {
+                SignInMethod.EMAIL -> {
+                    AuthTextField(
+                        value = signInState.email,
+                        onValueChange = { viewModel.updateEmail(it) },
+                        label = "Email Address",
+                        placeholder = "likebox@example.com",
+                        error = signInState.emailError
+                    )
+                }
+                SignInMethod.PHONE -> {
+                    PhoneNumberTextField(
+                        phoneNumber = signInState.phoneNumber,
+                        onPhoneNumberChange = { viewModel.updatePhoneNumber(it) },
+                        error = signInState.phoneNumberError
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            AuthTextField(
+                value = signInState.password,
+                onValueChange = { viewModel.updatePassword(it) },
+                label = "Password",
+                placeholder = "Enter your password",
+                isPassword = !signInState.showPassword,
+                error = signInState.passwordError,
+                trailingIcon = {
+                    IconButton(onClick = { viewModel.toggleSignInPasswordVisibility() }) {
+                        Icon(
+                            imageVector = if (signInState.showPassword) {
+                                Icons.Default.VisibilityOff
+                            } else {
+                                Icons.Default.Visibility
+                            },
+                            contentDescription = "Toggle password visibility"
+                        )
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AuthTextButton(
+                modifier = Modifier.align(Alignment.End),
+                text = "Forgot Password?",
+                fontSize = 12.sp,
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "This feature is coming soon",
+                            duration = SnackbarDuration.Short,
+                            withDismissAction = true,
+                            actionLabel = "Dismiss"
+                        )
+                    }
+                },
+                textColor = Color.Black.copy(0.8f),
+                lineHeight = 40.sp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            AuthButton(
+                text = "Login",
+                onClick = { viewModel.signIn() },
+                enabled = !signInState.isLoading,
+                isLoading = signInState.isLoading
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Color.Black.copy(alpha = 0.2f)
+                )
+                Text(
+                    text = "or continue with",
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = Color(0xFF7D7D7D).copy(0.8f),
+                    fontSize = 16.sp,
+                    fontFamily = PretendardFontFamily
+                )
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Color.Black.copy(alpha = 0.2f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            SocialLoginButton(
+                text = "Continue with Google",
+                icon = R.drawable.google_logo,
+                onClick = {
+                    val providers = arrayListOf(
+                        AuthUI.IdpConfig.GoogleBuilder().build()
+                    )
+
+                    val signInIntent = AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build()
+
+                    launcher.launch(signInIntent)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            AuthTextButton(
+                text = "Create an account",
+                onClick = { navController.navigate(Screens.Auth.SignUp.Root.route) },
+                lineHeight = 40.sp
+            )
+        }
     }
-}
-
-@Composable
-fun DividerLine() {
-    Box(
-        modifier = Modifier
-            .height(1.dp)
-            .background(Color(0xff000000))
-    )
-}
-
-@Composable
-fun SocialLoginOptions() {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        SocialLoginButton("Continue with Apple", R.drawable.apple_logo)
-        SocialLoginButton("Continue with Google", R.drawable.google_logo)
-    }
-}
-
-@Composable
-fun SocialLoginButton(text: String, iconRes: Int) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xffe6e6e6), RoundedCornerShape(30.dp))
-            .padding(16.dp)
-    ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.size(23.dp)
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            text = text,
-            color = Color(0xff3c3c3c),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun TextButton(text: String) {
-    Text(
-        text = text,
-        color = Color(0xffff183a),
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .padding(8.dp)
-//            .clickable(onClick = onClick)
-    )
 }

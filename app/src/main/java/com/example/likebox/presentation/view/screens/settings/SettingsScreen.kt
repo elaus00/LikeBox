@@ -19,7 +19,6 @@ import com.example.likebox.domain.model.*
 import com.example.likebox.domain.model.auth.User
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 
-
 /**
  * 설정 화면의 메인 컴포저블
  * 모든 설정 관련 UI 컴포넌트들을 조합하여 완성된 설정 화면을 구성

@@ -9,9 +9,15 @@ sealed class Screens(val route: String) {
 
     // Auth Flow
     sealed class Auth(route: String) : Screens(route) {
-        data object SignIn : Auth("auth/signin")
-        data object SignUp : Auth("auth/signup")
         data object OnBoarding : Auth("auth/onboarding")
+        data object SignIn : Auth("auth/signin")
+
+        sealed class SignUp(route: String) : Auth(route) {
+            data object Root : SignUp("auth/signup")
+            data object Verification : SignUp("auth/signup/verify")
+            data object SetPassword : SignUp("auth/signup/password")
+            data object SetUsername : SignUp("auth/signup/username")
+        }
 
         sealed class PlatformSetup(route: String) : Auth(route) {
             data object Selection : PlatformSetup("auth/platform-setup/selection")

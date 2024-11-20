@@ -4,10 +4,8 @@ import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformAuth
 import com.example.likebox.domain.repository.PlatformRepository
-import com.example.likebox.presentation.state.SyncStatus
-import com.google.firebase.Firebase
+import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.functions
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await

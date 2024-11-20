@@ -21,7 +21,7 @@ import coil.compose.AsyncImage
 import com.example.likebox.domain.model.library.Album
 import com.example.likebox.presentation.view.screens.library.detail.TrackListItem
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
-import com.example.likebox.presentation.viewmodel.library.AlbumDetailViewModel
+import com.example.likebox.presentation.view.screens.library.viewmodel.AlbumDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
