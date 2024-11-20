@@ -1,6 +1,5 @@
 package com.example.likebox.data.repository
 
-import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformAuth
 import com.example.likebox.domain.repository.PlatformRepository
@@ -11,8 +10,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
 class PlatformRepositoryImpl @Inject constructor(
-    private val firebaseService: FirebaseService,
-    private val functions: FirebaseFunctions // 또는 필요한 다른 의존성
+    private val functions: FirebaseFunctions// 또는 필요한 다른 의존성
 ) : PlatformRepository {
     // Feat: getConnectedPlatforms
     override suspend fun getConnectedPlatforms(): Result<List<MusicPlatform>> {
