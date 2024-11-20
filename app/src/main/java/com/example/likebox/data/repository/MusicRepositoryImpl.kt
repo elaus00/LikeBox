@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 
 class MusicRepositoryImpl @Inject constructor(
-    private val firebaseService: FirebaseService,
     private val functions: FirebaseFunctions
 ) : MusicRepository {
     override suspend fun getLikedContent(

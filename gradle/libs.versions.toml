@@ -33,6 +33,7 @@ material3Jvmstubs = "1.4.0-alpha04"
 navigationSafeArgsGenerator = "2.8.4"
 firebaseStorageKtx = "21.0.1"
 volley = "1.2.1"
+firebaseAppcheckDebug = "18.0.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -90,6 +91,11 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.
 androidx-test-rules = { group = "androidx.test", name = "rules", version = "1.5.0" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.7.1" }
+
+# 추가 필요한 App Check 라이브러리들
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug"}
+firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck"}
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

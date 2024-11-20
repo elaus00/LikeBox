@@ -126,14 +126,14 @@ class FirebaseFunctionTest1 {
 //                durationMs
 
                 tracks.forEach{ track ->
-                    println(track.id)
-                    println(track.platformId)
-                    println(track.platform.name)
-                    println(track.name)
-                    println(track.thumbnailUrl)
-                    println(track.artists)
-                    println(track.album)
-                    println(track.durationMs)
+                    println("id: ${track.id}")
+                    println("pid: ${track.platformId}")
+                    println("platform: ${track.platform.name}")
+                    println("name: ${track.name}")
+                    println("thumbnailUrl: ${track.thumbnailUrl}")
+                    println("artists: ${track.artists}")
+                    println("album: ${track.album}")
+                    println("durationMs: ${track.durationMs}")
                 }
 
 //                id = id,
@@ -149,25 +149,25 @@ class FirebaseFunctionTest1 {
 //                tracks = tracks
 
                 playlists.forEach { pl ->
-                    println(pl.id)
-                    println(pl.platformId)
-                    println(pl.platform.name)
-                    println(pl.name)
-                    println(pl.thumbnailUrl)
-                    println(pl.updatedAt)
-                    println(pl.createdAt)
-                    println(pl.description)
-                    println(pl.trackCount)
-                    println(pl.owner)
+                    println("id: ${pl.id}")
+                    println("pid: ${pl.platformId}")
+                    println("platform: ${pl.platform.name}")
+                    println("name: ${pl.name}")
+                    println("thumbnailUrl: ${pl.thumbnailUrl}")
+                    println("updatedAt: ${pl.updatedAt}")
+                    println("createdAt: ${pl.createdAt}")
+                    println("description: ${pl.description}")
+                    println("trackCount: ${pl.trackCount}")
+                    println("owner: ${pl.owner}")
                     pl.tracks.forEach { track ->
-                        println(track.id)
-                        println(track.platformId)
-                        println(track.platform.name)
-                        println(track.name)
-                        println(track.thumbnailUrl)
-                        println(track.artists)
-                        println(track.album)
-                        println(track.durationMs)
+                        println("id: ${track.id}")
+                        println("pid: ${track.platformId}")
+                        println("platform: ${track.platform.name}")
+                        println("name: ${track.name}")
+                        println("thumbnailUrl: ${track.thumbnailUrl}")
+                        println("artists: ${track.artists}")
+                        println("album: ${track.album}")
+                        println("durationMs: ${track.durationMs}")
                     }
                 }
 
@@ -185,25 +185,25 @@ class FirebaseFunctionTest1 {
 //                tracks = tracks
 
                 albums.forEach{ a ->
-                    println(a.id)
-                    println(a.platformId)
-                    println(a.platform.name)
-                    println(a.name)
-                    println(a.thumbnailUrl)
-                    println(a.updatedAt)
-                    println(a.createdAt)
-                    println(a.artists)
-                    println(a.releaseDate)
-                    println(a.trackCount)
+                    println("id: ${a.id}")
+                    println("pid: ${a.platformId}")
+                    println("platform: ${a.platform.name}")
+                    println("name: ${a.name}")
+                    println("thumbnailUrl: ${a.thumbnailUrl}")
+                    println("updatedAt: ${a.updatedAt}")
+                    println("createdAt: ${a.createdAt}")
+                    println("artists: ${a.artists}")
+                    println("releaseDate: ${a.releaseDate}")
+                    println("trackCount: ${a.trackCount}")
                     a.tracks.forEach { track ->
-                        println(track.id)
-                        println(track.platformId)
-                        println(track.platform.name)
-                        println(track.name)
-                        println(track.thumbnailUrl)
-                        println(track.artists)
-                        println(track.album)
-                        println(track.durationMs)
+                        println("id: ${track.id}")
+                        println("pid: ${track.platformId}")
+                        println("platform: ${track.platform.name}")
+                        println("name: ${track.name}")
+                        println("thumbnailUrl: ${track.thumbnailUrl}")
+                        println("artists: ${track.artists}")
+                        println("album: ${track.album}")
+                        println("durationMs: ${track.durationMs}")
                     }
                 }
 

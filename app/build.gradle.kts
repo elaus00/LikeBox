@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
+    implementation(libs.firebase.appcheck.debug)
 //    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
@@ -147,4 +148,8 @@ dependencies {
     // Firebase Testing
     androidTestImplementation(platform(libs.firebase.bom))
     androidTestImplementation(libs.firebase.functions.ktx)
+
+    // Firebase AppCheck
+    implementation(libs.firebase.appcheck)
+    implementation(libs.firebase.appcheck.playintegrity)
 }
