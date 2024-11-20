@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.viewmodel
+package com.example.likebox.presentation.view.screens.auth
 
 import android.app.Activity
 import android.telephony.PhoneNumberUtils
@@ -9,11 +9,11 @@ import com.example.likebox.domain.usecase.auth.SignInWithEmailUseCase
 import com.example.likebox.domain.usecase.auth.SignInWithPhoneNumberUseCase
 import com.example.likebox.domain.usecase.auth.SignUpWithEmailUseCase
 import com.example.likebox.domain.usecase.auth.SignUpWithPhoneNumberUseCase
-import com.example.likebox.presentation.state.auth.PhoneAuthState
-import com.example.likebox.presentation.state.auth.SignInMethod
-import com.example.likebox.presentation.state.auth.SignInState
-import com.example.likebox.presentation.state.auth.SignUpMethod
-import com.example.likebox.presentation.state.auth.SignUpState
+import com.example.likebox.presentation.view.screens.auth.state.PhoneAuthState
+import com.example.likebox.presentation.view.screens.auth.state.SignInMethod
+import com.example.likebox.presentation.view.screens.auth.state.SignInState
+import com.example.likebox.presentation.view.screens.auth.state.SignUpMethod
+import com.example.likebox.presentation.view.screens.auth.state.SignUpState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,8 @@ class AuthViewModel @Inject constructor(
     val authState = authRepository.authState
     val currentUser = authRepository.currentUser
 
-    private val _uiEvent = MutableSharedFlow<AuthUiEvent>()
+    private val _uiEvent =
+        MutableSharedFlow<AuthUiEvent>(replay = 0) // No replay ensures fresh emission
     val uiEvent = _uiEvent.asSharedFlow()
 
     private val _signUpState = MutableStateFlow(SignUpState())
@@ -55,7 +56,19 @@ class AuthViewModel @Inject constructor(
 
     fun updateSignInMethod(method: SignInMethod) {
         _signInState.update {
-            SignInState(signInMethod = method)  // Reset all fields when changing method
+            SignInState(
+                signInMethod = method
+            )  // Reset all fields when changing method
+        }
+    }
+
+    fun updateSignUpMethod(method: SignUpMethod) {
+        _signUpState.update { currentState ->
+            currentState.copy(
+                signUpMethod = method,
+                emailOrPhone = "",  // 입력 필드 초기화
+                isVerificationSent = false  // 인증 상태 초기화
+            )
         }
     }
 
@@ -89,12 +102,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun togglePasswordVisibility() {
-        _signInState.update { currentState ->
-            currentState.copy(showPassword = !currentState.showPassword)
-        }
-    }
-
     fun signIn() {
         viewModelScope.launch {
             val currentState = _signInState.value
@@ -107,6 +114,7 @@ class AuthViewModel @Inject constructor(
                         return@launch
                     }
                 }
+
                 SignInMethod.PHONE -> {
                     if (!isValidPhoneNumber(currentState.phoneNumber)) {
                         _uiEvent.emit(AuthUiEvent.ShowError("Invalid phone number format"))
@@ -126,8 +134,13 @@ class AuthViewModel @Inject constructor(
                 val result = when (currentState.signInMethod) {
                     SignInMethod.EMAIL ->
                         signInWithEmailUseCase(currentState.email, currentState.password)
+
                     SignInMethod.PHONE ->
-                        signInWithPhoneNumberUseCase(currentState.phoneNumber, _activity, currentState.password)
+                        signInWithPhoneNumberUseCase(
+                            currentState.phoneNumber,
+                            _activity,
+                            currentState.password
+                        )
                 }
 
                 result.onSuccess {
@@ -141,18 +154,33 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun validateEmailError(email: String): String? =
-        if (!isValidEmail(email) && email.isNotEmpty()) "Invalid email format" else null
+    fun setPassword(password: String) {
+        _signUpState.update { it.copy(password = password) }
+    }
 
-    private fun validatePhoneNumberError(phoneNumber: String): String? =
-        if (!isValidPhoneNumber(phoneNumber) && phoneNumber.isNotEmpty()) "Invalid phone number format" else null
+    fun setPasswordConfirmation(passwordConfirmation: String) {
+        _signUpState.update { it.copy(passwordConfirmation = passwordConfirmation) }
+    }
 
-    private fun validatePasswordError(password: String): String? =
-        if (!isValidPassword(password) && password.isNotEmpty()) "Password must be at least 6 characters" else null
+    fun toggleSignUpPasswordVisibility() {
+        _signUpState.update { it.copy(showPassword = !it.showPassword) }
+    }
 
+    fun toggleSignUpPasswordConfirmationVisibility() {
+        _signUpState.update { it.copy(showPasswordConfirmation = !it.showPasswordConfirmation) }
+    }
+
+    fun toggleSignInPasswordVisibility() {
+        _signInState.update { it.copy(showPassword = !it.showPassword) }
+    }
 
     fun signUpWithEmail(email: String, password: String, nickname: String) {
         viewModelScope.launch {
+            val currentState = _signUpState.value
+            if (password != currentState.passwordConfirmation) {
+                _uiEvent.emit(AuthUiEvent.ShowError("Passwords do not match"))
+                return@launch
+            }
             signUpWithEmailUseCase(email, password, nickname)
                 .onSuccess {
                     _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)
@@ -165,6 +193,11 @@ class AuthViewModel @Inject constructor(
 
     fun signUpWithPhoneNumber(phoneNumber: String, activity: Activity, password: String) {
         viewModelScope.launch {
+            val currentState = _signUpState.value
+            if (password != currentState.passwordConfirmation) {
+                _uiEvent.emit(AuthUiEvent.ShowError("Passwords do not match"))
+                return@launch
+            }
             signUpWithPhoneNumberUseCase(phoneNumber, activity, password)
                 .onSuccess {
                     _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)
@@ -175,7 +208,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signOut() {
+    fun logOut() {
         viewModelScope.launch {
             authRepository.signOut()
                 .onSuccess {
@@ -197,17 +230,8 @@ class AuthViewModel @Inject constructor(
         password.length >= 6
 
 
-    // SignUp 상태 관리
-    fun updateSignUpMethod(method: SignUpMethod) {
-        _signUpState.update { it.copy(signUpMethod = method) }
-    }
-
     fun updateEmailOrPhone(value: String) {
         _signUpState.update { it.copy(emailOrPhone = value) }
-    }
-
-    fun setPassword(password: String) {
-        _signUpState.update { it.copy(password = password) }
     }
 
     fun setUsername(username: String) {
@@ -217,7 +241,11 @@ class AuthViewModel @Inject constructor(
     fun verifyPhoneCode(verificationCode: String) {
 
     }
+
+
+
 }
+
 
 sealed class AuthUiEvent {
     data object SignInSuccess : AuthUiEvent()

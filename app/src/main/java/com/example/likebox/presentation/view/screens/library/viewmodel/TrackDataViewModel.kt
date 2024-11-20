@@ -1,12 +1,12 @@
-package com.example.likebox.presentation.viewmodel.library
+package com.example.likebox.presentation.view.screens.library.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.repository.MusicRepository
-import com.example.likebox.presentation.state.library.DetailUiState
-import com.example.likebox.presentation.state.library.TrackDetailState
+import com.example.likebox.presentation.view.screens.library.state.DetailUiState
+import com.example.likebox.presentation.view.screens.library.state.TrackDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -70,4 +70,4 @@ data class TrackDetailState(
     val track: Track? = null,
     override val isLoading: Boolean = false,
     override val error: String? = null
-) :DetailUiState
+) : DetailUiState

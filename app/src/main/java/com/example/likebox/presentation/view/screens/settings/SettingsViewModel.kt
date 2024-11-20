@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.viewmodel
+package com.example.likebox.presentation.view.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -121,7 +121,11 @@ class SettingsViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     _settingsState.update { it.copy(isLoading = false) }
-                    emitUiEvent(SettingsUiEvent.Error(error.message ?: "Failed to update profile image"))
+                    emitUiEvent(
+                        SettingsUiEvent.Error(
+                            error.message ?: "Failed to update profile image"
+                        )
+                    )
                 }
         }
     }

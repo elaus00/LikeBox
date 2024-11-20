@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.viewmodel
+package com.example.likebox.presentation.view.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.usecase.search.SearchUseCase
-import com.example.likebox.presentation.state.SearchUiState
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(

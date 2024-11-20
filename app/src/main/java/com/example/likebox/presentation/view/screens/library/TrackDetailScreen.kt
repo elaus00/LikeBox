@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
-import com.example.likebox.presentation.viewmodel.library.TrackDetailViewModel
+import com.example.likebox.presentation.view.screens.library.viewmodel.TrackDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

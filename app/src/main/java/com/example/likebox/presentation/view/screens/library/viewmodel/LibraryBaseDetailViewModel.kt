@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.viewmodel.library
+package com.example.likebox.presentation.view.screens.library.viewmodel
 import androidx.lifecycle.ViewModel
 
 abstract class BaseDetailViewModel : ViewModel() {

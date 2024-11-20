@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state.library
+package com.example.likebox.presentation.view.screens.library.state
 
 import com.example.likebox.domain.model.library.Track
 
@@ -9,4 +9,4 @@ data class TrackDetailState(
     val track: Track? = null,
     override val isLoading: Boolean = false,
     override val error: String? = null
-) :DetailUiState
+) : DetailUiState

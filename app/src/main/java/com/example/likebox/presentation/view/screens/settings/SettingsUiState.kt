@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state
+package com.example.likebox.presentation.view.screens.settings
 
 import com.example.likebox.domain.model.Settings
 

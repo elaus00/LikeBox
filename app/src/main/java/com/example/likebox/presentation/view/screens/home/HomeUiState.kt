@@ -1,8 +1,8 @@
-package com.example.likebox.presentation.state
+package com.example.likebox.presentation.view.screens.home
 
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
-import com.example.likebox.presentation.state.auth.PlatformSyncStatus
+import com.example.likebox.presentation.view.screens.auth.state.PlatformSyncStatus
 import java.time.LocalDateTime
 
 data class HomeUiState(

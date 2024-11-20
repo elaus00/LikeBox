@@ -1,9 +1,9 @@
-package com.example.likebox.presentation.state.library
+package com.example.likebox.presentation.view.screens.library.state
 
 import com.example.likebox.domain.model.library.ContentType
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
-import com.example.likebox.presentation.viewmodel.library.SortOrder
+import com.example.likebox.presentation.view.screens.library.viewmodel.SortOrder
 
 /**
  * 라이브러리 화면의 UI 상태를 정의하는 데이터 클래스

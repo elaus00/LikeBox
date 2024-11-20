@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state
+package com.example.likebox.presentation.view.screens.search
 
 import com.example.likebox.domain.model.library.MusicContent
 

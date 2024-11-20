@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.state.library
+package com.example.likebox.presentation.view.screens.library.state
 
 import com.example.likebox.domain.model.library.Album
 import com.example.likebox.domain.model.library.Artist
