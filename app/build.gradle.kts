@@ -94,7 +94,7 @@ dependencies {
 //    implementation(libs.play.services.auth)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-    implementation(libs.play.services.auth.v2070)
+    implementation(libs.play.services.auth)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -160,4 +160,7 @@ dependencies {
     implementation(libs.play.services.safetynet)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+
+    // Credentials API
+    implementation(libs.androidx.credentials)
 }
