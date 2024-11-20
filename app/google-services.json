@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "999460632188",
+    "project_id": "likebox-2024-test",
+    "storage_bucket": "likebox-2024-test.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999460632188:android:39d8963e610c72d1623bf9",
+        "android_client_info": {
+          "package_name": "com.example.likebox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999460632188-cul6mnl15u4tdkphvfkdfju9tjp3au25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.likebox",
+            "certificate_hash": "6012290d0dfa81776199f0c5228a3e395dfd8a66"
+          }
+        },
+        {
+          "client_id": "999460632188-63bocjqqjjtq7j4rv2schsml9idh4e59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqOmMt6dRvOKxie01C6hqVqnGQNCNG2DE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999460632188-63bocjqqjjtq7j4rv2schsml9idh4e59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

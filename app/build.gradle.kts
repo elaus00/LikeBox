@@ -2,17 +2,23 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
+    id("com.google.relay") version "0.3.12"
     alias(libs.plugins.hilt)
+    id("com.google.gms.google-services")
+}
+
+configurations.all {
+    exclude(group = "xpp3", module = "xpp3")
 }
 
 android {
     namespace = "com.example.likebox"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.likebox"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -47,6 +53,15 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/ASL2.0"
+            excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
 }
@@ -55,11 +70,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.firebase.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+//    implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
 
     // Retrofit
@@ -73,6 +88,14 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.functions.ktx)
+    implementation(libs.play.services.appsearch)
+    implementation(libs.androidx.navigation.safe.args.generator)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.volley)
+//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -83,27 +106,33 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Compose (버전을 명시적으로 지정된 BOM으로 통일)
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation(platform(libs.androidx.compose.bom.v20240100))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3)
+    implementation(libs.coil.compose)
+
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose.v277)
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-android-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // WorkManager
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(kotlin("reflect"))
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.accompanist.systemuicontroller)
 }

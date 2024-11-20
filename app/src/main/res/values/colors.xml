@@ -7,4 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="LikeBox_main">#FFF93C58</color>
+    <color name="sub_title_text">#F0000080</color>
 </resources>
