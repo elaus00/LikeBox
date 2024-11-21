@@ -60,11 +60,10 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Invalid response format"))
             }
 
-            val success = result["success"] as? Boolean ?: false
-
-            if (!success) {
-                return Result.failure(Exception("Failed to fetch liked content"))
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
             }
+
 
             else Result.success(true)
 
@@ -117,10 +116,8 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Invalid response format"))
             }
 
-            val success = result["success"] as? Boolean ?: false
-
-            if (!success) {
-                return Result.failure(Exception("Failed to fetch liked content"))
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
             }
 
             else Result.success(PlatformAuth(platform, true))
@@ -167,7 +164,7 @@ class PlatformRepositoryImpl @Inject constructor(
         return try {
             val data = mapOf(
                 "platform" to platform.name,
-                "code" to authCode
+                "authCode" to authCode
             )
 
             val response = functions
@@ -179,10 +176,8 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Invalid response format"))
             }
 
-            val success = result["success"] as? Boolean ?: false
-
-            if (!success) {
-                return Result.failure(Exception("Failed to fetch liked content"))
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
             }
 
             else Result.success(PlatformAuth(platform, true))
