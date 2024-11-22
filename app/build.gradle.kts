@@ -116,6 +116,8 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
     implementation(libs.firebase.crashlytics.ktx)
+
+    implementation(libs.google.firebase.appcheck.debug)
 //    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)

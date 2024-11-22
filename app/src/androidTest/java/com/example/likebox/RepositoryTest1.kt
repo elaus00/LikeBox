@@ -12,6 +12,8 @@ import org.junit.Before
 import org.junit.After
 import org.junit.Test
 import com.example.likebox.data.repository.MusicRepositoryImpl
+import com.example.likebox.domain.model.library.ContentType
+import com.example.likebox.domain.model.library.MusicPlatform
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -55,6 +57,8 @@ class RepositoryTest1 {
         runBlocking {
             try {
                 // 이전 세션 정리
+
+
                 auth.signOut()
                 println("🔓 초기 로그아웃 완료")
 
@@ -149,9 +153,10 @@ class RepositoryTest1 {
         runBlocking {
             try {
                 // 로그인
+
                 assertTrue("로그인 실패", signIn())
 
-                authCode = "AQDBWsDPGZVxRPUHR9PinAH4YG6YMPDAGlwTL_PJYjI9FFmlYFSUh6cXxHCEbxIzSPdo1NSBQ2a9t_kTbwSR8gRS7cHl8Jdu_QvgAU02btMZaB8A6B-Fk8r-Bypx7qlG0f2llgmDTWSktzOyc3-LWWNqiG6vON6viOSlNDoVruG7WWzkKS21Vjis_Lv242UU4JNIVadAVDk8VgEGJl6sPi2IhmvvWu_mmUsaoS1WN4MoIut-f5lnolldTilaiNZVLutSMNlKj_YRrxskR7TBDD1NhckEkeoLtF1wmOqVBo4nS1Pvz5risix90KcNVs5o7ZvShxoqR-YG0qi5rocNNai3vKcU6xyQb-gCK3HPArKkpjg_WhGkQRnxUnZEgueqxgYvo9JrONBESVG-6g"
+                authCode = "AQCRZGvksr1IScXVb1ej-O27OARKFtjq0WMKcC7vydjXJ8On5tPrdxsIkziALNrefN6rYgp9hUeW8BKaZthHUatHAgdMyWwhzMCOXhPmvJYCdrZ3JkuluOoBm0bbYe6v87CevZsEFzqwFk-3obfSJyuUZ41lzZgY2aTOzpBH44GagmAmyiLBo-ImeHyA3G7tiOfZUaSrJtXnoB6ue5YQxZAp8BZhazc0izmx1-0tGPYn0qGfffEe-irPvPZvveWSRNLhaMnbZR8NnasQfofzLMWJnpCHKFCGWtYLk1AKqVBSu2URzQK-bLg2Le6zwbj9pp9o95ocQ5WdTa4yh2Qj2OisQXkfKmXnX91yVkTPMA23Qg-COZqvNP_eDL-y-1zZV-rurAOLa7x5VbwqZg"
                 val data = mapOf(
                     "authCode" to authCode,
                     "platform" to "SPOTIFY"
@@ -400,6 +405,71 @@ class RepositoryTest1 {
 
             } catch (e: Exception){
                 println("❌ 에러 발생: ${e.message}")
+                throw e
+            }
+        }
+    }
+
+    @Test
+    fun testMusicRepository() {
+        runBlocking {
+            try {
+                assertTrue("로그인 실패", signIn())
+
+                // 1. getTracks
+                val tracksResult = repo.getTracks(setOf(MusicPlatform.SPOTIFY))
+                println("getTracks: ${if (tracksResult.isSuccess) "✅" else "❌"}")
+
+                // 2. getAlbums
+                val albumsResult = repo.getAlbums(setOf(MusicPlatform.SPOTIFY))
+                println("getAlbums: ${if (albumsResult.isSuccess) "✅" else "❌"}")
+
+                // 3. getPlaylists
+                val playlistsResult = repo.getPlaylists(setOf(MusicPlatform.SPOTIFY))
+                println("getPlaylists: ${if (playlistsResult.isSuccess) "✅" else "❌"}")
+
+                // 4. getArtists
+                val artistsResult = repo.getArtists(setOf(MusicPlatform.SPOTIFY))
+                println("getArtists: ${if (artistsResult.isSuccess) "✅" else "❌"}")
+
+                // 5. getAlbumById (if albums exist)
+                albumsResult.getOrNull()?.firstOrNull()?.let { album ->
+                    val albumDetailResult = repo.getAlbumById(album.id)
+                    println("getAlbumById: ${if (albumDetailResult.isSuccess) "✅" else "❌"}")
+                }
+
+                // 6. getPlaylistById (if playlists exist)
+                playlistsResult.getOrNull()?.firstOrNull()?.let { playlist ->
+                    val playlistDetailResult = repo.getPlaylistById(playlist.id)
+                    println("getPlaylistById: ${if (playlistDetailResult.isSuccess) "✅" else "❌"}")
+                }
+
+                // 7. getArtistById (if artists exist)
+                artistsResult.getOrNull()?.firstOrNull()?.let { artist ->
+                    val artistDetailResult = repo.getArtistById(artist.id)
+                    println("getArtistById: ${if (artistDetailResult.isSuccess) "✅" else "❌"}")
+                }
+
+                // 8. getContentCount
+                val countResult = repo.getContentCount(MusicPlatform.SPOTIFY, ContentType.TRACK)
+                println("getContentCount: ${if (countResult.isSuccess) "✅" else "❌"}")
+
+                // 9. syncContent
+                val syncResult = repo.syncContent(MusicPlatform.SPOTIFY, ContentType.TRACK)
+                println("syncContent: ${if (syncResult.isSuccess) "✅" else "❌"}")
+
+                // 10. getLikedContent
+                val likedResult = repo.getLikedContent(MusicPlatform.SPOTIFY, ContentType.TRACK)
+                println("getLikedContent: ${if (likedResult.isSuccess) "✅" else "❌"}")
+
+                // 11. getAlbumTracks (if albums exist)
+                albumsResult.getOrNull()?.firstOrNull()?.let { album ->
+                    val albumTracksResult = repo.getAlbumTracks(album.id)
+                    println("getAlbumTracks: ${if (albumTracksResult.isSuccess) "✅" else "❌"}")
+                }
+
+            } catch (e: Exception) {
+                println("❌ 테스트 중 오류 발생: ${e.message}")
                 throw e
             }
         }
