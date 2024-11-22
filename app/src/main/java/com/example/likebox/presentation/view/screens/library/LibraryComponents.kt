@@ -99,10 +99,6 @@ fun PlatformIcon(
 ) {
     Surface(
         shape = CircleShape,
-        color = when(platform) {
-            MusicPlatform.SPOTIFY -> Color(0xFF1DB954)
-            MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)
-        },
         modifier = modifier.size(14.dp)
     ) {
         Icon(
@@ -110,6 +106,12 @@ fun PlatformIcon(
                 id = when(platform) {
                     MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
                     MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
+                    MusicPlatform.YOUTUBE_MUSIC -> R.drawable.youtube_music_logomark
+                    MusicPlatform.MELON -> R.drawable.melon_logomark
+                    MusicPlatform.GENIE -> R.drawable.genie_logomark
+                    MusicPlatform.FLOO -> R.drawable.flo_logomark
+                    MusicPlatform.TIDAL -> R.drawable.tidal_logomark
+                    MusicPlatform.AMAZON_MUSIC -> R.drawable.amazon_logomark
                 }
             ),
             contentDescription = null,
@@ -324,13 +326,25 @@ private fun PlatformFilterChips(
                                 id = when(platform) {
                                     MusicPlatform.SPOTIFY -> R.drawable.spotify_logomark
                                     MusicPlatform.APPLE_MUSIC -> R.drawable.applemusic_logomark
+                                    MusicPlatform.YOUTUBE_MUSIC -> R.drawable.youtube_music_logomark
+                                    MusicPlatform.MELON -> R.drawable.melon_logomark
+                                    MusicPlatform.GENIE -> R.drawable.genie_logomark
+                                    MusicPlatform.FLOO -> R.drawable.flo_logomark
+                                    MusicPlatform.TIDAL -> R.drawable.tidal_logomark
+                                    MusicPlatform.AMAZON_MUSIC -> R.drawable.amazon_logomark
                                 }
                             ),
                             contentDescription = null,
                             modifier = Modifier.size(20.dp),
                             tint = when(platform) {
-                                MusicPlatform.SPOTIFY -> Color(0xFF1DB954)
-                                MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)
+                                MusicPlatform.SPOTIFY -> Color(0xFF1DB954)  // Spotify Green
+                                MusicPlatform.APPLE_MUSIC -> Color(0xFFFC3C44)  // Apple Music Red
+                                MusicPlatform.YOUTUBE_MUSIC -> Color(0xFFFF0000)  // YouTube Red
+                                MusicPlatform.MELON -> Color(0xFF00CD3C)  // Melon Green
+                                MusicPlatform.GENIE -> Color(0xFF00B523)  // Genie Green
+                                MusicPlatform.FLOO -> Color(0xFF00C4C4)  // FLO Turquoise
+                                MusicPlatform.TIDAL -> Color(0xFF000000)  // TIDAL Black
+                                MusicPlatform.AMAZON_MUSIC -> Color(0xFF00A8E1)  // Amazon Music Blue
                             }
                         )
                         Text(platform.name)

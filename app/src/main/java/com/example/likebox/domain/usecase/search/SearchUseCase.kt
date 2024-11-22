@@ -1,5 +1,6 @@
 package com.example.likebox.domain.usecase.search
 
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.repository.AuthRepository
 import com.example.likebox.domain.repository.SearchRepository
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class SearchUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
-    private val authRepository: AuthRepository
+    @Mock private val authRepository: AuthRepository
 ) {
     suspend fun search(query: String): StateFlow<List<MusicContent>> =
         searchRepository.search(query)

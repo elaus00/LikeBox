@@ -48,8 +48,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.likebox.R
-import com.example.likebox.presentation.viewmodel.SearchViewModel
-import com.example.likebox.presentation.state.SearchUiState
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.model.library.Album

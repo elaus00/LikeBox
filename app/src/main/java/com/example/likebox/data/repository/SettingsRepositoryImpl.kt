@@ -1,7 +1,7 @@
 package com.example.likebox.data.repository
 
-import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.Settings
+import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.domain.repository.SettingsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val firebaseService: FirebaseService
 ) : SettingsRepository {
 
     private val gson = Gson()
@@ -56,10 +55,7 @@ class SettingsRepositoryImpl @Inject constructor(
             .await()
             .toObject(Settings::class.java)
 
-        val likedTracks = firebaseService.getLikedTracks(platform = null)
-
         userData["settings"] = settings ?: Settings(getCurrentUserId())
-        userData["likedContent"] = likedTracks
 
         Result.success(gson.toJson(userData))
     } catch (e: Exception) {

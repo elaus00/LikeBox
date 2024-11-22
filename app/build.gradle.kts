@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
-    id("com.google.relay") version "0.3.12"
     alias(libs.plugins.hilt)
     id("com.google.gms.google-services")
 }
@@ -28,15 +27,27 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            // 릴리즈 키스토어 정보
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("debug") {
+            // debug.keystore가 없는 경우를 위해 주석 처리
+            // signingConfig = signingConfigs.getByName("debug")
+        }
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -64,6 +75,7 @@ android {
             excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
+
 }
 
 dependencies {
@@ -77,6 +89,12 @@ dependencies {
 //    implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
 
+    // Google Auth
+//    implementation(libs.play.services.auth)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth.v2070)
+
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson.converter)
@@ -88,6 +106,7 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -105,6 +124,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
     // Compose (버전을 명시적으로 지정된 BOM으로 통일)
     implementation(platform(libs.androidx.compose.bom.v20240100))
     implementation(libs.ui)
@@ -112,7 +132,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.coil.compose)
-
+    implementation(libs.androidx.core.splashscreen)
 
     // Navigation
     implementation(libs.androidx.navigation.compose.v277)
@@ -135,4 +155,29 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.play.services.safetynet)
+    implementation(libs.firebase.analytics)
+
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase Testing
+    androidTestImplementation(platform(libs.firebase.bom))
+    androidTestImplementation(libs.firebase.functions.ktx)
+
+    // Firebase AppCheck
+    implementation(libs.firebase.appcheck)
+    implementation(libs.firebase.appcheck.playintegrity)
+
+    implementation(libs.firebase.ui.auth)
+
+    // FirebaseUI 의존성이 요구하는 Firebase Auth
+    implementation(libs.google.firebase.auth.ktx)
+
+    implementation(libs.androidx.browser)
+
 }

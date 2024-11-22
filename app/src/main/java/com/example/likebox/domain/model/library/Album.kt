@@ -11,5 +11,5 @@ data class Album(
     val artists: List<String>,
     val releaseDate: Long,
     val trackCount: Int,
-    val tracks: List<Track>
+    val tracks: List<Track>,
 ) : MusicContent
