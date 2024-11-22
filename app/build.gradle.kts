@@ -114,7 +114,6 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
-    implementation(libs.firebase.crashlytics.ktx)
 //    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
@@ -178,4 +177,7 @@ dependencies {
 
     // FirebaseUI 의존성이 요구하는 Firebase Auth
     implementation(libs.google.firebase.auth.ktx)
+
+    implementation(libs.androidx.browser)
+
 }

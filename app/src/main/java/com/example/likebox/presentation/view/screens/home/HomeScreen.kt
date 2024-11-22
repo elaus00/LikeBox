@@ -12,8 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,6 +45,7 @@ import com.example.likebox.domain.model.library.Track
 import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.CustomSnackbar
 import com.example.likebox.presentation.view.theme.SofiaSans
 import com.example.likebox.presentation.view.theme.TextStyle
 import com.example.likebox.presentation.view.theme.TextStyle.heading2
@@ -59,6 +62,17 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            snackbarHostState.showSnackbar(
+                message = error,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
 
     Scaffold(
         bottomBar = {
@@ -68,6 +82,11 @@ fun HomeScreen(
                 color = Color.Transparent
             ) {
                 LikeboxNavigationBar(navController)
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                CustomSnackbar(snackbarData = snackbarData)
             }
         },
         containerColor = Color.White
@@ -113,14 +132,6 @@ fun HomeScreen(
                             navController.navigateToLibrary()
                         }
                     )
-                }
-            }
-
-            uiState.error?.let { error ->
-                Snackbar(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(error)
                 }
             }
         }

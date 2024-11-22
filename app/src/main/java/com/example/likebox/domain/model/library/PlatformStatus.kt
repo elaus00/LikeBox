@@ -14,10 +14,7 @@ data class PlatformState(
         fun default(platform: MusicPlatform) = PlatformState(
             platform = platform,
             isEnabled = when (platform) {
-                MusicPlatform.SPOTIFY,
-                MusicPlatform.APPLE_MUSIC,
-                MusicPlatform.YOUTUBE_MUSIC,
-                MusicPlatform.MELON -> true
+                MusicPlatform.SPOTIFY -> true
                 else -> false
             },
             isConnected = false,

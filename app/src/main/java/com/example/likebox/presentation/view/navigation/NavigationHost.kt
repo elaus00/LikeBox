@@ -73,8 +73,11 @@ fun NavigationHost(
                     navArgument("platformId") { type = NavType.StringType }
                 )
             ) { entry ->
-                entry.arguments?.getString("platformId")?.let {
-                    PlatformConnectionScreen(platformId = it)
+                entry.arguments?.getString("platformId")?.let { platformId ->
+                    PlatformConnectionScreen(
+                        platformId = platformId,
+                        navController = navController
+                    )
                 }
             }
             composable(Screens.Auth.PlatformSetup.Confirmation.route) {

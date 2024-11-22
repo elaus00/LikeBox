@@ -279,12 +279,31 @@ class PlatformRepositoryImpl @Inject constructor(
                 .call()
                 .await()
 
-            val responseData = result.getData() as Map<String, String>
-            val statusMap = responseData.mapKeys {
-                MusicPlatform.fromId(it.key)
-            }.mapValues {
-                SyncStatus.valueOf(it.value)
-            }
+            // 디버깅을 위한 로그
+            println("Raw response: ${result.getData()}")
+
+            // 응답 데이터 구조 확인
+            val responseData = when (val data = result.getData()) {
+                is Map<*, *> -> data as? Map<String, String>
+                is ArrayList<*> -> {
+                    // ArrayList를 Map으로 변환하는 로직
+                    data.associate { item ->
+                        when (item) {
+                            is Map<*, *> -> {
+                                val platform = item["platform"] as? String ?: ""
+                                val status = item["status"] as? String ?: ""
+                                platform to status
+                            }
+                            else -> "" to ""
+                        }
+                    }
+                }
+                else -> mapOf()
+            } ?: mapOf()
+
+            val statusMap = responseData.filterKeys { it.isNotEmpty() }
+                .mapKeys { MusicPlatform.fromId(it.key) }
+                .mapValues { SyncStatus.valueOf(it.value) }
 
             Result.success(statusMap)
         } catch (e: Exception) {

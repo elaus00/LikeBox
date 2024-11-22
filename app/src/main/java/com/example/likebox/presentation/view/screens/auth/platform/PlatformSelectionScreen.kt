@@ -25,8 +25,8 @@ import com.example.likebox.presentation.view.screens.auth.LikeBoxTopAppBar
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformState
+import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
-import com.example.likebox.presentation.view.screens.auth.viewmodel.PlatformSelectionViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,7 +43,21 @@ fun PlatformSelectionScreen(
     // Error 처리
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
-            snackbarHostState.showSnackbar(error)
+            snackbarHostState.showSnackbar(
+                message = error,
+                duration = SnackbarDuration.Short,
+                withDismissAction = true,
+                actionLabel = "Dismiss"
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.navigateToConnection) {
+        if (uiState.navigateToConnection) {
+            navController.navigate(
+                Screens.Auth.PlatformSetup.Connection.createRoute("spotify")
+            )
+            viewModel.onNavigationComplete()
         }
     }
 
@@ -55,7 +69,9 @@ fun PlatformSelectionScreen(
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { snackbarData ->
-                CustomSnackbar(snackbarData = snackbarData)
+                CustomSnackbar(
+                    snackbarData = snackbarData,
+                )
             }
         }
     ) { paddingValues ->
@@ -90,7 +106,7 @@ fun PlatformSelectionScreen(
                         PlatformItem(
                             platformState = platformState,
                             isSelected = platform in uiState.selectedPlatforms,
-                            onClick = { viewModel.togglePlatformSelection(platform) }
+                            onClick = { viewModel.onPlatformClick(platform) }
                         )
                     }
                 }
@@ -110,6 +126,7 @@ fun PlatformSelectionScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlatformItem(
     platformState: PlatformState,
@@ -131,18 +148,20 @@ private fun PlatformItem(
         else -> Color(0xA5A2A2A2)
     }
 
-    Surface(
+    val shape = RoundedCornerShape(22.95.dp)
+
+    Card(
         modifier = Modifier
             .height(68.dp)
             .border(
                 width = 0.77.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(22.95.dp)
-            )
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(22.95.dp)
+                shape = shape
             ),
+        shape = shape,
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
         onClick = onClick
     ) {
         Column(
@@ -207,7 +226,7 @@ private fun PlatformItem(
 }
 
 @Composable
-private fun LoadingOverlay() {
+fun LoadingOverlay() {
     Box(
         modifier = Modifier
             .fillMaxSize()

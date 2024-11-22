@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
                         syncStatus = statuses[platform] ?: SyncStatus.NOT_SYNCED,
                         lastSyncTime = platformRepository.getLastSyncTime(platform)
                             .getOrNull(),
-                        errorMessage = null
+                        errorMessage = "Failed to load contents"
                     )
                 }
                 _uiState.update { it.copy(platformStates = platformStates) }

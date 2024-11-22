@@ -1,17 +1,13 @@
-package com.example.likebox.presentation.view.screens.auth.viewmodel
+package com.example.likebox.presentation.view.screens.auth.platform
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformState
 import com.example.likebox.domain.repository.PlatformRepository
-import com.example.likebox.presentation.view.navigation.NavigationCommand
-import com.example.likebox.presentation.view.screens.Screens
 import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +22,8 @@ class PlatformSelectionViewModel @Inject constructor(
         val platformStates: Map<MusicPlatform, PlatformState> = emptyMap(),
         val selectedPlatforms: Set<MusicPlatform> = emptySet(),
         val isLoading: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+        val navigateToConnection: Boolean = false // 네비게이션 상태 추가
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -55,14 +52,44 @@ class PlatformSelectionViewModel @Inject constructor(
                     .onFailure { handleError(it) }
             }
 
-            // 2. Observe sync status for each platform
-            MusicPlatform.entries.forEach { platform ->
-                launch {
-                    platformRepository.observeSyncStatus(platform).collect { status ->
-                        updatePlatformSyncStatus(platform, status)
-                    }
-                }
+//            // 2. Observe sync status for each platform
+//            MusicPlatform.entries.forEach { platform ->
+//                launch {
+//                    platformRepository.observeSyncStatus(platform).collect { status ->
+//                        updatePlatformSyncStatus(platform, status)
+//                    }
+//                }
+//            }
+        }
+    }
+
+    fun onPlatformClick(platform: MusicPlatform) {
+        val currentState = _uiState.value.platformStates[platform] ?: return
+
+        if (!currentState.isEnabled) {
+            setError("This platform will be supported soon!")
+            return
+        }
+
+        // 스포티파이 선택 시 바로 연결 화면으로 이동
+        if (platform == MusicPlatform.SPOTIFY) {
+            _uiState.update {
+                it.copy(
+                    selectedPlatforms = setOf(platform),
+                    navigateToConnection = true
+                )
             }
+            return
+        }
+
+        // 다른 플랫폼들은 선택만 토글
+        _uiState.update { state ->
+            val newSelectedPlatforms = if (platform in state.selectedPlatforms) {
+                state.selectedPlatforms - platform
+            } else {
+                state.selectedPlatforms + platform
+            }
+            state.copy(selectedPlatforms = newSelectedPlatforms)
         }
     }
 
@@ -110,44 +137,45 @@ class PlatformSelectionViewModel @Inject constructor(
         }
     }
 
-    fun connectSelectedPlatforms() {
-        val selectedPlatforms = _uiState.value.selectedPlatforms
-        if (selectedPlatforms.isEmpty()) {
-            setError("Please select at least one platform")
-            return
-        }
 
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-
-            selectedPlatforms.forEach { platform ->
-                platformRepository.updateSyncStatus(platform, SyncStatus.IN_PROGRESS)
-                    .onFailure {
-                        platformRepository.updateSyncStatus(platform, SyncStatus.ERROR)
-                        handleError(it)
-                    }
-
-                platformRepository.connectPlatform(platform, "dummy_auth_code")
-                    .onSuccess {
-                        platformRepository.updateSyncStatus(platform, SyncStatus.COMPLETED)
-                    }
-                    .onFailure {
-                        platformRepository.updateSyncStatus(platform, SyncStatus.ERROR)
-                        handleError(it)
-                    }
-            }
-
-            platformRepository.syncAllPlatforms()
-                .onSuccess {
-                    selectedPlatforms.forEach { platform ->
-                        platformRepository.updateSyncStatus(platform, SyncStatus.COMPLETED)
-                    }
-                }
-                .onFailure { handleError(it) }
-
-            _uiState.update { it.copy(isLoading = false) }
-        }
-    }
+//    fun connectSelectedPlatforms() {
+//        val selectedPlatforms = _uiState.value.selectedPlatforms
+//        if (selectedPlatforms.isEmpty()) {
+//            setError("Please select at least one platform")
+//            return
+//        }
+//
+//        viewModelScope.launch {
+//            _uiState.update { it.copy(isLoading = true, error = null) }
+//
+//            selectedPlatforms.forEach { platform ->
+//                platformRepository.updateSyncStatus(platform, SyncStatus.IN_PROGRESS)
+//                    .onFailure {
+//                        platformRepository.updateSyncStatus(platform, SyncStatus.ERROR)
+//                        handleError(it)
+//                    }
+//
+//                platformRepository.connectPlatform(platform, "dummy_auth_code")
+//                    .onSuccess {
+//                        platformRepository.updateSyncStatus(platform, SyncStatus.COMPLETED)
+//                    }
+//                    .onFailure {
+//                        platformRepository.updateSyncStatus(platform, SyncStatus.ERROR)
+//                        handleError(it)
+//                    }
+//            }
+//
+//            platformRepository.syncAllPlatforms()
+//                .onSuccess {
+//                    selectedPlatforms.forEach { platform ->
+//                        platformRepository.updateSyncStatus(platform, SyncStatus.COMPLETED)
+//                    }
+//                }
+//                .onFailure { handleError(it) }
+//
+//            _uiState.update { it.copy(isLoading = false) }
+//        }
+//    }
 
     private fun updateConnectedPlatforms(platforms: List<MusicPlatform>) {
         _uiState.update { state ->
@@ -179,5 +207,25 @@ class PlatformSelectionViewModel @Inject constructor(
             return
         }
         connectSelectedPlatforms()
+    }
+
+    fun connectSelectedPlatforms() {
+        val selectedPlatforms = _uiState.value.selectedPlatforms
+
+        if (selectedPlatforms.isEmpty()) {
+            setError("Please select at least one platform")
+            return
+        }
+
+        if (selectedPlatforms.any { it != MusicPlatform.SPOTIFY }) {
+            setError("Currently only Spotify is supported")
+            return
+        }
+
+        _uiState.update { it.copy(navigateToConnection = true) }
+    }
+
+    fun onNavigationComplete() {
+        _uiState.update { it.copy(navigateToConnection = false) }
     }
 }
