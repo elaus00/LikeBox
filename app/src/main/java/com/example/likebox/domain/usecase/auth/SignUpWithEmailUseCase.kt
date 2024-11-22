@@ -1,10 +1,11 @@
 package com.example.likebox.domain.usecase.auth
 
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class SignUpWithEmailUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    @Mock private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(email: String, password: String, nickname: String): Result<Unit> {
         if (!isValidEmail(email)) {

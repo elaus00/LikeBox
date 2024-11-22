@@ -2,11 +2,12 @@ package com.example.likebox.domain.usecase.auth
 
 import android.app.Activity
 import com.example.likebox.data.util.PhoneNumberValidator
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class SignUpWithPhoneNumberUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    @Mock private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(
         phoneNumber: String,

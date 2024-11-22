@@ -2,6 +2,7 @@ package com.example.likebox.presentation.view.screens.library.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.ContentType
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
@@ -30,7 +31,7 @@ enum class SortOrder {
  */
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    @Mock private val musicRepository: MusicRepository
 ) : ViewModel() {
 
     // UI 상태를 관리하는 MutableStateFlow

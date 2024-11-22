@@ -95,9 +95,7 @@ fun HomeScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(
-                    top = paddingValues
-                        .calculateTopPadding()
-                        .minus(10.dp),
+                    top = maxOf(paddingValues.calculateTopPadding().minus(10.dp), 0.dp),
                     bottom = paddingValues.calculateBottomPadding(),
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)

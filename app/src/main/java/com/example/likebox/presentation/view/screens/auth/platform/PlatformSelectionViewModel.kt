@@ -2,6 +2,7 @@ package com.example.likebox.presentation.view.screens.auth.platform
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformState
 import com.example.likebox.domain.repository.PlatformRepository
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlatformSelectionViewModel @Inject constructor(
-    private val platformRepository: PlatformRepository
+    @Mock private val platformRepository: PlatformRepository
 ) : ViewModel() {
 
     data class UiState(

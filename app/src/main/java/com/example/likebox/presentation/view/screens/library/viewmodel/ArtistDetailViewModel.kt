@@ -1,6 +1,7 @@
 package com.example.likebox.presentation.view.screens.library.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.repository.MusicRepository
 import com.example.likebox.presentation.view.screens.library.state.ArtistDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class ArtistDetailViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    @Mock private val musicRepository: MusicRepository
 ) : BaseDetailViewModel() {
     private val _uiState = MutableStateFlow(ArtistDetailState())
     val uiState: StateFlow<ArtistDetailState> = _uiState.asStateFlow()

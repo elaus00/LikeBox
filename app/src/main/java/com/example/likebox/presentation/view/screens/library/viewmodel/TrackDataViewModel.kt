@@ -2,6 +2,7 @@ package com.example.likebox.presentation.view.screens.library.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.domain.repository.MusicRepository
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrackDetailViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    @Mock private val musicRepository: MusicRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TrackDetailState())

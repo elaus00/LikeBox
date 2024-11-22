@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val platformRepository: PlatformRepository,
+    @Mock private val platformRepository: PlatformRepository,
     private val getRecentContentsUseCase: GetRecentContentsUseCase
 ) : ViewModel() {
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.repository.AuthRepository
 import com.example.likebox.domain.usecase.auth.SignInWithEmailUseCase
 import com.example.likebox.domain.usecase.auth.SignInWithPhoneNumberUseCase
@@ -29,7 +30,7 @@ class AuthViewModel @Inject constructor(
     private val signInWithPhoneNumberUseCase: SignInWithPhoneNumberUseCase,
     private val signUpWithEmailUseCase: SignUpWithEmailUseCase,
     private val signUpWithPhoneNumberUseCase: SignUpWithPhoneNumberUseCase,
-    private val authRepository: AuthRepository
+    @Mock private val authRepository: AuthRepository
 ) : ViewModel() {
 
     val authState = authRepository.authState

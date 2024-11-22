@@ -1,9 +1,11 @@
 package com.example.likebox.di
 
 import com.example.likebox.data.repository.*
+import com.example.likebox.data.repository.mock.MockAuthRepositoryImpl
 import com.example.likebox.data.repository.mock.MockMusicRepositoryImpl
 import com.example.likebox.data.repository.mock.MockPlatformRepositoryImpl
 import com.example.likebox.data.repository.mock.MockSettingsRepositoryImpl
+import com.example.likebox.data.repository.mock.MockUserRepositoryImpl
 import com.example.likebox.domain.repository.*
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Binds
@@ -17,17 +19,17 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindPlatformRepository(
-        platformRepositoryImpl: PlatformRepositoryImpl
-    ): PlatformRepository
+//    @Binds
+//    @Singleton
+//    abstract fun bindAuthRepository(
+//        authRepositoryImpl: AuthRepositoryImpl
+//    ): AuthRepository
+//
+//    @Binds
+//    @Singleton
+//    abstract fun bindPlatformRepository(
+//        platformRepositoryImpl: PlatformRepositoryImpl
+//    ): PlatformRepository
 
     @Binds
     @Singleton
@@ -35,24 +37,24 @@ abstract class RepositoryModule {
         searchRepositoryImpl: SearchRepositoryImpl
     ): SearchRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindMusicRepository(
-        musicRepositoryImpl: MusicRepositoryImpl
-    ): MusicRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindUserRepository(
-        userRepositoryImpl: UserRepositoryImpl
-    ): UserRepository
-
-
-    @Singleton
-    @Binds
-    abstract fun bindSettingsRepository(
-        settingsRepositoryImpl: SettingsRepositoryImpl
-    ): SettingsRepository
+//    @Binds
+//    @Singleton
+//    abstract fun bindMusicRepository(
+//        musicRepositoryImpl: MusicRepositoryImpl
+//    ): MusicRepository
+//
+//    @Binds
+//    @Singleton
+//    abstract fun bindUserRepository(
+//        userRepositoryImpl: UserRepositoryImpl
+//    ): UserRepository
+//
+//
+//    @Singleton
+//    @Binds
+//    abstract fun bindSettingsRepository(
+//        settingsRepositoryImpl: SettingsRepositoryImpl
+//    ): SettingsRepository
 
     @Binds
     @Singleton
@@ -90,4 +92,20 @@ abstract class RepositoryModule {
     abstract fun bindMockPlatformRepository(
         mockPlatformRepositoryImpl: MockPlatformRepositoryImpl
     ) : PlatformRepository
+
+    @Binds
+    @Singleton
+    @Mock
+    abstract fun bindMockAuthRepository(
+        mockAuthRepositoryImpl: MockAuthRepositoryImpl
+    ): AuthRepository
+
+    @Binds
+    @Singleton
+    @Mock
+    abstract fun bindMockUserRepository(
+        mockUserRepositoryImpl: MockUserRepositoryImpl
+    ): UserRepository
+
+
 }

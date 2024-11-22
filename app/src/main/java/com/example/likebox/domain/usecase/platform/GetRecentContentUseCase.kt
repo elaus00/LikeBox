@@ -1,5 +1,6 @@
 package com.example.likebox.domain.usecase.platform
 
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.repository.ContentRepository
 import com.example.likebox.domain.repository.PlatformRepository
@@ -9,7 +10,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetRecentContentsUseCase @Inject constructor(
-    private val platformRepository: PlatformRepository,
+    @Mock private val platformRepository: PlatformRepository,
     private val contentRepository: ContentRepository
 ) {
     suspend operator fun invoke(limit: Int = 10): Result<List<MusicContent>> = withContext(

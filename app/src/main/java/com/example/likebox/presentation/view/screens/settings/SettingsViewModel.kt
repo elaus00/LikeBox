@@ -2,6 +2,7 @@ package com.example.likebox.presentation.view.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.Settings
 import com.example.likebox.domain.model.auth.User
 import com.example.likebox.domain.model.settings.NotificationSettings
@@ -16,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsRepository: SettingsRepository,
-    private val userRepository: UserRepository
+    @Mock private val settingsRepository: SettingsRepository,
+    @Mock private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _settingsState = MutableStateFlow<SettingsState>(SettingsState())

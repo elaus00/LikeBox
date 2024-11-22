@@ -13,6 +13,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.likebox.data.util.SpotifyConfig
+import com.example.likebox.di.Mock
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.AuthRepository
 import com.example.likebox.domain.repository.PlatformRepository
@@ -31,8 +32,8 @@ import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class PlatformConnectionViewModel @Inject constructor(
-    private val platformRepository: PlatformRepository,
-    private val authRepository: AuthRepository,
+    @Mock private val platformRepository: PlatformRepository,
+    @Mock private val authRepository: AuthRepository,
     application: Application
 ) : ViewModel() {
 
@@ -78,9 +79,10 @@ class PlatformConnectionViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val authUrl = getSpotifyAuthUrl()
-                val authCode = openBrowserAndWaitForResult(activity, authUrl)  // activity 전달
+                // val authUrl = getSpotifyAuthUrl()
+                // val authCode = openBrowserAndWaitForResult(activity, authUrl)  // activity 전달
 
+                val authCode = ""
                 platformRepository.connectPlatform(platform, authCode)
                     .onSuccess {
                         _uiState.update { state ->
