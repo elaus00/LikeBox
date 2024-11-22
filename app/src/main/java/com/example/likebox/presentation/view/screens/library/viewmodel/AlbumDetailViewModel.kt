@@ -33,28 +33,14 @@ class AlbumDetailViewModel @Inject constructor(
                 // 앨범 정보 로드
                 musicRepository.getAlbumById(albumId).fold(
                     onSuccess = { album ->
-                        // 앨범의 트랙 정보 로드
-                        musicRepository.getAlbumTracks(albumId).fold(
-                            onSuccess = { tracks ->
-                                _uiState.update {
-                                    it.copy(
-                                        album = album,
-                                        tracks = tracks,
-                                        isLoading = false,
-                                        error = null
-                                    )
-                                }
-                            },
-                            onFailure = { throwable ->
-                                _uiState.update {
-                                    it.copy(
-                                        album = album,
-                                        isLoading = false,
-                                        error = throwable.message
-                                    )
-                                }
-                            }
-                        )
+                        _uiState.update {
+                            it.copy(
+                                album = album,
+                                tracks = album.tracks,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
                     },
                     onFailure = { throwable ->
                         _uiState.update {

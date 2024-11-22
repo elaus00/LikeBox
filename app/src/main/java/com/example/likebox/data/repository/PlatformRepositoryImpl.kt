@@ -60,9 +60,9 @@ class PlatformRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Invalid response format"))
             }
 
-            if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
-            }
+                if (result["success"] == false) {
+                    return Result.failure(Exception("Failed to fetch platform tracks"))
+                }
 
 
             else Result.success(true)
@@ -172,15 +172,8 @@ class PlatformRepositoryImpl @Inject constructor(
                 .call(data)
                 .await()
 
-            val result = response.getData() as? Map<String, Any> ?: run {
-                return Result.failure(Exception("Invalid response format"))
-            }
 
-            if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
-            }
-
-            else Result.success(PlatformAuth(platform, true))
+            Result.success(PlatformAuth(platform, true))
         } catch (e: Exception) {
             Result.failure(e)
         }

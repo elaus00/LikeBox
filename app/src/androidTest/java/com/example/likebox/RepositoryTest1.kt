@@ -156,7 +156,7 @@ class RepositoryTest1 {
 
                 assertTrue("로그인 실패", signIn())
 
-                authCode = "AQCRZGvksr1IScXVb1ej-O27OARKFtjq0WMKcC7vydjXJ8On5tPrdxsIkziALNrefN6rYgp9hUeW8BKaZthHUatHAgdMyWwhzMCOXhPmvJYCdrZ3JkuluOoBm0bbYe6v87CevZsEFzqwFk-3obfSJyuUZ41lzZgY2aTOzpBH44GagmAmyiLBo-ImeHyA3G7tiOfZUaSrJtXnoB6ue5YQxZAp8BZhazc0izmx1-0tGPYn0qGfffEe-irPvPZvveWSRNLhaMnbZR8NnasQfofzLMWJnpCHKFCGWtYLk1AKqVBSu2URzQK-bLg2Le6zwbj9pp9o95ocQ5WdTa4yh2Qj2OisQXkfKmXnX91yVkTPMA23Qg-COZqvNP_eDL-y-1zZV-rurAOLa7x5VbwqZg"
+                authCode = "AQBYFFR_W6dNfnIj4jwDPoTfo2IRvWjTfl0kIveoj0x_2m-8ySY5vkXnu0dbAoKuu30k9BKGkW-rCZu5chh8IhjkTEBkBci4b0X0URlxVjktjBi9-Y5RJncHRftaYWClUSlt5JNBa5L7ttz0ppKD4OnARMCX-gbPJfX4BRTSrtJdqewGuxgrMQa8sHpHLhUokA_Lrbf7Lnos9-wGNNmAFtcCC6j9ibS-QDvPpyIEXQyHCwBUjZXdpKOxG5aqqEDy4sF4-qj8f-wY9rOZxKv9VbCex8Q5TbJ8GJ9GRenIuedNv4JRQM5r1G1CZPDecIiBg81XwXJtNmB9-0kTlc2-RKagA9rwTxf3oZEe1ZWxduAsPDOCJ9-m6nQqM3y1mmQN68Fzxs56NM3V_pe7Ig"
                 val data = mapOf(
                     "authCode" to authCode,
                     "platform" to "SPOTIFY"

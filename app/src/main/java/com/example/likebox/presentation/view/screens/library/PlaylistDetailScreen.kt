@@ -99,9 +99,7 @@ fun PlaylistDetailScreen(
                     item {
                         PlaylistHeader(
                             playlist = uiState.playlist!!,
-                            onLikeClick = {
-                                viewModel.toggleLiked(uiState.playlist!!)
-                            }
+                            onLikeClick = {}
                         )
                     }
 
@@ -119,9 +117,9 @@ fun PlaylistDetailScreen(
                 if (showAddTrackDialog) {
                     AddTrackDialog(
                         onDismiss = { showAddTrackDialog = false },
-                        onAddTrack = { tracks ->
-                            viewModel.addTracksToPlaylist(uiState.playlist!!.id, tracks)
-                            showAddTrackDialog = false
+                        onAddTrack = { // tracks ->
+//                            viewModel.addTracksToPlaylist(uiState.playlist!!.id, tracks)
+//                            showAddTrackDialog = false
                         }
                     )
                 }

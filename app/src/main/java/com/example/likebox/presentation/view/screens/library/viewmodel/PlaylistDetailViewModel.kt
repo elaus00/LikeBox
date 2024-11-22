@@ -54,30 +54,30 @@ class PlaylistDetailViewModel @Inject constructor(
         }
     }
 
-    fun toggleLiked(content: MusicContent) {
-        viewModelScope.launch {
-            try {
-                musicRepository.addToLiked(content).fold(
-                    onSuccess = {
-                        // 좋아요 상태 업데이트 성공
-                    },
-                    onFailure = { throwable ->
-                        _uiState.update {
-                            it.copy(error = throwable.message)
-                        }
-                    }
-                )
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(error = e.message)
-                }
-            }
-        }
-    }
-
-    fun addTracksToPlaylist(id: String, tracks: List<Track>) {
-        TODO("Not yet implemented")
-    }
+//    fun toggleLiked(content: MusicContent) {
+//        viewModelScope.launch {
+//            try {
+//                musicRepository.addToLiked(content).fold(
+//                    onSuccess = {
+//                        // 좋아요 상태 업데이트 성공
+//                    },
+//                    onFailure = { throwable ->
+//                        _uiState.update {
+//                            it.copy(error = throwable.message)
+//                        }
+//                    }
+//                )
+//            } catch (e: Exception) {
+//                _uiState.update {
+//                    it.copy(error = e.message)
+//                }
+//            }
+//        }
+//    }
+//
+//    fun addTracksToPlaylist(id: String, tracks: List<Track>) {
+//        TODO("Not yet implemented")
+//    }
 }
 
 data class PlaylistDetailState(

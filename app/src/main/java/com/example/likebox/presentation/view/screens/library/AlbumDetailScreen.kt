@@ -91,9 +91,7 @@ fun AlbumDetailScreen(
                     item {
                         AlbumHeader(
                             album = uiState.album!!,
-                            onLikeClick = {
-                                viewModel.toggleLiked(uiState.album!!)
-                            }
+                            onLikeClick = {}
                         )
                     }
 
