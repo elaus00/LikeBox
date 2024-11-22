@@ -32,3 +32,9 @@ object PhoneNumberValidator {
         return "${countryCode}10${digitsOnly.substring(3)}"
     }
 }
+
+object SpotifyConfig {
+    const val CLIENT_ID = "8feb61fef99a40b980c062841e6801e4"
+    const val REDIRECT_URI = "com.example.likebox://callback"
+    const val SCOPES = "user-library-read user-library-modify"
+}

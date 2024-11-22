@@ -35,6 +35,8 @@ import androidx.navigation.NavController
 import com.example.likebox.R
 import com.example.likebox.presentation.view.screens.auth.state.SignInMethod
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.viewmodel.AuthUiEvent
+import com.example.likebox.presentation.view.screens.auth.viewmodel.AuthViewModel
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract

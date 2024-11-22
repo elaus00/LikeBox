@@ -1,4 +1,4 @@
-package com.example.likebox.presentation.view.screens.auth
+package com.example.likebox.presentation.view.screens.auth.viewmodel
 
 import android.app.Activity
 import android.telephony.PhoneNumberUtils
@@ -181,6 +181,8 @@ class AuthViewModel @Inject constructor(
                 _uiEvent.emit(AuthUiEvent.ShowError("Passwords do not match"))
                 return@launch
             }
+            _signUpState.update { it.copy(isLoading = true) }
+
             signUpWithEmailUseCase(email, password, nickname)
                 .onSuccess {
                     _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)
@@ -198,6 +200,8 @@ class AuthViewModel @Inject constructor(
                 _uiEvent.emit(AuthUiEvent.ShowError("Passwords do not match"))
                 return@launch
             }
+            _signUpState.update { it.copy(isLoading = true) }
+
             signUpWithPhoneNumberUseCase(phoneNumber, activity, password)
                 .onSuccess {
                     _uiEvent.emit(AuthUiEvent.NavigateToPlatformSetup)

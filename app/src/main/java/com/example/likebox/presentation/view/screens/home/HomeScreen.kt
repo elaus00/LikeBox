@@ -12,8 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,23 +39,22 @@ import com.example.likebox.domain.model.library.Album
 import com.example.likebox.domain.model.library.ContentType
 import com.example.likebox.domain.model.library.MusicContent
 import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformState
 import com.example.likebox.domain.model.library.Playlist
 import com.example.likebox.domain.model.library.Track
 import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.CustomSnackbar
 import com.example.likebox.presentation.view.theme.SofiaSans
 import com.example.likebox.presentation.view.theme.TextStyle
 import com.example.likebox.presentation.view.theme.TextStyle.heading2
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.Date
+import java.util.Locale
 
-/**
- * 홈 화면의 메인 컴포넌트입니다.
- * 네비게이션 바와 함께 홈 화면의 전체 레이아웃을 구성합니다.
- *
- * @param navController 화면 전환을 위한 네비게이션 컨트롤러
- */
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -60,6 +62,17 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            snackbarHostState.showSnackbar(
+                message = error,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
 
     Scaffold(
         bottomBar = {
@@ -69,6 +82,11 @@ fun HomeScreen(
                 color = Color.Transparent
             ) {
                 LikeboxNavigationBar(navController)
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                CustomSnackbar(snackbarData = snackbarData)
             }
         },
         containerColor = Color.White
@@ -108,54 +126,290 @@ fun HomeScreen(
                     RecentlySyncedContents(
                         contents = uiState.recentContents,
                         onContentClick = { content ->
-                            when (content) {
-                                is Track -> {} // Track은 별도 처리 필요 없음
-                                is Album -> navController.navigate(
-                                    Screens.Main.Library.Details.AlbumDetail.route.replace(
-                                        "{albumId}", content.id
-                                    )
-                                ) {
-                                    // 중복된 화면 쌓이는 것 방지
-                                    launchSingleTop = true
-                                    // Home을 백스택에 유지
-                                    popUpTo(Screens.Main.Home.Root.route) {
-                                        saveState = true
-                                    }
-                                }
-                                is Playlist -> navController.navigate(
-                                    Screens.Main.Library.Details.PlaylistDetail.route.replace(
-                                        "{playlistId}", content.id
-                                    )
-                                ) {
-                                    launchSingleTop = true
-                                    popUpTo(Screens.Main.Home.Root.route) {
-                                        saveState = true
-                                    }
-                                }
-                                else -> {}
-                            }
+                            handleContentNavigation(content, navController)
                         },
                         onViewMoreClick = {
-                            navController.navigate(Screens.Main.Library.Root.route) {
-                                launchSingleTop = true
-                                popUpTo(Screens.Main.Home.Root.route) {
-                                    saveState = true
-                                }
-                            }
+                            navController.navigateToLibrary()
                         }
                     )
                 }
             }
+        }
+    }
+}
 
-            // Error handling
-            uiState.error?.let { error ->
-                Snackbar(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(error)
+private fun NavController.navigateToLibrary() {
+    navigate(Screens.Main.Library.Root.route) {
+        launchSingleTop = true
+        popUpTo(Screens.Main.Home.Root.route) {
+            saveState = true
+        }
+    }
+}
+
+private fun handleContentNavigation(content: MusicContent, navController: NavController) {
+    when (content) {
+        is Track -> {} // Track은 별도 처리 필요 없음
+        is Album -> navController.navigate(
+            Screens.Main.Library.Details.AlbumDetail.route.replace(
+                "{albumId}", content.id
+            )
+        ) {
+            launchSingleTop = true
+            popUpTo(Screens.Main.Home.Root.route) {
+                saveState = true
+            }
+        }
+        is Playlist -> navController.navigate(
+            Screens.Main.Library.Details.PlaylistDetail.route.replace(
+                "{playlistId}", content.id
+            )
+        ) {
+            launchSingleTop = true
+            popUpTo(Screens.Main.Home.Root.route) {
+                saveState = true
+            }
+        }
+        else -> {}
+    }
+}
+
+@Composable
+private fun HomeTopBar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        LogoSection()
+        NotificationIcon()
+    }
+}
+
+@Composable
+private fun LogoSection() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.alpha(0.9f)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.main_logo),
+            contentDescription = "Logo",
+            modifier = Modifier.size(32.dp)
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = "LIKEBOX",
+            fontSize = 20.sp,
+            fontFamily = SofiaSans,
+            fontWeight = FontWeight.ExtraBold
+        )
+    }
+}
+
+@Composable
+private fun NotificationIcon() {
+    Icon(
+        Icons.Outlined.Notifications,
+        contentDescription = "notification icon"
+    )
+}
+
+@Composable
+private fun SyncStatusSection(
+    uiState: HomeUiState,
+    onSyncClick: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SyncStatusHeader(
+            lastSyncTime = uiState.lastSyncTime,
+            isLoading = uiState.isLoading,
+            onSyncClick = onSyncClick
+        )
+
+        uiState.platformStates.entries
+            .sortedBy { (platform, state) ->
+                if (state.isEnabled) 0 else 1
+            }
+            .forEach { (platform, state) ->
+                PlatformSyncItem(
+                    platform = platform,
+                    state = state
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+    }
+}
+
+@Composable
+private fun SyncStatusHeader(
+    lastSyncTime: LocalDateTime?,
+    isLoading: Boolean,
+    onSyncClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(
+            text = "Sync Status",
+            style = heading2
+        )
+
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = lastSyncTime?.let {
+                    "Synced ${formatLastSyncTime(it)}"
+                } ?: "Not synced yet",
+                style = TextStyle.body1.copy(
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
+            )
+            IconButton(
+                onClick = onSyncClick,
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = Color(0xFF444444).copy(0.78f)
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sync),
+                        contentDescription = "Sync",
+                        tint = Color(0xFF444444).copy(0.78f),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PlatformSyncItem(
+    platform: MusicPlatform,
+    state: PlatformState
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                color = if (state.isEnabled) {
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                } else {
+                    MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                }
+            )
+            .border(
+                width = 1.dp,
+                color = if (state.isEnabled) {
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                } else {
+                    Color.Transparent
+                },
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Image(
+                painter = painterResource(
+                    id = when(platform) {
+                        MusicPlatform.SPOTIFY -> R.drawable.spotif_logotype
+                        MusicPlatform.APPLE_MUSIC -> R.drawable.apple_music_logotype
+                        MusicPlatform.YOUTUBE_MUSIC -> R.drawable.youtube_music_logotype
+                        MusicPlatform.MELON -> R.drawable.melon_logotype
+                        MusicPlatform.GENIE -> R.drawable.genie_logotype
+                        MusicPlatform.FLOO -> R.drawable.flo_logotype
+                        MusicPlatform.TIDAL -> R.drawable.tidal_logotype
+                        MusicPlatform.AMAZON_MUSIC -> R.drawable.amazon_music_logo
+                    }
+                ),
+                contentDescription = platform.name,
+                modifier = Modifier.width(70.dp),
+                alpha = if (state.isEnabled) 1f else 0.5f
+            )
+
+            if (!state.isEnabled) {
+                Text(
+                    text = "Coming soon",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp
+                    )
+                )
+            } else {
+                state.lastSyncTime?.let { timestamp ->
+                    Text(
+                        text = formatTimestamp(timestamp),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SyncStatusIcon(status: SyncStatus) {
+    when (status) {
+        SyncStatus.COMPLETED -> Icon(
+            painter = painterResource(id = R.drawable.complete),
+            contentDescription = "Synced",
+            modifier = Modifier.size(20.dp),
+            tint = Color(0xFF00BC74)
+        )
+        SyncStatus.IN_PROGRESS -> {
+            val mainColor = Color(0xFF0096FF)
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                color = mainColor,
+                trackColor = mainColor.copy(alpha = 0.25f)
+            )
+        }
+        SyncStatus.ERROR -> Icon(
+            painter = painterResource(id = R.drawable.fail),
+            contentDescription = "Error",
+            modifier = Modifier.size(20.dp),
+            tint = Color(0xFFE50000).copy(alpha = 0.8f)
+        )
+        SyncStatus.IDLE -> Icon(
+            painter = painterResource(id = R.drawable.pause),
+            contentDescription = "Waiting",
+            modifier = Modifier.size(20.dp),
+            tint = Color(0xFF444444).copy(alpha = 0.9f)
+        )
+        SyncStatus.NOT_SYNCED -> Icon(
+            painter = painterResource(id = R.drawable.pause),
+            contentDescription = "Waiting",
+            modifier = Modifier.size(20.dp),
+            tint = Color(0xFF444444).copy(alpha = 0.5f)
+        )
     }
 }
 
@@ -231,7 +485,7 @@ private fun MusicContentCard(
     ) {
         AsyncImage(
             model = if (content.thumbnailUrl.toIntOrNull() != null) {
-                content.thumbnailUrl.toInt()  // ResourceId를 직접 전달
+                content.thumbnailUrl.toInt()
             } else {
                 content.thumbnailUrl
             },
@@ -240,11 +494,10 @@ private fun MusicContentCard(
             contentScale = ContentScale.Crop
         )
 
-        // Content Type Label
         ContentTypeLabel(
-            contentType = when {
-                content is Track -> ContentType.TRACK
-                content is Album -> ContentType.ALBUM
+            contentType = when(content) {
+                is Track -> ContentType.TRACK
+                is Album -> ContentType.ALBUM
                 else -> ContentType.PLAYLIST
             },
             modifier = Modifier
@@ -252,7 +505,6 @@ private fun MusicContentCard(
                 .align(Alignment.TopEnd)
         )
 
-        // Gradient and Content Info
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -279,7 +531,9 @@ private fun MusicContentCard(
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp
-                    )
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = when(content) {
@@ -292,130 +546,15 @@ private fun MusicContentCard(
                         color = Color.White.copy(alpha = 0.9f),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
     }
 }
 
-/**
- * 홈 화면 상단의 앱 로고와 알림 아이콘을 포함하는 상단바입니다.
- */
-@Composable
-private fun HomeTopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        LogoSection()
-        NotificationIcon()
-    }
-}
-
-/**
- * 앱의 로고('L')와 앱 이름('LIKEBOX')을 표시하는 컴포넌트입니다.
- */
-@Composable
-private fun LogoSection() {
-    Row(verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .alpha(0.9f)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.main_logo),
-            contentDescription = "Logo",
-            modifier = Modifier.size(32.dp)
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = "LIKEBOX",
-            fontSize = 20.sp,
-            fontFamily = SofiaSans,
-            fontWeight = FontWeight.ExtraBold
-        )
-    }
-}
-
-/**
- * 상단 바 우측의 알림 아이콘을 표시하는 컴포넌트입니다.
- */
-@Composable
-private fun NotificationIcon() {
-    Icon(
-        Icons.Outlined.Notifications,
-        contentDescription = "notification icon"
-    )
-}
-
-
-/**
- * 음악 서비스들의 동기화 상태를 보여주는 섹션입니다.
- * 각 음악 서비스의 현재 동기화 상태를 리스트로 표시합니다.
- */
-@Composable
-private fun SyncStatusSection(
-    uiState: HomeUiState,
-    onSyncClick: () -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp, horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.padding(4.dp))
-            Text(
-                text = "Sync Status",
-                style = heading2
-            )
-
-            Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = uiState.lastSyncTime?.let {
-                        "Synced ${formatLastSyncTime(it)}"
-                    } ?: "Not synced yet",
-                    style = TextStyle.body1.copy(
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
-                )
-                IconButton(
-                    onClick = onSyncClick,
-                    enabled = !uiState.isLoading
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.sync),
-                        contentDescription = "Sync",
-                        tint = Color(0xFF444444).copy(0.78f),
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-        }
-
-        uiState.platformStatuses.forEach { (platform, status) ->
-            MusicServiceItem(
-                platform = platform,
-                syncStatus = status.syncStatus
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-/**
- * 시간 포맷팅 유틸리티 함수
- */
 private fun formatLastSyncTime(time: LocalDateTime): String {
     val now = LocalDateTime.now()
     val minutes = ChronoUnit.MINUTES.between(time, now)
@@ -428,81 +567,17 @@ private fun formatLastSyncTime(time: LocalDateTime): String {
     }
 }
 
-/**
- * 개별 음악 서비스의 로고와 동기화 상태를 표시하는 아이템 컴포넌트입니다.
- *
- * @param service 표시할 음악 서비스 정보
- */
-@Composable
-private fun MusicServiceItem(
-    platform: MusicPlatform,
-    syncStatus: SyncStatus
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(HomeTheme.HomeScreenConstants.DefaultCornerRadius))
-            .background(color = Color(0x4DF8F8F8))
-            .border(
-                width = HomeTheme.HomeScreenConstants.BorderWidth,
-                color = Color(0x33767676),
-                shape = RoundedCornerShape(HomeTheme.HomeScreenConstants.DefaultCornerRadius)
-            )
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(
-                id = when(platform) {
-                    MusicPlatform.SPOTIFY -> R.drawable.spotif_logotype
-                    MusicPlatform.APPLE_MUSIC -> R.drawable.apple_music_logotype
-                }
-            ),
-            contentDescription = platform.name,
-            modifier = Modifier.width(70.dp)
-        )
-        SyncStatusIcon(syncStatus)
+private fun formatTimestamp(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+
+    return when {
+        diff < 60_000 -> "Just now" // 1분 이내
+        diff < 3600_000 -> "${diff / 60_000}m ago" // 1시간 이내
+        diff < 86400_000 -> "${diff / 3600_000}h ago" // 24시간 이내
+        else -> SimpleDateFormat("MM.dd HH:mm", Locale.getDefault())
+            .format(Date(timestamp))
     }
 }
 
-/**
- * 동기화 상태에 따른 아이콘을 표시하는 유틸리티 컴포넌트입니다.
- * SYNCED, SYNCING, ERROR, WAITING 상태에 따라 다른 아이콘을 표시합니다.
- *
- * @param status 표시할 동기화 상태
- */
-@Composable
-private fun SyncStatusIcon(status: SyncStatus) {
-    when (status) {
-        SyncStatus.COMPLETED -> Icon(
-            painter = painterResource(id = R.drawable.complete),
-            contentDescription = "Synced",
-            modifier = Modifier.size(20.dp),
-            tint = Color(0xFF00BC74) // #00BC74
-        )
-        SyncStatus.IN_PROGRESS -> {
-            val mainColor = Color(0xFF0096FF) // #0096FF
-            val subColor = mainColor.copy(alpha = 0.25f)
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                strokeWidth = 2.dp,
-                color = mainColor,
-                trackColor = subColor
-            )
-        }
-        SyncStatus.ERROR -> Icon(
-            painter = painterResource(id = R.drawable.fail),
-            contentDescription = "Error",
-            modifier = Modifier.size(20.dp),
-            tint = Color(0xFFE50000).copy(alpha = 0.8f) // #E50000 with 80% opacity
-        )
-        SyncStatus.IDLE -> Icon(
-            painter = painterResource(id = R.drawable.pause),
-            contentDescription = "Waiting",
-            modifier = Modifier.size(20.dp),
-            tint = Color(0xFF444444).copy(alpha = 0.9f) // #444444 with 90% opacity
-        )
-    }
-}
+

@@ -6,6 +6,7 @@ import com.example.likebox.domain.repository.PlatformRepository
 import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
@@ -128,20 +129,6 @@ class PlatformRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateLastSyncTime(
-        platform: MusicPlatform,
-        timestamp: Long
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getLastSyncTime(platform: MusicPlatform): Result<Long> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getLastSyncTime(): Result<Long> {
-        TODO("Not yet implemented")
-    }
 
     //Feat: disconnectAllPlatforms
     override suspend fun disconnectAllPlatforms(): Result<Unit> {
@@ -172,6 +159,9 @@ class PlatformRepositoryImpl @Inject constructor(
                 .call(data)
                 .await()
 
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
 
             Result.success(PlatformAuth(platform, true))
         } catch (e: Exception) {
@@ -179,34 +169,185 @@ class PlatformRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun logPlatformError(platform: MusicPlatform, error: String): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun updateLastSyncTime(platform: MusicPlatform, timestamp: Long): Result<Unit> {
+        return try {
+            val data = hashMapOf(
+                "platform" to platform.name,
+                "timestamp" to timestamp
+            )
+
+            functions
+                .getHttpsCallable("updateSyncTime")
+                .call(data)
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun syncAllPlatforms(): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun getLastSyncTime(platform: MusicPlatform): Result<Long> {
+        return try {
+            val data = hashMapOf(
+                "platform" to platform.name
+            )
+
+            val result = functions
+                .getHttpsCallable("getLastSyncTime")
+                .call(data)
+                .await()
+
+            val responseData = result.getData() as Map<String, Any>
+            val timestamp = responseData["timestamp"] as Long
+
+            Result.success(timestamp)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getLastSyncTime(): Result<Long> {
+        return try {
+            val result = functions
+                .getHttpsCallable("getLastGlobalSyncTime")
+                .call()
+                .await()
+
+            val responseData = result.getData() as Map<String, Any>
+            val timestamp = responseData["timestamp"] as Long
+
+            Result.success(timestamp)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun syncPlatform(platform: MusicPlatform): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+        return try {
+            val data = hashMapOf(
+                "platform" to platform.name
+            )
 
-    override fun observeSyncStatus(platform: MusicPlatform): Flow<SyncStatus> {
-        TODO("Not yet implemented")
-    }
+            functions
+                .getHttpsCallable("syncPlatform")
+                .call(data)
+                .await()
 
-    override suspend fun cancelSync(): Result<Unit> {
-        TODO("Not yet implemented")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateSyncStatus(
         platform: MusicPlatform,
         status: SyncStatus
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            val data = hashMapOf(
+                "platform" to platform.name,
+                "status" to status.name
+            )
+
+            functions
+                .getHttpsCallable("updateSyncStatus")
+                .call(data)
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getPlatformSyncStatuses(): Result<Map<MusicPlatform, SyncStatus>> {
-        TODO("Not yet implemented")
+        return try {
+            val result = functions
+                .getHttpsCallable("getSyncStatuses")
+                .call()
+                .await()
+
+            // 디버깅을 위한 로그
+            println("Raw response: ${result.getData()}")
+
+            // 응답 데이터 구조 확인
+            val responseData = when (val data = result.getData()) {
+                is Map<*, *> -> data as? Map<String, String>
+                is ArrayList<*> -> {
+                    // ArrayList를 Map으로 변환하는 로직
+                    data.associate { item ->
+                        when (item) {
+                            is Map<*, *> -> {
+                                val platform = item["platform"] as? String ?: ""
+                                val status = item["status"] as? String ?: ""
+                                platform to status
+                            }
+                            else -> "" to ""
+                        }
+                    }
+                }
+                else -> mapOf()
+            } ?: mapOf()
+
+            val statusMap = responseData.filterKeys { it.isNotEmpty() }
+                .mapKeys { MusicPlatform.fromId(it.key) }
+                .mapValues { SyncStatus.valueOf(it.value) }
+
+            Result.success(statusMap)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Flow를 통한 실시간 상태 감지
+    override fun observeSyncStatus(platform: MusicPlatform): Flow<SyncStatus> = callbackFlow {
+        // 실제 구현에서는 Firestore의 실시간 업데이트나 다른 메커니즘을 사용해야 함
+        // 여기서는 일단 TODO로 남겨둡니다.
+        TODO("Need to implement real-time sync status observation")
+    }
+
+    override suspend fun cancelSync(): Result<Unit> {
+        return try {
+            functions
+                .getHttpsCallable("cancelSync")
+                .call()
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun logPlatformError(platform: MusicPlatform, error: String): Result<Unit> {
+        return try {
+            val data = hashMapOf(
+                "platform" to platform.name,
+                "error" to error
+            )
+
+            functions
+                .getHttpsCallable("logError")
+                .call(data)
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun syncAllPlatforms(): Result<Unit> {
+        return try {
+            functions
+                .getHttpsCallable("syncAllPlatforms")
+                .call()
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

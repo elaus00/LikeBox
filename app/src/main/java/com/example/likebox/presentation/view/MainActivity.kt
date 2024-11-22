@@ -1,5 +1,6 @@
 package com.example.likebox.presentation.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
+
+        handleIntent(intent)
 
         setContent {
             LikeBoxTheme (
@@ -60,6 +63,22 @@ class MainActivity : ComponentActivity() {
                             .padding(paddingValues)
                     )
                 }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val data = intent.data
+            if (data != null) {
+                val broadcastIntent = Intent("com.example.likebox.AUTH_CALLBACK")
+                broadcastIntent.data = data
+                sendBroadcast(broadcastIntent)
             }
         }
     }

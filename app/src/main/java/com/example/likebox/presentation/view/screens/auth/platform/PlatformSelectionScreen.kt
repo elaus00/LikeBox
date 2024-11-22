@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,13 +18,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.likebox.presentation.view.navigation.LikeboxNavigationBar
 import com.example.likebox.presentation.view.screens.auth.AuthButton
 import com.example.likebox.presentation.view.screens.auth.AuthTitle
 import com.example.likebox.presentation.view.screens.auth.CustomSnackbar
 import com.example.likebox.presentation.view.screens.auth.LikeBoxTopAppBar
 import com.example.likebox.presentation.view.theme.PretendardFontFamily
 import com.example.likebox.domain.model.library.MusicPlatform
+import com.example.likebox.domain.model.library.PlatformState
+import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +37,29 @@ fun PlatformSelectionScreen(
     navController: NavController,
     viewModel: PlatformSelectionViewModel = hiltViewModel()
 ) {
-    val selectedPlatforms = remember { mutableStateOf(setOf<MusicPlatform>()) }
+    val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Error 처리
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            snackbarHostState.showSnackbar(
+                message = error,
+                duration = SnackbarDuration.Short,
+                withDismissAction = true,
+                actionLabel = "Dismiss"
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.navigateToConnection) {
+        if (uiState.navigateToConnection) {
+            navController.navigate(
+                Screens.Auth.PlatformSetup.Connection.createRoute("spotify")
+            )
+            viewModel.onNavigationComplete()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -42,7 +69,9 @@ fun PlatformSelectionScreen(
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { snackbarData ->
-                CustomSnackbar(snackbarData = snackbarData)
+                CustomSnackbar(
+                    snackbarData = snackbarData,
+                )
             }
         }
     ) { paddingValues ->
@@ -59,7 +88,7 @@ fun PlatformSelectionScreen(
                     title = "Select the music platforms you use",
                     subtitle = "You can select multiple platforms",
                     titleFontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(45.dp))
@@ -70,18 +99,14 @@ fun PlatformSelectionScreen(
                     verticalArrangement = Arrangement.spacedBy(15.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    items(MusicPlatform.entries.size) { index ->
-                        val platform = MusicPlatform.entries[index]
-                        PlatformSelectionItem(
-                            platform = platform,
-                            isSelected = platform in selectedPlatforms.value,
-                            onSelect = {
-                                selectedPlatforms.value = if (platform in selectedPlatforms.value) {
-                                    selectedPlatforms.value - platform
-                                } else {
-                                    selectedPlatforms.value + platform
-                                }
-                            }
+                    items(MusicPlatform.entries.toList()) { platform ->
+                        val platformState = uiState.platformStates[platform]
+                            ?: PlatformState.default(platform)
+
+                        PlatformItem(
+                            platformState = platformState,
+                            isSelected = platform in uiState.selectedPlatforms,
+                            onClick = { viewModel.onPlatformClick(platform) }
                         )
                     }
                 }
@@ -89,66 +114,132 @@ fun PlatformSelectionScreen(
 
             AuthButton(
                 text = "Next",
-                onClick = {
-                    if (selectedPlatforms.value.isEmpty()) {
-                        // Show error message using SnackBar
-                        viewModel.showError("Please select at least one platform")
-                    } else {
-                        viewModel.onPlatformsSelected(selectedPlatforms.value)
-                    }
-                },
+                onClick = { viewModel.connectSelectedPlatforms() },
+                enabled = uiState.selectedPlatforms.isNotEmpty() && !uiState.isLoading,
                 modifier = Modifier.padding(bottom = 30.dp)
             )
+        }
+
+        if (uiState.isLoading) {
+            LoadingOverlay()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlatformItem(
+    platformState: PlatformState,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        !platformState.isEnabled -> Color.Gray.copy(alpha = 0.3f)
+        platformState.syncStatus == SyncStatus.IN_PROGRESS -> Color(0xFFE3F2FD)
+        isSelected -> Color.White
+        else -> Color.White.copy(alpha = 0.75f)
+    }
+
+    val borderColor = when {
+        !platformState.isEnabled -> Color.Gray.copy(alpha = 0.5f)
+        platformState.syncStatus == SyncStatus.IN_PROGRESS -> Color(0xFF2196F3)
+        platformState.syncStatus == SyncStatus.COMPLETED -> Color(0xFF4CAF50)
+        isSelected -> Color(0xFFF93C58)
+        else -> Color(0xA5A2A2A2)
+    }
+
+    val shape = RoundedCornerShape(22.95.dp)
+
+    Card(
+        modifier = Modifier
+            .height(68.dp)
+            .border(
+                width = 0.77.dp,
+                color = borderColor,
+                shape = shape
+            ),
+        shape = shape,
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = when (platformState.platform) {
+                    MusicPlatform.SPOTIFY -> "Spotify"
+                    MusicPlatform.APPLE_MUSIC -> "Apple Music"
+                    MusicPlatform.YOUTUBE_MUSIC -> "YouTube Music"
+                    MusicPlatform.MELON -> "Melon"
+                    MusicPlatform.GENIE -> "Genie"
+                    MusicPlatform.FLOO -> "FLO"
+                    MusicPlatform.TIDAL -> "Tidal"
+                    MusicPlatform.AMAZON_MUSIC -> "Amazon Music"
+                },
+                fontFamily = PretendardFontFamily,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = when {
+                    !platformState.isEnabled -> Color.Gray
+                    platformState.syncStatus == SyncStatus.ERROR -> Color.Red
+                    platformState.syncStatus == SyncStatus.IN_PROGRESS -> Color(0xFF2196F3)
+                    platformState.syncStatus == SyncStatus.COMPLETED -> Color(0xFF4CAF50)
+                    isSelected -> Color(0xFFF93C58)
+                    else -> Color.Black
+                }
+            )
+
+            if (platformState.syncStatus == SyncStatus.IN_PROGRESS) {
+                Spacer(modifier = Modifier.height(4.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    strokeWidth = 2.dp,
+                    color = Color(0xFF2196F3)
+                )
+            }
+
+            platformState.lastSyncTime?.let { timestamp ->
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Last sync: ${formatTimestamp(timestamp)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+
+            if (platformState.syncStatus == SyncStatus.ERROR) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = platformState.errorMessage ?: "Sync failed",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Red
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun PlatformSelectionItem(
-    platform: MusicPlatform,
-    isSelected: Boolean,
-    onSelect: () -> Unit
-) {
-    Surface(
+fun LoadingOverlay() {
+    Box(
         modifier = Modifier
-            .height(68.dp)
-            .border(
-                width = 0.77.dp,
-                color = if (isSelected) {
-                    Color(0xFFF93C58)
-                } else {
-                    Color(0xA5A2A2A2)
-                },
-                shape = RoundedCornerShape(22.95.dp)
-            )
-            .background(
-                color = if (isSelected) {
-                    Color.White
-                } else {
-                    Color.White.copy(alpha = 0.75f)
-                },
-                shape = RoundedCornerShape(22.95.dp)
-            ),
-        shadowElevation = if (isSelected) 4.dp else 0.dp,
-        onClick = onSelect
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f)),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 32.13.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = when (platform) {
-                    MusicPlatform.SPOTIFY -> "Spotify"
-                    MusicPlatform.APPLE_MUSIC -> "Apple Music"
-                },
-                fontFamily = PretendardFontFamily,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = if (isSelected) Color(0xFFF93C58) else Color.Black
-            )
-        }
+        CircularProgressIndicator(
+            color = Color.White
+        )
     }
+}
+
+private fun formatTimestamp(timestamp: Long): String {
+    return SimpleDateFormat("MM.dd HH:mm", Locale.getDefault())
+        .format(Date(timestamp))
 }
