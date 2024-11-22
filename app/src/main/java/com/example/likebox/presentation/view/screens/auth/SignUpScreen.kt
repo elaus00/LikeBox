@@ -20,6 +20,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.likebox.presentation.view.screens.auth.state.SignUpMethod
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.viewmodel.AuthUiEvent
+import com.example.likebox.presentation.view.screens.auth.viewmodel.AuthViewModel
 import com.example.likebox.presentation.view.theme.mainColor
 import kotlinx.coroutines.delay
 
@@ -35,10 +37,18 @@ fun SignUpScreen(
     var verificationCode by rememberSaveable { mutableStateOf("") }
     var remainingTime by rememberSaveable { mutableIntStateOf(60) }
 
+
     LaunchedEffect(Unit) {
         uiEvent.collect { event ->
             when (event) {
                 is AuthUiEvent.NavigateToPlatformSetup -> {
+                    // 성공 메시지 표시 후 네비게이션
+                    snackbarHostState.showSnackbar(
+                        message = "Successfully signed up! Proceeding to platform setup...",
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true,
+                        actionLabel = "Dissmiss"
+                    )
                     navController.navigate(Screens.Auth.PlatformSetup.Selection.route) {
                         popUpTo(Screens.Auth.SignUp.Root.route) { inclusive = true }
                     }
@@ -55,6 +65,7 @@ fun SignUpScreen(
             }
         }
     }
+
 
     LaunchedEffect(remainingTime) {
         if (remainingTime > 0) {
@@ -232,7 +243,9 @@ fun SignUpScreen(
                                 }
                             }
                         }
-                    }
+                    },
+                    isLoading = signUpState.isLoading,  // 로딩 상태 표시
+                    enabled = !signUpState.isLoading    // 로딩 중에는 버튼 비활성화
                 )
             }
         }

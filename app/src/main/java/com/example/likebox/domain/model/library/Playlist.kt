@@ -11,5 +11,5 @@ data class Playlist(
     val description: String?,
     val trackCount: Int,
     val owner: String,
-    val tracks: List<Track>
+    val tracks: List<Track>,
 ) : MusicContent

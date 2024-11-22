@@ -24,5 +24,5 @@ data class Artist(
     val genres: List<String>,
     val followerCount: Int,
     val externalUrl: String,
-    val popularity: Int
+    val popularity: Int,
 ) : MusicContent

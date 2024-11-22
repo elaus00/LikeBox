@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.example.likebox.R
 import com.example.likebox.presentation.view.screens.auth.state.AuthState
 import com.example.likebox.presentation.view.screens.Screens
+import com.example.likebox.presentation.view.screens.auth.viewmodel.AuthViewModel
 
 @Composable
 fun OnBoardingScreen(

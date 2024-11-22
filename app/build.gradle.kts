@@ -4,7 +4,6 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.hilt)
     id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
 }
 
 configurations.all {
@@ -114,7 +113,6 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
-    implementation(libs.firebase.crashlytics.ktx)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -155,11 +153,7 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.systemuicontroller)
 
-    // Credentials API
-    implementation(libs.androidx.credentials)
-
     implementation(libs.play.services.safetynet)
-    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
 
     // Android Testing
@@ -175,4 +169,9 @@ dependencies {
     // Firebase AppCheck
     implementation(libs.firebase.appcheck)
     implementation(libs.firebase.appcheck.playintegrity)
+
+    implementation(libs.firebase.ui.auth)
+
+    // FirebaseUI 의존성이 요구하는 Firebase Auth
+    implementation(libs.google.firebase.auth.ktx)
 }

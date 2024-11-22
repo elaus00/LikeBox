@@ -54,6 +54,12 @@ abstract class RepositoryModule {
         settingsRepositoryImpl: SettingsRepositoryImpl
     ): SettingsRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindContentRepository(
+        contentRepositoryImpl: ContentRepositoryImpl
+    ): ContentRepository
+
 
     companion object {
         @Provides
