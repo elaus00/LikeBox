@@ -2,9 +2,6 @@ package com.example.likebox.presentation.view.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.likebox.domain.model.Settings
 import com.example.likebox.domain.model.settings.NotificationSettings
 import com.example.likebox.domain.model.settings.SyncSettings
@@ -36,17 +32,13 @@ import com.example.likebox.presentation.view.screens.library.detail.PlaylistDeta
 import com.example.likebox.presentation.view.screens.settings.SettingsScreen
 
 // ViewModel과 Navigation 관련
-import com.example.likebox.presentation.viewmodel.NavigationViewModel
 
 
 @Composable
 fun NavigationHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    viewModel: NavigationViewModel = hiltViewModel()
 ) {
-    val currentScreen by viewModel.navigationState.collectAsState()
-
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -63,10 +55,15 @@ fun NavigationHost(
             composable(Screens.Auth.SignIn.route) {
                 SignInScreen(navController)
             }
-            composable(Screens.Auth.SignUp.route) {
+            composable(Screens.Auth.OnBoarding.route) {
+                OnBoardingScreen(navController)
+            }
+            composable(Screens.Auth.SignIn.route) {
+                SignInScreen(navController)
+            }
+            composable(Screens.Auth.SignUp.Root.route) {
                 SignUpScreen(navController)
             }
-
             composable(Screens.Auth.PlatformSetup.Selection.route) {
                 PlatformSelectionScreen(navController)
             }
@@ -227,29 +224,6 @@ fun NavigationHost(
                     onResetSettings = { }
                 )
             }
-        }
-    }
-
-
-    // Handle navigation commands
-    LaunchedEffect(Unit) {
-        viewModel.navigationCommands.collect { command ->
-            when (command) {
-                is NavigationCommand.NavigateTo -> navController.navigate(command.screen.route)
-                is NavigationCommand.NavigateToAndClearStack -> {
-                    navController.navigate(command.screen.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-                is NavigationCommand.NavigateBack -> navController.navigateUp()
-                is NavigationCommand.NavigateToRoot -> {
-                    navController.navigate(command.screen.route) {
-                        popUpTo(command.screen.route) { inclusive = true }
-                    }
-                }
-                is NavigationCommand.NavigateToWithArgs<*> -> navController.navigate(command.screen.route)
-            }
-            viewModel.onNavigationComplete()
         }
     }
 }

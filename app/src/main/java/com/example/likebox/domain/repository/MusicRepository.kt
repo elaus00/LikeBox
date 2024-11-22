@@ -72,7 +72,7 @@ interface MusicRepository {
      * @param platforms 대상 플랫폼 목록
      * @return 플레이리스트 목록
      */
-    suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>>
+    suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Artist>>
 
     /**
      * 앨범 상세 정보 조회
@@ -106,6 +106,10 @@ interface MusicRepository {
         contentType: ContentType
     ): Result<Int>
 
+
+
+    suspend fun getAlbumTracks(albumId: String): Result<List<Track>>
+
     /**
      * 로컬 캐시 데이터 삭제
      */
@@ -124,11 +128,7 @@ interface MusicRepository {
         platforms: Set<MusicPlatform>
     ): Result<List<MusicContent>>
 
-    // Todo : 임시로 Any 반환 타입으로 설정. 수정해야 함
-    suspend fun getPlaylist(playlistId: String): Any
 
     suspend fun getRecentContents(): List<MusicContent>
-
-    suspend fun getAlbumTracks(albumId: String): Result<List<Track>>
 
 }

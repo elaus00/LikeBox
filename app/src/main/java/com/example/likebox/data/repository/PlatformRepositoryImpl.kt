@@ -1,33 +1,41 @@
 package com.example.likebox.data.repository
 
-import com.example.likebox.data.firebase.FirebaseService
 import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.model.library.PlatformAuth
 import com.example.likebox.domain.repository.PlatformRepository
-import com.example.likebox.presentation.state.SyncStatus
-import com.google.firebase.Firebase
+import com.example.likebox.presentation.view.screens.auth.state.SyncStatus
 import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.functions
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
 class PlatformRepositoryImpl @Inject constructor(
-    private val firebaseService: FirebaseService,
     private val functions: FirebaseFunctions// 또는 필요한 다른 의존성
 ) : PlatformRepository {
     // Feat: getConnectedPlatforms
     override suspend fun getConnectedPlatforms(): Result<List<MusicPlatform>> {
         return try {
-            val result = functions
+            val response = functions
                 .getHttpsCallable("checkInfo")
                 .call()
                 .await()
 
-            val responseData = result.getData() as Map<String, Any>
-            val data = responseData["data"] as Map<String, Any>
-            val platforms = (data["connectedPlatforms"] as List<String>)
-                .map { MusicPlatform.fromId(it) }
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch liked content"))
+            }
+
+            val item = result["data"] as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid track list format"))
+            }
+
+            val platformList = item["connetedPlatform"] as? List<String> ?: emptyList()
+            val platforms = platformList.map{ MusicPlatform.fromId(it) }
+
 
             Result.success(platforms)
         } catch (e: Exception) {
@@ -38,19 +46,28 @@ class PlatformRepositoryImpl @Inject constructor(
     // Feat: isPlatformConnected
     override suspend fun isPlatformConnected(platform: MusicPlatform): Result<Boolean> {
         return try {
-            val data = hashMapOf(
+            val data = mapOf(
                 "platform" to platform.name
             )
 
-            val result = functions
+            val response = functions
                 .getHttpsCallable("verifyToken")
                 .call(data)
                 .await()
 
-            val responseData = result.getData() as Map<String, Any>
-            val success = responseData["success"] as Boolean
 
-            Result.success(success)
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
+            }
+
+
+            else Result.success(true)
+
+
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -68,7 +85,7 @@ class PlatformRepositoryImpl @Inject constructor(
     // Feat: disconnectPlatform
     override suspend fun disconnectPlatform(platform: MusicPlatform): Result<Unit> {
         return try {
-            val data = hashMapOf(
+            val data = mapOf(
                 "platform" to platform.name
             )
 
@@ -84,7 +101,31 @@ class PlatformRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshPlatformToken(platform: MusicPlatform): Result<PlatformAuth> {
-        TODO("Not yet implemented")
+        return try {
+            val data = mapOf(
+                "platform" to platform.name
+            )
+
+            val response = functions
+                .getHttpsCallable("verifyToken")
+                .call(data)
+                .await()
+
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
+            }
+
+            else Result.success(PlatformAuth(platform, true))
+
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateLastSyncTime(
@@ -121,22 +162,25 @@ class PlatformRepositoryImpl @Inject constructor(
         authCode: String
     ): Result<PlatformAuth> {
         return try {
-            val data = hashMapOf(
+            val data = mapOf(
                 "platform" to platform.name,
-                "code" to authCode
+                "authCode" to authCode
             )
 
-            functions
+            val response = functions
                 .getHttpsCallable("generateToken")
                 .call(data)
                 .await()
 
-            Result.success(
-                PlatformAuth(
-                    platform = platform,
-                    isValid = true
-                )
-            )
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
+            }
+
+            else Result.success(PlatformAuth(platform, true))
         } catch (e: Exception) {
             Result.failure(e)
         }
