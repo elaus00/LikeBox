@@ -62,7 +62,7 @@ class MockMusicRepositoryImpl @Inject constructor(): MusicRepository {
         playlists.values.filter { it.platform in platforms }.toList()
     }
 
-    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>> {
+    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Artist>> {
         TODO("Not yet implemented")
     }
 
@@ -111,9 +111,6 @@ class MockMusicRepositoryImpl @Inject constructor(): MusicRepository {
                     content.name.contains(query, ignoreCase = true)
         }.toList()
     }
-
-    override suspend fun getPlaylist(playlistId: String): Any =
-        playlists[playlistId] ?: throw NoSuchElementException("Playlist not found: $playlistId")
 
     override suspend fun getRecentContents(): List<MusicContent> = recentContents.toList()
 

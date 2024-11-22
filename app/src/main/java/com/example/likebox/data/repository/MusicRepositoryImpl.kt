@@ -10,6 +10,7 @@ import com.example.likebox.domain.model.library.MusicPlatform
 import com.example.likebox.domain.repository.MusicRepository
 
 import com.example.likebox.data.model.dto.AlbumDto
+import com.example.likebox.data.model.dto.ArtistDto
 import com.example.likebox.data.model.dto.PlaylistDto
 import com.example.likebox.data.model.dto.TrackDto
 import com.google.firebase.functions.FirebaseFunctions
@@ -107,15 +108,8 @@ class MusicRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Invalid response format"))
             }
 
-            val success = result["success"] as? Boolean ?: false
-            val message = result["message"] as? String ?: "Unknown error occurred"
-
-            if (!success) {
-                // 토큰 만료 에러 체크
-                if (message.contains("Access token is expired")) {
-                    return Result.failure(Exception(message))
-                }
-                return Result.failure(Exception(message))
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch data"))
             }
 
             Result.success(Unit)
@@ -140,12 +134,10 @@ class MusicRepositoryImpl @Inject constructor(
             }
 
             if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
+                return Result.failure(Exception("Failed to fetch data"))
             }
 
-            val trackList = result["data"] as? List<Map<String, Any>> ?: run {
-                return Result.failure(Exception("Invalid track list format"))
-            }
+            val trackList = result["data"] as? List<Map<String, Any>> ?: emptyList()
 
             val tracks = trackList.map { item ->
                 TrackDto.fromMap(item)
@@ -178,12 +170,10 @@ class MusicRepositoryImpl @Inject constructor(
             }
 
             if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
+                return Result.failure(Exception("Failed to fetch data"))
             }
 
-            val albumList = result["data"] as? List<Map<String, Any>> ?: run {
-                return Result.failure(Exception("Invalid track list format"))
-            }
+            val albumList = result["data"] as? List<Map<String, Any>> ?: emptyList()
 
             val albums = albumList.map { item ->
                 AlbumDto.fromMap(item)
@@ -216,12 +206,10 @@ class MusicRepositoryImpl @Inject constructor(
             }
 
             if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
+                return Result.failure(Exception("Failed to fetch data"))
             }
 
-            val playlistList = result["data"] as? List<Map<String, Any>> ?: run {
-                return Result.failure(Exception("Invalid track list format"))
-            }
+            val playlistList = result["data"] as? List<Map<String, Any>> ?: emptyList()
 
             val playlists = playlistList.map { item ->
                 PlaylistDto.fromMap(item)
@@ -237,8 +225,39 @@ class MusicRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Playlist>> {
-        TODO("Not yet implemented")
+    override suspend fun getArtists(platforms: Set<MusicPlatform>): Result<List<Artist>> {
+        return try{
+
+            val data = mapOf(
+                "platforms" to platforms.map { it.name }
+            )
+
+            val response = functions
+                .getHttpsCallable("getPlatformsArtists")
+                .call(data)
+                .await()
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch data"))
+            }
+
+            val artistList = result["data"] as? List<Map<String, Any>> ?: emptyList()
+            val artists = artistList.map { item ->
+                ArtistDto.fromMap(item)
+                    .toDomain(
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+            }
+
+            Result.success(artists)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getAlbumById(albumId: String): Result<Album> {
@@ -261,9 +280,7 @@ class MusicRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Failed to fetch platform tracks"))
             }
 
-            val item = result["data"] as? Map<String, Any> ?: run {
-                return Result.failure(Exception("Invalid track list format"))
-            }
+            val item = result["data"] as? Map<String, Any> ?: emptyMap()
 
             val album = AlbumDto.fromMap(item)
                 .toDomain(
@@ -294,12 +311,10 @@ class MusicRepositoryImpl @Inject constructor(
             }
 
             if (result["success"] == false) {
-                return Result.failure(Exception("Failed to fetch platform tracks"))
+                return Result.failure(Exception("Failed to fetch data"))
             }
 
-            val item = result["data"] as? Map<String, Any> ?: run {
-                return Result.failure(Exception("Invalid track list format"))
-            }
+            val item = result["data"] as? Map<String, Any> ?: emptyMap()
 
             val playlist = PlaylistDto.fromMap(item)
                 .toDomain(
@@ -314,14 +329,99 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getArtistById(artistId: String): Result<Artist> {
-        TODO("Not yet implemented")
+        return try{
+            val data = mapOf(
+                "artistId" to artistId
+            )
+
+            val response = functions
+                .getHttpsCallable("getArtist")
+                .call(data)
+                .await()
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch data"))
+            }
+
+            val item = result["data"] as? Map<String, Any> ?: emptyMap()
+
+            val artist = ArtistDto.fromMap(item)
+                .toDomain(
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+
+            Result.success(artist)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
     }
 
     override suspend fun getContentCount(
         platform: MusicPlatform,
         contentType: ContentType
     ): Result<Int> {
-        TODO("Not yet implemented")
+        return try {
+            val data = mapOf(
+                "platform" to platform.name,
+                "type" to contentType.name
+            )
+            val response = functions
+                .getHttpsCallable("getLikedContent")
+                .call(data)
+                .await()
+
+            val result = response.getData() as Map<String, Any>
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch content count"))
+            }
+
+            val item = result["data"] as? Int ?: 0
+
+            Result.success(item)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getAlbumTracks(albumId: String): Result<List<Track>> {
+        return try{
+            val data = mapOf(
+                "albumId" to albumId
+            )
+
+            val response = functions
+                .getHttpsCallable("getAlbum")
+                .call(data)
+                .await()
+
+            val result = response.getData() as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid response format"))
+            }
+
+            if (result["success"] == false) {
+                return Result.failure(Exception("Failed to fetch platform tracks"))
+            }
+
+            val item = result["data"] as? Map<String, Any> ?: run {
+                return Result.failure(Exception("Invalid track list format"))
+            }
+
+            val album = AlbumDto.fromMap(item)
+                .toDomain(
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+
+            Result.success(album.tracks)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun clearLocalCache(): Result<Unit> {
@@ -336,15 +436,8 @@ class MusicRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlaylist(playlistId: String): Any {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getRecentContents(): List<MusicContent> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getAlbumTracks(albumId: String): Result<List<Track>> {
         TODO("Not yet implemented")
     }
 }

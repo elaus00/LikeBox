@@ -46,6 +46,8 @@ firebaseStorageKtx = "21.0.1"
 volley = "1.2.1"
 uiDesktop = "1.7.0"
 firebaseCrashlyticsKtx = "19.2.1"
+firebaseAppcheckDebug = "18.0.0"
+firebaseAppcheckDebugVersion = "18.0.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -122,6 +124,7 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug"}
 firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck"}
 firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity"}
+google-firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppcheckDebugVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -106,6 +106,7 @@ dependencies {
     // Testing
     implementation(libs.junit.junit)
     implementation(libs.androidx.media3.extractor)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
@@ -113,6 +114,8 @@ dependencies {
     implementation(libs.androidx.navigation.safe.args.generator)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
+    implementation(libs.firebase.crashlytics.ktx)
+//    implementation(libs.androidx.material3.jvmstubs)
     testImplementation(libs.kotlinx.coroutines)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -121,6 +124,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
     // Compose (버전을 명시적으로 지정된 BOM으로 통일)
     implementation(platform(libs.androidx.compose.bom.v20240100))
